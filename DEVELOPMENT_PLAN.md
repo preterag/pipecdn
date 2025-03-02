@@ -24,6 +24,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Node testing with actual binary
 - [x] Binary update script creation
 - [x] Production deployment with actual binary
+- [x] Improved port usage monitoring
+- [x] Set up regular backup schedule
 
 ## Upcoming Milestones
 
@@ -54,6 +56,11 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Create backup script
 - [x] Set up monitoring script
 
+### Milestone 5: Maintenance and Monitoring (Completed)
+- [x] Improve port usage monitoring
+- [x] Set up regular backup schedule (weekly backups)
+- [x] Create backup schedule management script
+
 ## Recently Completed Items
 
 - Created directory structure for the Pipe PoP node
@@ -78,10 +85,13 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Downloaded and installed Pipe PoP binary v0.2.8
 - Tested and verified the actual binary is working correctly
 - Restarted the service with the actual binary
+- Improved port usage monitoring in monitor.sh
+- Created setup_backup_schedule.sh script
+- Set up weekly backup schedule using cron
 
 ## Known Issues and Challenges
 
-- Monitor port usage: Currently, the monitoring script shows ports 80, 443, and 8003 are not in use, which may need investigation
+- None at this time
 
 ## Next Steps
 
@@ -90,8 +100,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 3. ~~Replace placeholder with actual Pipe PoP binary~~ (Completed with v0.2.8)
 4. ~~Update service configuration with Solana wallet information~~ (Completed)
 5. ~~Test node operation with actual binary~~ (Completed)
-6. Investigate port usage warning in monitoring script
-7. Set up regular backup schedule
+6. ~~Investigate port usage warning in monitoring script~~ (Completed)
+7. ~~Set up regular backup schedule~~ (Completed)
 8. Monitor for future binary updates
 
 ## Resources

@@ -16,8 +16,9 @@ This document summarizes the implementation of the Pipe PoP node based on the re
 
 - **Solana Wallet**: Using wallet with address 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
 - **Service Preference**: Systemd service
-- **Port Configuration**: Ports 80, 443, and 8003 are open
+- **Port Configuration**: Ports 80, 443, and 8003 are configured
 - **Cache Location**: Default location (./cache)
+- **Backup Schedule**: Weekly backups at 2:00 AM every Sunday
 
 ### Components Implemented
 
@@ -35,11 +36,14 @@ This document summarizes the implementation of the Pipe PoP node based on the re
    - `monitor.sh`: Script for monitoring node status
    - `install_service.sh`: Script for managing the systemd service
    - `github_push.sh`: Script for pushing changes to GitHub
+   - `update_binary.sh`: Script for updating the Pipe PoP binary
+   - `setup_backup_schedule.sh`: Script for setting up regular backups
 
 3. **Configuration**
    - `pipe-pop.service`: Systemd service file
    - `config/config.json`: Configuration file with Solana wallet information
    - Pipe PoP binary v0.2.8 installed and running
+   - Cron job for weekly backups
 
 4. **Documentation**
    - `README.md`: Basic overview
@@ -63,12 +67,13 @@ The implementation is complete:
 - ✅ Solana wallet configuration (completed)
 - ✅ Configuration with Solana wallet (completed)
 - ✅ Actual Pipe PoP binary installation (completed with v0.2.8)
+- ✅ Improved port usage monitoring
+- ✅ Regular backup schedule set up (weekly)
 
 ## Next Steps
 
 1. **Monitoring and Maintenance**
    - Continue regular monitoring
-   - Create regular backup schedule
    - Monitor for updates to the Pipe PoP binary
 
 ## Testing Results
@@ -84,7 +89,9 @@ Testing with the actual binary shows:
 - Solana wallet successfully configured
 - Configuration file correctly integrated with the binary
 - Binary version 0.2.8 is running correctly
+- Port usage monitoring provides clear information
+- Weekly backup schedule successfully set up
 
 ## Conclusion
 
-The Pipe PoP node implementation is complete and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with the wallet configured for use with the node. The actual Pipe PoP binary (v0.2.8) has been installed and is running correctly as a systemd service. The node is fully operational and ready for production use. 
+The Pipe PoP node implementation is complete and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with the wallet configured for use with the node. The actual Pipe PoP binary (v0.2.8) has been installed and is running correctly as a systemd service. The node is fully operational and ready for production use. Regular maintenance tasks have been automated with a weekly backup schedule, and the monitoring system has been improved to provide clear information about port usage. 

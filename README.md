@@ -30,6 +30,7 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
 - `monitor.sh`: Script for monitoring node status
 - `install_service.sh`: Script for managing the systemd service
 - `update_binary.sh`: Script for updating the Pipe PoP binary
+- `setup_backup_schedule.sh`: Script for setting up regular backup schedules
 
 ## Setup Process
 
@@ -62,6 +63,8 @@ The Pipe PoP node is fully operational with the following configuration:
 - Configured with Solana wallet address: 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
 - Running as a systemd service
 - Monitoring and backup scripts in place
+- Weekly backup schedule set up (Sundays at 2:00 AM)
+- Improved port usage monitoring
 
 ## Updating the Binary
 
@@ -77,6 +80,19 @@ Replace `BINARY_URL` with the URL of the new binary. The script will:
 3. Test the new binary
 4. Replace the old binary with the new one
 5. Restart the service if it's running
+
+## Setting Up Backup Schedules
+
+You can set up regular backup schedules using the setup_backup_schedule.sh script:
+
+```bash
+./setup_backup_schedule.sh [daily|weekly|monthly]
+```
+
+This will create a cron job to run the backup.sh script at the specified interval:
+- `daily`: Every day at 2:00 AM
+- `weekly`: Every Sunday at 2:00 AM
+- `monthly`: On the 1st of every month at 2:00 AM
 
 ## Documentation
 

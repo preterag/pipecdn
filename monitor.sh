@@ -103,13 +103,29 @@ check_node_info() {
 check_ports() {
     print_message "Checking required ports..."
     
+    # First check if the ports are in use by any process
     for port in 80 443 8003; do
         if netstat -tuln | grep ":${port} " > /dev/null; then
             print_message "Port ${port} is in use."
         else
-            print_warning "Port ${port} is not in use. Make sure it's open in your firewall."
+            print_warning "Port ${port} is not in use. It may need to be opened in your firewall."
+            print_message "  - To open port ${port}, run: sudo ufw allow ${port}/tcp"
         fi
     done
+    
+    # Check if the Pipe PoP service is configured to use these ports
+    if [ -f "config/config.json" ]; then
+        if grep -q "\"ports\".*\[.*80.*443.*8003" config/config.json; then
+            print_message "Ports are correctly configured in config.json."
+        else
+            print_warning "Ports may not be correctly configured in config.json. Please check the configuration."
+        fi
+    else
+        print_warning "config.json not found. Cannot verify port configuration."
+    fi
+    
+    print_message "Note: The Pipe PoP node may not actively listen on these ports until it receives traffic."
+    print_message "      This is normal behavior and doesn't indicate a problem with the node."
 }
 
 # Main function
