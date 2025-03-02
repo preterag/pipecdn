@@ -18,12 +18,12 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Service management script creation
 - [x] Service installation
 - [x] Solana wallet setup (completed)
-- [ ] Actual Pipe PoP binary installation (pending actual URL)
-- [x] Node configuration with placeholder
-- [x] Service setup with placeholder
-- [x] Initial node testing with placeholder
+- [x] Actual Pipe PoP binary installation (completed with v0.2.8)
+- [x] Node configuration with Solana wallet
+- [x] Service setup with actual binary
+- [x] Node testing with actual binary
 - [x] Binary update script creation
-- [ ] Production deployment with actual binary
+- [x] Production deployment with actual binary
 
 ## Upcoming Milestones
 
@@ -34,20 +34,20 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Verify system requirements
 - [x] Create placeholder for Pipe PoP binary
 
-### Milestone 2: Wallet and Binary Installation (Partially Completed)
+### Milestone 2: Wallet and Binary Installation (Completed)
 - [x] Install Solana CLI (completed)
 - [x] Create or import Solana wallet (completed)
-- [ ] Download actual Pipe PoP binary (pending URL)
+- [x] Download actual Pipe PoP binary (completed with v0.2.8)
 - [x] Set executable permissions
 - [x] Create binary update script
 
-### Milestone 3: Configuration and Testing (Partially Completed)
+### Milestone 3: Configuration and Testing (Completed)
 - [x] Configure node with Solana wallet (completed)
 - [x] Set up cache directory
-- [x] Test node operation with placeholder
+- [x] Test node operation with actual binary
 - [x] Monitor resource usage
 
-### Milestone 4: Production Deployment (Partially Completed)
+### Milestone 4: Production Deployment (Completed)
 - [x] Create systemd service file
 - [x] Create service management script
 - [x] Enable automatic startup
@@ -75,20 +75,24 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Updated placeholder binary to support configuration file
 - Created configuration file with Solana wallet information
 - Created update_binary.sh script for installing the actual binary
+- Downloaded and installed Pipe PoP binary v0.2.8
+- Tested and verified the actual binary is working correctly
+- Restarted the service with the actual binary
 
 ## Known Issues and Challenges
 
-- Need to verify actual Pipe PoP binary download URL
-- Need to test node operation with actual binary
+- Monitor port usage: Currently, the monitoring script shows ports 80, 443, and 8003 are not in use, which may need investigation
 
 ## Next Steps
 
 1. ~~Complete Solana CLI installation~~ (Completed)
 2. ~~Create Solana wallet~~ (Completed)
-3. Replace placeholder with actual Pipe PoP binary when URL is available
-   - Use the update_binary.sh script: `./update_binary.sh BINARY_URL`
+3. ~~Replace placeholder with actual Pipe PoP binary~~ (Completed with v0.2.8)
 4. ~~Update service configuration with Solana wallet information~~ (Completed)
-5. Test node operation with actual binary
+5. ~~Test node operation with actual binary~~ (Completed)
+6. Investigate port usage warning in monitoring script
+7. Set up regular backup schedule
+8. Monitor for future binary updates
 
 ## Resources
 

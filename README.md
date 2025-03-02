@@ -16,7 +16,7 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
 
 ## Directory Structure
 
-- `bin/`: Contains the Pipe PoP binary
+- `bin/`: Contains the Pipe PoP binary (v0.2.8)
 - `cache/`: Stores cache data for the Pipe PoP node
 - `config/`: Configuration files for the Pipe PoP node
 - `logs/`: Log files for monitoring the node
@@ -54,6 +54,14 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
    ```bash
    sudo ./install_service.sh all
    ```
+
+## Current Status
+
+The Pipe PoP node is fully operational with the following configuration:
+- Running Pipe PoP binary v0.2.8
+- Configured with Solana wallet address: 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
+- Running as a systemd service
+- Monitoring and backup scripts in place
 
 ## Updating the Binary
 
