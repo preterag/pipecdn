@@ -1,0 +1,28 @@
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+
+# Backups
+backups/
+
+# Solana
+.config/solana/
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo 

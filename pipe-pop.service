@@ -1,0 +1,14 @@
+[Unit]
+Description=Pipe PoP Node
+After=network.target
+
+[Service]
+User=karo
+WorkingDirectory=/home/karo/Workspace/PipeNetwork
+ExecStart=/home/karo/Workspace/PipeNetwork/bin/pipe-pop --cache-dir /home/karo/Workspace/PipeNetwork/cache
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target 
