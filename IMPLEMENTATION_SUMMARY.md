@@ -14,7 +14,7 @@ This document summarizes the implementation of the Pipe PoP node based on the re
 
 ### User Preferences
 
-- **Solana Wallet**: Created new wallet with address 8wL67Jn2txPeHYoLyuKRGNeaxXYrkzU9TBDzabwWu1PR
+- **Solana Wallet**: Using wallet with address 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
 - **Service Preference**: Systemd service
 - **Port Configuration**: Ports 80, 443, and 8003 are open
 - **Cache Location**: Default location (./cache)
@@ -61,7 +61,7 @@ The implementation is partially complete:
 - ✅ Monitoring script tested
 - ✅ Backup script tested
 - ✅ Solana CLI installation (completed)
-- ✅ Solana wallet creation (completed)
+- ✅ Solana wallet configuration (completed)
 - ✅ Configuration with Solana wallet (completed)
 - ❌ Actual Pipe PoP binary installation (pending URL)
 
@@ -88,9 +88,9 @@ Testing with the placeholder binary shows:
 - Service file is correctly formatted and works
 - Systemd service starts and runs correctly
 - Backup script successfully creates backups
-- Solana wallet successfully created and funded on devnet
+- Solana wallet successfully configured
 - Configuration file correctly integrated with placeholder binary
 
 ## Conclusion
 
-The Pipe PoP node implementation is well-structured and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with a new wallet created and configured for use with the node. The placeholder implementation is working correctly, and the systemd service is properly configured. Once the actual binary is available, the node should be fully operational with minimal additional configuration. 
+The Pipe PoP node implementation is well-structured and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with the wallet configured for use with the node. The placeholder implementation is working correctly, and the systemd service is properly configured. Once the actual binary is available, the node should be fully operational with minimal additional configuration. 
