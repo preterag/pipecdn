@@ -24,6 +24,7 @@ print_error() {
 
 # Parse command line arguments
 CACHE_DIR="./cache"
+CONFIG_FILE=""
 
 for arg in "$@"; do
     case $arg in
@@ -36,11 +37,41 @@ for arg in "$@"; do
             shift
             shift
             ;;
+        --config=*)
+            CONFIG_FILE="${arg#*=}"
+            shift
+            ;;
+        --config)
+            CONFIG_FILE="$2"
+            shift
+            shift
+            ;;
     esac
 done
 
 # Create cache directory if it doesn't exist
 mkdir -p "$CACHE_DIR"
+
+# Default values
+SOLANA_WALLET=""
+LOG_LEVEL="info"
+
+# Read configuration if provided
+if [ -n "$CONFIG_FILE" ] && [ -f "$CONFIG_FILE" ]; then
+    print_message "Reading configuration from $CONFIG_FILE"
+    
+    # Extract Solana wallet address using grep and cut
+    SOLANA_WALLET=$(grep -o '"solana_wallet": *"[^"]*"' "$CONFIG_FILE" | cut -d'"' -f4)
+    
+    # Extract log level
+    LOG_LEVEL=$(grep -o '"log_level": *"[^"]*"' "$CONFIG_FILE" | cut -d'"' -f4)
+    
+    print_message "Solana wallet: $SOLANA_WALLET"
+    print_message "Log level: $LOG_LEVEL"
+else
+    print_warning "No configuration file provided or file not found."
+    print_warning "Using default values."
+fi
 
 # Create node_info.json if it doesn't exist
 if [ ! -f "$CACHE_DIR/node_info.json" ]; then
@@ -50,13 +81,19 @@ if [ ! -f "$CACHE_DIR/node_info.json" ]; then
     "node_id": "mock-node-$(date +%s)",
     "version": "0.1.0",
     "start_time": "$(date -Iseconds)",
-    "status": "running"
+    "status": "running",
+    "solana_wallet": "$SOLANA_WALLET"
 }
 EOF
 fi
 
 print_message "Starting Pipe PoP node..."
 print_message "Cache directory: $CACHE_DIR"
+if [ -n "$SOLANA_WALLET" ]; then
+    print_message "Using Solana wallet: $SOLANA_WALLET"
+else
+    print_warning "No Solana wallet configured. Rewards will not be collected."
+fi
 print_message "Press Ctrl+C to stop the node"
 
 # Simulate node running
@@ -75,7 +112,8 @@ while true; do
     "start_time": "$(date -Iseconds)",
     "last_update": "$(date -Iseconds)",
     "status": "running",
-    "iterations": $count
+    "iterations": $count,
+    "solana_wallet": "$SOLANA_WALLET"
 }
 EOF
     

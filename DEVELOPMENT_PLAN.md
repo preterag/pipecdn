@@ -17,7 +17,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Systemd service file creation
 - [x] Service management script creation
 - [x] Service installation
-- [ ] Solana wallet setup (pending CLI installation)
+- [x] Solana wallet setup (completed)
 - [ ] Actual Pipe PoP binary installation (pending actual URL)
 - [x] Node configuration with placeholder
 - [x] Service setup with placeholder
@@ -33,14 +33,14 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Verify system requirements
 - [x] Create placeholder for Pipe PoP binary
 
-### Milestone 2: Wallet and Binary Installation (In Progress)
-- [ ] Install Solana CLI (pending completion)
-- [ ] Create or import Solana wallet
+### Milestone 2: Wallet and Binary Installation (Partially Completed)
+- [x] Install Solana CLI (completed)
+- [x] Create or import Solana wallet (completed)
 - [ ] Download actual Pipe PoP binary (pending URL)
 - [x] Set executable permissions
 
 ### Milestone 3: Configuration and Testing (Partially Completed)
-- [ ] Configure node with Solana wallet
+- [x] Configure node with Solana wallet (completed)
 - [x] Set up cache directory
 - [x] Test node operation with placeholder
 - [x] Monitor resource usage
@@ -66,19 +66,23 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Installed and enabled systemd service with placeholder
 - Created first backup
 - Tested monitoring script
+- Installed Solana CLI v1.17.7
+- Created Solana wallet with address 8wL67Jn2txPeHYoLyuKRGNeaxXYrkzU9TBDzabwWu1PR
+- Configured node to use Solana wallet
+- Updated placeholder binary to support configuration file
+- Created configuration file with Solana wallet information
 
 ## Known Issues and Challenges
 
-- Solana CLI installation needs to be completed
 - Need to verify actual Pipe PoP binary download URL
-- Need to complete Solana wallet setup
+- Need to test node operation with actual binary
 
 ## Next Steps
 
-1. Complete Solana CLI installation
-2. Create Solana wallet
+1. ~~Complete Solana CLI installation~~ (Completed)
+2. ~~Create Solana wallet~~ (Completed)
 3. Replace placeholder with actual Pipe PoP binary when URL is available
-4. Update service configuration with Solana wallet information
+4. ~~Update service configuration with Solana wallet information~~ (Completed)
 5. Test node operation with actual binary
 
 ## Resources

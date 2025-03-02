@@ -1,0 +1,9 @@
+{
+  "solana_wallet": "8wL67Jn2txPeHYoLyuKRGNeaxXYrkzU9TBDzabwWu1PR",
+  "cache_dir": "/home/karo/Workspace/PipeNetwork/cache",
+  "log_level": "info",
+  "network": {
+    "ports": [80, 443, 8003],
+    "hostname": "auto"
+  }
+} 
