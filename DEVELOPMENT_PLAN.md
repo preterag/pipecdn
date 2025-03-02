@@ -22,6 +22,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Node configuration with placeholder
 - [x] Service setup with placeholder
 - [x] Initial node testing with placeholder
+- [x] Binary update script creation
 - [ ] Production deployment with actual binary
 
 ## Upcoming Milestones
@@ -38,6 +39,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Create or import Solana wallet (completed)
 - [ ] Download actual Pipe PoP binary (pending URL)
 - [x] Set executable permissions
+- [x] Create binary update script
 
 ### Milestone 3: Configuration and Testing (Partially Completed)
 - [x] Configure node with Solana wallet (completed)
@@ -68,9 +70,11 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Tested monitoring script
 - Installed Solana CLI v1.17.7
 - Created Solana wallet with address 8wL67Jn2txPeHYoLyuKRGNeaxXYrkzU9TBDzabwWu1PR
+- Updated to use wallet address 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
 - Configured node to use Solana wallet
 - Updated placeholder binary to support configuration file
 - Created configuration file with Solana wallet information
+- Created update_binary.sh script for installing the actual binary
 
 ## Known Issues and Challenges
 
@@ -82,6 +86,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 1. ~~Complete Solana CLI installation~~ (Completed)
 2. ~~Create Solana wallet~~ (Completed)
 3. Replace placeholder with actual Pipe PoP binary when URL is available
+   - Use the update_binary.sh script: `./update_binary.sh BINARY_URL`
 4. ~~Update service configuration with Solana wallet information~~ (Completed)
 5. Test node operation with actual binary
 

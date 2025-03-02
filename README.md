@@ -29,6 +29,7 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
 - `backup.sh`: Script for backing up important node data
 - `monitor.sh`: Script for monitoring node status
 - `install_service.sh`: Script for managing the systemd service
+- `update_binary.sh`: Script for updating the Pipe PoP binary
 
 ## Setup Process
 
@@ -54,6 +55,21 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
    sudo ./install_service.sh all
    ```
 
+## Updating the Binary
+
+When a new version of the Pipe PoP binary is available, you can update it using the update_binary.sh script:
+
+```bash
+./update_binary.sh BINARY_URL
+```
+
+Replace `BINARY_URL` with the URL of the new binary. The script will:
+1. Create a backup of the current binary
+2. Download the new binary
+3. Test the new binary
+4. Replace the old binary with the new one
+5. Restart the service if it's running
+
 ## Documentation
 
 For more detailed information, please refer to the following documentation files:
@@ -68,7 +84,7 @@ For more detailed information, please refer to the following documentation files
 Regular maintenance tasks:
 - Backup of node_info.json: `./backup.sh`
 - Monitoring of node status: `./monitor.sh`
-- Updating the Pipe PoP binary when new versions are released
+- Updating the Pipe PoP binary when new versions are released: `./update_binary.sh BINARY_URL`
 
 ## Important Notes
 
