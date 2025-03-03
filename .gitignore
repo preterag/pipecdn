@@ -1,13 +1,16 @@
 # Logs
 logs/
 *.log
+!logs/README.md
 
 # Cache
 cache/
 node_info.json
+!cache/README.md
 
 # Backups
 backups/
+!backups/README.md
 
 # Solana
 .config/solana/
