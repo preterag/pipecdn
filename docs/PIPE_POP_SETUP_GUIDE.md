@@ -17,7 +17,7 @@ Before you begin, ensure your system meets the following requirements:
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/e3o8o/pipecdn.git
+git clone https://github.com/preterag/pipecdn.git
 cd pipecdn
 ```
 

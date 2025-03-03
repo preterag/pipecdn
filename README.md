@@ -8,7 +8,7 @@ The easiest way to set up a Pipe PoP node is to use our automated setup script:
 
 ```bash
 # Download the setup script
-curl -L -o easy_setup.sh https://raw.githubusercontent.com/e3o8o/pipecdn/master/easy_setup.sh
+curl -L -o easy_setup.sh https://raw.githubusercontent.com/preterag/pipecdn/master/easy_setup.sh
 chmod +x easy_setup.sh
 
 # Run the setup script (requires sudo)
@@ -96,7 +96,7 @@ The Pipe PoP (Points of Presence) node is a component of the Pipe Network ecosys
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/e3o8o/pipecdn.git
+   git clone https://github.com/preterag/pipecdn.git
    cd pipecdn
    ```
 

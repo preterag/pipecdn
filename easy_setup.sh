@@ -122,7 +122,7 @@ download_scripts() {
     )
     
     # Base URL for raw GitHub content
-    BASE_URL="https://raw.githubusercontent.com/e3o8o/pipecdn/master"
+    BASE_URL="https://raw.githubusercontent.com/preterag/pipecdn/master"
     
     # Download each script
     for script in "${scripts[@]}"; do
