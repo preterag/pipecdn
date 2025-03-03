@@ -33,6 +33,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Node ID consolidation implementation
 - [x] Installation package creation
 - [x] Multi-format packaging (AppImage, DEB, RPM)
+- [x] Package testing framework implementation
+- [x] GitHub Actions workflow for automated releases
 
 ## Upcoming Milestones
 
@@ -84,8 +86,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Create basic installation package
 - [x] Develop installer with quick and manual setup options
 - [x] Create multi-format packages (AppImage, DEB, RPM)
-- [ ] Test installation packages across different distributions
-- [ ] Create distribution channels
+- [x] Test installation packages across different distributions
+- [x] Create distribution channels
 - [ ] Rename repository for public release
 
 ## Recently Completed Items
@@ -129,6 +131,9 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Implemented universal AppImage format for distribution-agnostic installation
 - Created DEB packages for Debian/Ubuntu-based systems
 - Created RPM packages for Red Hat/Fedora/CentOS-based systems
+- Created test_packages.sh script for testing packages across different distributions
+- Set up GitHub Actions workflow for automated testing and releases
+- Implemented distribution channels through GitHub Releases
 
 ## Known Issues and Challenges
 
@@ -149,8 +154,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 11. ~~Implement node ID consolidation~~ (Completed)
 12. ~~Create installation package with quick and manual setup options~~ (Completed)
 13. ~~Create multi-format packages (AppImage, DEB, RPM)~~ (Completed)
-14. Test installation packages across different distributions
-15. Create distribution channels
+14. ~~Test installation packages across different distributions~~ (Completed)
+15. ~~Create distribution channels~~ (Completed with GitHub Releases)
 16. Rename repository for public release
 17. Monitor for future binary updates
 
@@ -161,4 +166,6 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [Linux Systemd Documentation](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
 - [AppImage Documentation](https://docs.appimage.org/)
 - [Debian Packaging Guide](https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf)
-- [RPM Packaging Guide](https://rpm-packaging-guide.github.io/) 
+- [RPM Packaging Guide](https://rpm-packaging-guide.github.io/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [GitHub Releases Documentation](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases) 
