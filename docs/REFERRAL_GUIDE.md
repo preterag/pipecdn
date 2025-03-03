@@ -44,9 +44,17 @@ As a Surrealine user or customer, you can use our referral code when setting up 
 
 1. After downloading the Pipe PoP binary, run:
    ```bash
-   sudo ./bin/pipe-pop --signup-by-referral-route <SURREALINE_REFERRAL_CODE>
+   sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
    ```
 2. This helps support the Surrealine platform while also benefiting your node
+
+### Contact Surrealine
+
+If you have questions about using the Surrealine referral code:
+
+- **Website**: [www.surrealine.com](https://www.surrealine.com)
+- **Email**: [hello@surrealine.com](mailto:hello@surrealine.com)
+- **Twitter**: [@surrealine](https://twitter.com/surrealine)
 
 ## Checking Referral Status
 

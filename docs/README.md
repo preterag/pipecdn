@@ -32,6 +32,12 @@ sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
 
 This helps support the Surrealine platform while also benefiting your node.
 
+## Contact Surrealine
+
+- **Website**: [www.surrealine.com](https://www.surrealine.com)
+- **Email**: [hello@surrealine.com](mailto:hello@surrealine.com)
+- **Twitter**: [@surrealine](https://twitter.com/surrealine)
+
 ## Support
 
 If you need help with your Pipe PoP node, you can:
