@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script to fix port issues for Pipe PoP node
-# Version: 1.1.0
+# Version: 1.2.0
 #
 # This script will open ports in the firewall and update the configuration
 #
@@ -33,7 +33,7 @@ print_error() {
 }
 
 # Display version information
-print_message "Pipe PoP Port Configuration Tool v1.1.0"
+print_message "Pipe PoP Port Configuration Tool v1.2.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -130,8 +130,38 @@ else
     print_message "Ports are correctly configured in config.json."
 fi
 
-# Step 4: Restart the service
-print_message "Step 4: Restarting the Pipe PoP service..."
+# Step 4: Update the service configuration to include the --enable-80-443 flag
+print_message "Step 4: Updating the service configuration to enable ports 80 and 443..."
+
+SERVICE_FILE="/etc/systemd/system/pipe-pop.service"
+
+if [ ! -f "$SERVICE_FILE" ]; then
+    print_error "Service file not found: $SERVICE_FILE"
+    exit 1
+fi
+
+# Create a backup of the service file
+cp "$SERVICE_FILE" "${SERVICE_FILE}.bak"
+print_message "Created backup of service file: ${SERVICE_FILE}.bak"
+
+# Check if the --enable-80-443 flag is already in the service file
+if grep -q -- "--enable-80-443" "$SERVICE_FILE"; then
+    print_message "The --enable-80-443 flag is already in the service file."
+else
+    print_warning "The --enable-80-443 flag is not in the service file. Adding it..."
+    
+    # Update the service file to include the --enable-80-443 flag
+    sed -i 's|ExecStart=.*pipe-pop|& --enable-80-443|' "$SERVICE_FILE"
+    
+    print_message "Service file updated successfully!"
+fi
+
+# Reload systemd to apply the changes
+print_message "Reloading systemd daemon..."
+systemctl daemon-reload
+
+# Step 5: Restart the service
+print_message "Step 5: Restarting the Pipe PoP service..."
 
 systemctl restart pipe-pop.service
 
@@ -139,8 +169,8 @@ systemctl restart pipe-pop.service
 print_message "Checking service status..."
 systemctl status pipe-pop.service | grep -v "status" | head -20
 
-# Step 5: Wait for the service to start and check if ports are now in use
-print_message "Step 5: Waiting for the service to start (this may take a moment)..."
+# Step 6: Wait for the service to start and check if ports are now in use
+print_message "Step 6: Waiting for the service to start (this may take a moment)..."
 sleep 10
 
 # Check if the ports are now in use
@@ -167,8 +197,8 @@ else
     print_warning "Port 8003 is not in use by Pipe PoP. This may be normal if the node hasn't received traffic yet."
 fi
 
-# Step 6: Provide additional information
-print_message "Step 6: Additional information..."
+# Step 7: Provide additional information
+print_message "Step 7: Additional information..."
 
 print_message "The Pipe PoP node may not actively listen on these ports until it receives traffic."
 print_message "This is normal behavior and doesn't indicate a problem with the node."
