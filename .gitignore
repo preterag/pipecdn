@@ -4,6 +4,7 @@ logs/
 
 # Cache
 cache/
+node_info.json
 
 # Backups
 backups/
