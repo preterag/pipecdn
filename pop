@@ -49,6 +49,8 @@ show_help() {
     echo "  --check-update          Check for updates to the Pipe PoP binary"
     echo "  --update                Update the Pipe PoP binary to the latest version"
     echo "  --enable-80-443         Enable ports 80 and 443 (requires restart)"
+    echo "  --wallet-info           Display the current wallet address connected to the node"
+    echo "  --set-wallet <address>  Set a new wallet address for the node"
     echo "  --monitor               Monitor node status"
     echo "  --backup                Create a backup"
     echo "  --restart               Restart the node service"
@@ -59,6 +61,8 @@ show_help() {
     echo "  pop --status            Check node status"
     echo "  pop --check-update      Check for updates"
     echo "  pop --update            Update to the latest version"
+    echo "  pop --wallet-info       Display current wallet address"
+    echo "  pop --set-wallet H6sA2GwmppUTWHW7NAhw66NBDi9Bh7LvmGTJ6CUQU5e8  Set a new wallet address"
 }
 
 # Main execution
@@ -108,6 +112,100 @@ case "$1" in
         fi
         cd ${PIPE_DIR}
         ./update_binary.sh
+        ;;
+    --wallet-info)
+        print_message "Checking wallet information..."
+        CONFIG_FILE="${PIPE_DIR}/config/config.json"
+        START_SCRIPT="${PIPE_DIR}/start_pipe_pop.sh"
+        
+        if [ -f "$CONFIG_FILE" ]; then
+            WALLET_FROM_CONFIG=$(grep -o '"solana_wallet"[[:space:]]*:[[:space:]]*"[^"]*"' "$CONFIG_FILE" | cut -d'"' -f4)
+            print_message "Wallet address from config.json: ${WALLET_FROM_CONFIG}"
+        else
+            print_warning "config.json not found."
+        fi
+        
+        if [ -f "$START_SCRIPT" ]; then
+            WALLET_FROM_SCRIPT=$(grep -o 'PUBKEY="[^"]*"' "$START_SCRIPT" | cut -d'"' -f2)
+            print_message "Wallet address from start_pipe_pop.sh: ${WALLET_FROM_SCRIPT}"
+        else
+            print_warning "start_pipe_pop.sh not found."
+        fi
+        
+        # Check if the node is running with a wallet
+        if pgrep -f "pipe-pop" > /dev/null; then
+            RUNNING_COMMAND=$(ps -ef | grep pipe-pop | grep -v grep)
+            if echo "$RUNNING_COMMAND" | grep -q -- "--pubKey"; then
+                RUNNING_WALLET=$(echo "$RUNNING_COMMAND" | grep -o -- "--pubKey [^ ]*" | cut -d' ' -f2)
+                print_message "Wallet address used by running node: ${RUNNING_WALLET}"
+            else
+                print_warning "Running node does not have an explicit wallet address in command line."
+            fi
+        else
+            print_warning "Pipe PoP node is not currently running."
+        fi
+        ;;
+    --set-wallet)
+        if [ "$EUID" -ne 0 ]; then
+            print_error "This command must be run as root (with sudo)"
+            exit 1
+        fi
+        
+        if [ -z "$2" ]; then
+            print_error "No wallet address provided. Usage: pop --set-wallet <address>"
+            exit 1
+        fi
+        
+        NEW_WALLET="$2"
+        print_message "Setting wallet address to: ${NEW_WALLET}"
+        
+        # Update config.json
+        CONFIG_FILE="${PIPE_DIR}/config/config.json"
+        if [ -f "$CONFIG_FILE" ]; then
+            # Create a backup of the config file
+            cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
+            print_message "Created backup of config.json at ${CONFIG_FILE}.bak"
+            
+            # Update the wallet address in config.json
+            sed -i "s/\"solana_wallet\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"solana_wallet\": \"${NEW_WALLET}\"/g" "$CONFIG_FILE"
+            print_message "Updated wallet address in config.json"
+        else
+            print_warning "config.json not found. Creating a new one..."
+            mkdir -p "${PIPE_DIR}/config"
+            cat > "$CONFIG_FILE" << EOF
+{
+  "solana_wallet": "${NEW_WALLET}",
+  "cache_dir": "${PIPE_DIR}/cache",
+  "log_level": "info",
+  "network": {
+    "ports": [80, 443, 8003],
+    "hostname": "auto"
+  }
+}
+EOF
+            print_message "Created new config.json with the provided wallet address"
+        fi
+        
+        # Update start_pipe_pop.sh
+        START_SCRIPT="${PIPE_DIR}/start_pipe_pop.sh"
+        if [ -f "$START_SCRIPT" ]; then
+            # Create a backup of the start script
+            cp "$START_SCRIPT" "${START_SCRIPT}.bak"
+            print_message "Created backup of start_pipe_pop.sh at ${START_SCRIPT}.bak"
+            
+            # Update the wallet address in start_pipe_pop.sh
+            sed -i "s/PUBKEY=\"[^\"]*\"/PUBKEY=\"${NEW_WALLET}\"/g" "$START_SCRIPT"
+            print_message "Updated wallet address in start_pipe_pop.sh"
+        else
+            print_warning "start_pipe_pop.sh not found. Cannot update."
+        fi
+        
+        # Restart the service to apply changes
+        print_message "Restarting Pipe PoP service to apply changes..."
+        systemctl restart pipe-pop.service
+        
+        print_message "Wallet address has been updated to: ${NEW_WALLET}"
+        print_message "The service has been restarted with the new wallet address."
         ;;
     --enable-80-443)
         print_message "Enabling ports 80 and 443..."
