@@ -91,7 +91,7 @@ When setting up your Pipe PoP node, you can use our referral code to earn additi
 
 1. After installing the Pipe PoP binary, use our referral code to sign up:
    ```bash
-   sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
+   sudo ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
    ```
 
 2. Continue with the standard setup process.

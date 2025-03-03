@@ -27,7 +27,7 @@ If you're new to Pipe PoP nodes, we recommend starting with the [PIPE_POP_SETUP_
 When setting up your Pipe PoP node, you can use the Surrealine referral code to earn additional rewards:
 
 ```bash
-sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
+sudo ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
 ```
 
 This helps support the Surrealine platform while also benefiting your node.

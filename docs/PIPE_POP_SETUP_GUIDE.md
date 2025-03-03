@@ -48,7 +48,7 @@ mkdir -p cache
 Use the Surrealine referral code to sign up your Pipe PoP node:
 
 ```bash
-sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
+sudo ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
 ```
 
 This step registers your node with the Pipe Network using the Surrealine referral code, which helps support the Surrealine platform while also benefiting your node.
