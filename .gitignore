@@ -44,3 +44,4 @@ github_push.sh
 # Keep the secure scripts that don't contain tokens
 !git_setup.sh
 !secure_push.sh *.bak
+*.bak
