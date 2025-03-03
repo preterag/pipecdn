@@ -159,7 +159,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=$(pwd)
-ExecStart=$(pwd)/bin/pipe-pop --cache-dir $(pwd)/cache
+ExecStart=$(pwd)/bin/pipe-pop --cache-dir $(pwd)/cache --enable-80-443
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65535

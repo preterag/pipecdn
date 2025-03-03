@@ -210,7 +210,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=$INSTALL_DIR
-ExecStart=$INSTALL_DIR/bin/pipe-pop --cache-dir $INSTALL_DIR/cache --pubKey $SOLANA_WALLET
+ExecStart=$INSTALL_DIR/bin/pipe-pop --cache-dir $INSTALL_DIR/cache --pubKey $SOLANA_WALLET --enable-80-443
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65535
