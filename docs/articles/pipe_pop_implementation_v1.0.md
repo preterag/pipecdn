@@ -49,6 +49,8 @@ We created a global `pop` command that provides a unified interface for managing
 - **Intuitive Commands**: Simple, descriptive commands for common operations
 - **Comprehensive Help**: Detailed help information for all commands
 - **Color-Coded Output**: Clear, color-coded messages to distinguish between information, warnings, and errors
+- **Wallet Management**: Commands to check and update the wallet address connected to the node
+- **Port Configuration**: Options to enable additional ports for improved connectivity
 
 ### 3. Robust Monitoring and Maintenance
 
@@ -58,6 +60,8 @@ We implemented comprehensive monitoring and maintenance tools:
 - **Automated Backups**: Regular backup scheduling with the `pop --backup` command
 - **Service Management**: Easy service control with commands like `pop --restart`
 - **Log Access**: Simple access to service logs with `pop --logs`
+- **Wallet Information**: Quick access to wallet configuration with `pop --wallet-info`
+- **Node ID Consistency**: Automatic consolidation of node IDs to ensure consistent identification
 
 ### 4. Automated Update System
 
@@ -79,6 +83,7 @@ We created extensive documentation to support users at every step:
 - **Maintenance Guide**: Best practices for ongoing maintenance
 - **Reputation System Guide**: Information about maintaining a high reputation score
 - **Referral System Guide**: Details about the referral system and how to earn additional rewards
+- **Wallet Management Guide**: Instructions for managing wallet addresses
 
 ### 6. Security and Reliability Features
 
@@ -89,6 +94,8 @@ We implemented several features to ensure security and reliability:
 - **Error Handling**: Robust error handling throughout the system
 - **Service Monitoring**: Continuous monitoring of the service status
 - **Resource Management**: Monitoring of system resources to prevent performance issues
+- **Wallet Security**: Secure management of wallet addresses
+- **Node ID Protection**: Safeguarding of node identity through consistent ID management
 
 ### 7. Versioning System and Community Contributions
 
@@ -138,6 +145,15 @@ pop --check-update
 
 # Update to the latest version
 pop --update
+
+# Check wallet information
+pop --wallet-info
+
+# Set a new wallet address
+pop --set-wallet <address>
+
+# Enable ports 80 and 443
+pop --enable-80-443
 ```
 
 This command is implemented as a Bash script that:
@@ -145,6 +161,44 @@ This command is implemented as a Bash script that:
 2. Parses command-line arguments
 3. Executes the appropriate action based on the arguments
 4. Provides clear, color-coded output
+
+### Wallet Management System
+
+Our wallet management system provides easy access to wallet information and configuration:
+
+1. **Wallet Information**: The `--wallet-info` option:
+   - Displays the wallet address from the configuration file
+   - Shows the wallet address from the startup script
+   - Indicates the wallet address used by the running node
+
+2. **Wallet Configuration**: The `--set-wallet` option:
+   - Updates the wallet address in the configuration file
+   - Modifies the startup script to use the new address
+   - Creates a new configuration file if one doesn't exist
+   - Restarts the service to apply the changes
+
+### Port Configuration System
+
+Our port configuration system simplifies the process of enabling additional ports:
+
+1. **Port Enabling**: The `--enable-80-443` option:
+   - Configures the firewall to allow traffic on ports 80 and 443
+   - Updates the service configuration to use these ports
+   - Restarts the service to apply the changes
+
+2. **Port Verification**: The monitoring system checks:
+   - If the required ports are open in the firewall
+   - If the ports are correctly configured in the configuration file
+   - If the ports are actively in use by the node
+
+### Node ID Consolidation
+
+Our node ID consolidation system ensures consistent node identification:
+
+1. **ID Detection**: The system detects multiple node ID files in different locations
+2. **Consolidation**: The system consolidates these files to use a single, consistent node ID
+3. **Verification**: The system verifies that all locations use the same node ID
+4. **Service Integration**: The service is configured to use the consolidated node ID
 
 ### Update Management System
 
@@ -204,6 +258,8 @@ The impact of our work extends beyond technical achievements:
 - **Easy Maintenance**: Comprehensive tools make maintenance straightforward
 - **Earning Opportunities**: Node operators can earn rewards for their participation
 - **Community Participation**: Operators become part of the broader Pipe Network ecosystem
+- **Wallet Management**: Easy management of wallet addresses for receiving rewards
+- **Port Configuration**: Simple configuration of ports for improved connectivity
 
 ### For the Pipe Network
 
@@ -255,6 +311,26 @@ Managing multiple scripts with overlapping functionality presented organizationa
 - Comprehensive documentation of script relationships
 - A central script reference table in the README
 
+### Challenge: Node ID Consistency
+
+Maintaining a consistent node ID across different locations and commands was challenging.
+
+**Solution**: We implemented a node ID consolidation system that:
+- Detects multiple node ID files
+- Consolidates them to use a single, consistent ID
+- Verifies that all locations use the same ID
+- Integrates with the service to use the consolidated ID
+
+### Challenge: Wallet Management
+
+Providing easy access to wallet information and configuration presented challenges.
+
+**Solution**: We developed a wallet management system that:
+- Displays wallet information from multiple sources
+- Provides a simple command for updating wallet addresses
+- Ensures consistency across configuration files
+- Integrates with the service to apply changes
+
 ## Future Directions
 
 While we've made significant progress, our work continues. Future enhancements include:
@@ -265,18 +341,20 @@ While we've made significant progress, our work continues. Future enhancements i
 4. **Mobile Notifications**: Alerts and notifications for important node events
 5. **Multi-Node Management**: Tools for managing multiple nodes from a single interface
 6. **Cross-Platform Support**: Extending support beyond Linux to Windows and macOS systems, making the Pipe Network PoP node accessible to an even wider audience
+7. **Advanced Wallet Integration**: Enhanced wallet management with balance checking and transaction history
+8. **Automated Port Optimization**: Intelligent port configuration based on network conditions
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.0.0   | 2024-03-03 | Initial production-ready implementation with complete setup, monitoring, backup, and update functionality |
+| 1.0.0   | 2024-03-03 | Initial production-ready implementation with complete setup, monitoring, backup, update functionality, wallet management, port configuration, and node ID consolidation |
 
 ## Conclusion
 
 Our journey to simplify the process of running a Pipe Network PoP node has resulted in a comprehensive, user-friendly system that lowers the barrier to entry for participating in this innovative decentralized CDN. By making it easier for anyone to run a node, we're helping to expand the Pipe Network's global reach, improve delivery of Surrealine content, and create opportunities for node operators around the world.
 
-The combination of streamlined installation, intuitive management tools, robust monitoring, automated updates, and comprehensive documentation creates a solution that truly democratizes content delivery. As we continue to refine and enhance this system, we look forward to seeing the Pipe Network grow and evolve, powered by a diverse community of node operators who are helping to reshape the future of content delivery.
+The combination of streamlined installation, intuitive management tools, robust monitoring, automated updates, comprehensive documentation, wallet management, port configuration, and node ID consolidation creates a solution that truly democratizes content delivery. As we continue to refine and enhance this system, we look forward to seeing the Pipe Network grow and evolve, powered by a diverse community of node operators who are helping to reshape the future of content delivery.
 
 Whether you're a technical enthusiast looking to support decentralized infrastructure, a content creator seeking better delivery options, or simply someone interested in earning rewards while contributing to a global network, our solution makes it easier than ever to become part of the Pipe Network ecosystem and help propagate Surrealine content globally.
 
