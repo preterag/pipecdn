@@ -19,6 +19,9 @@ This directory contains comprehensive documentation for setting up, configuring,
 - [**DEVELOPMENT_PLAN.md**](./DEVELOPMENT_PLAN.md): Development roadmap and progress tracking
 - [**IMPLEMENTATION_SUMMARY.md**](./IMPLEMENTATION_SUMMARY.md): Summary of the implementation details
 
+### Articles and Implementation Journey
+- [**articles/**](./articles/): Detailed articles about our implementation journey and future directions
+
 ## Quick Links
 
 - [Pipe Network Documentation](https://docs.pipe.network/devnet-2)
@@ -115,4 +118,8 @@ If you need help with your Pipe PoP node:
 
 1. Check the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) document for common issues and solutions
 2. Visit the [Pipe Network Documentation](https://docs.pipe.network/devnet-2)
-3. Contact Surrealine support at [hello@surrealine.com](mailto:hello@surrealine.com) 
+3. Contact Surrealine support at [hello@surrealine.com](mailto:hello@surrealine.com)
+
+## About Pipe Network
+
+The Pipe Network is a decentralized content delivery network (CDN) with several key features: 
