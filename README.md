@@ -59,6 +59,18 @@ By participating in the Pipe Network ecosystem through running a Pipe PoP node, 
 - **Email**: [hello@surrealine.com](mailto:hello@surrealine.com)
 - **Twitter**: [@surrealine](https://twitter.com/surrealine)
 
+## Future Directions
+
+While we've made significant progress with this implementation, there are several exciting opportunities for further enhancement:
+
+- **Non-Interactive Mode**: Adding support for fully non-interactive setup with command-line parameters
+- **Multi-Platform Support**: Extending beyond Linux to other operating systems
+- **Advanced Diagnostics**: Including more sophisticated diagnostic tools
+- **Firewall Configuration**: Automating firewall setup for required ports
+- **Performance Optimization**: Enhancing node performance through optimized configurations
+
+These improvements will make the Pipe PoP node even more accessible and powerful for users of all technical backgrounds.
+
 ## Overview
 
 The Pipe PoP (Points of Presence) node is a component of the Pipe Network ecosystem. This implementation provides a complete framework for setting up, configuring, and maintaining a Pipe PoP node.
