@@ -26,6 +26,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Production deployment with actual binary
 - [x] Improved port usage monitoring
 - [x] Set up regular backup schedule
+- [x] Global pop command implementation
+- [x] Documentation update for global command
 
 ## Upcoming Milestones
 
@@ -61,6 +63,12 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Set up regular backup schedule (weekly backups)
 - [x] Create backup schedule management script
 
+### Milestone 6: User Experience Improvements (Completed)
+- [x] Create global pop command for system-wide access
+- [x] Update easy_setup.sh to include global command installation
+- [x] Update documentation to reflect global command usage
+- [x] Create dedicated documentation for global command
+
 ## Recently Completed Items
 
 - Created directory structure for the Pipe PoP node
@@ -87,6 +95,11 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Improved port usage monitoring in monitor.sh
 - Created setup_backup_schedule.sh script
 - Set up weekly backup schedule using cron
+- Created install_global_pop.sh script for global command installation
+- Implemented global pop command for system-wide access
+- Updated documentation to reflect global command usage
+- Created GLOBAL_COMMAND.md documentation
+- Updated easy_setup.sh to include global command installation
 
 ## Known Issues and Challenges
 
@@ -101,7 +114,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 5. ~~Test node operation with actual binary~~ (Completed)
 6. ~~Investigate port usage warning in monitoring script~~ (Completed)
 7. ~~Set up regular backup schedule~~ (Completed)
-8. Monitor for future binary updates
+8. ~~Implement global pop command~~ (Completed)
+9. Monitor for future binary updates
 
 ## Resources
 

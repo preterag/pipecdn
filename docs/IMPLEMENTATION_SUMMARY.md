@@ -70,12 +70,15 @@ The implementation is complete:
 - ✅ Actual Pipe PoP binary installation (completed with v0.2.8)
 - ✅ Improved port usage monitoring
 - ✅ Regular backup schedule set up (weekly)
+- ✅ Port configuration (80, 443, 8003) completed
+- ✅ Service running successfully with proper registration
 
 ## Next Steps
 
 1. **Monitoring and Maintenance**
    - Continue regular monitoring
    - Monitor for updates to the Pipe PoP binary
+   - Ensure ports remain properly configured
 
 ## Testing Results
 
@@ -92,6 +95,8 @@ Testing with the actual binary shows:
 - Binary version 0.2.8 is running correctly
 - Port usage monitoring provides clear information
 - Weekly backup schedule successfully set up
+- Port 8003 is actively used by the node
+- Ports 80 and 443 are configured but may not be actively used until traffic is received
 
 ## Conclusion
 

@@ -78,6 +78,16 @@ The Pipe Network is a decentralized content delivery network (CDN) with several 
 - **Flexible Payment Structure**: Pay-as-you-go model
 - **Enhanced Security**: Distributed architecture reduces single points of failure
 
+## Port Configuration
+
+The Pipe PoP node requires the following ports to be open:
+
+- **Port 80**: HTTP traffic
+- **Port 443**: HTTPS traffic
+- **Port 8003**: Pipe PoP node communication
+
+These ports are automatically configured during installation, but you may need to ensure they are properly forwarded in your router if you want your node to be accessible from the internet. The node may not actively listen on all ports until it receives traffic, which is normal behavior.
+
 ## About Surrealine
 
 [Surrealine](https://www.surrealine.com) is a streaming platform that utilizes the Pipe Network for content delivery. By using our referral code during setup, you support the Surrealine platform.

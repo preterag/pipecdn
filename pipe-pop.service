@@ -3,12 +3,13 @@ Description=Pipe PoP Node
 After=network.target
 
 [Service]
-User=karo
+User=root
 WorkingDirectory=/home/karo/Workspace/PipeNetwork
-ExecStart=/home/karo/Workspace/PipeNetwork/bin/pipe-pop --cache-dir /home/karo/Workspace/PipeNetwork/cache --pubKey H6sA2GwmppUTWHW7NAhw66NBDi9Bh7LvmGTJ6CUQU5e8
-Restart=on-failure
+ExecStart=/home/karo/Workspace/PipeNetwork/start_pipe_pop.sh
+Restart=always
 RestartSec=10
-LimitNOFILE=65535
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target 
