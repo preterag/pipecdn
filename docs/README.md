@@ -5,7 +5,7 @@ This directory contains comprehensive documentation for setting up, configuring,
 ## Documentation Index
 
 ### Setup and Installation
-- [**SETUP_GUIDE.md**](./PIPE_POP_SETUP_GUIDE.md): Step-by-step instructions for setting up a Pipe PoP node
+- [**SETUP_GUIDE.md**](./SETUP_GUIDE.md): Step-by-step instructions for setting up a Pipe PoP node
 - [**REFERRAL_GUIDE.md**](./REFERRAL_GUIDE.md): Information about the referral system and how to use referral codes
 - [**GLOBAL_COMMAND.md**](./GLOBAL_COMMAND.md): Guide to installing and using the global `pop` command
 
@@ -16,6 +16,8 @@ This directory contains comprehensive documentation for setting up, configuring,
 
 ### Development and Technical Information
 - [**DEVELOPMENT.md**](./DEVELOPMENT.md): Development information and implementation details
+- [**DEVELOPMENT_PLAN.md**](./DEVELOPMENT_PLAN.md): Development roadmap and progress tracking
+- [**IMPLEMENTATION_SUMMARY.md**](./IMPLEMENTATION_SUMMARY.md): Summary of the implementation details
 
 ## Quick Links
 
@@ -25,7 +27,7 @@ This directory contains comprehensive documentation for setting up, configuring,
 
 ## Getting Started
 
-If you're new to Pipe PoP nodes, we recommend starting with the [SETUP_GUIDE.md](./PIPE_POP_SETUP_GUIDE.md) document, which provides a comprehensive guide to setting up your node.
+If you're new to Pipe PoP nodes, we recommend starting with the [SETUP_GUIDE.md](./SETUP_GUIDE.md) document, which provides a comprehensive guide to setting up your node.
 
 ## Global Pop Command
 

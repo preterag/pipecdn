@@ -35,9 +35,10 @@ This document summarizes the implementation of the Pipe PoP node based on the re
    - `backup.sh`: Script for backing up important node data
    - `monitor.sh`: Script for monitoring node status
    - `install_service.sh`: Script for managing the systemd service
-   - `github_push.sh`: Script for pushing changes to GitHub
    - `update_binary.sh`: Script for updating the Pipe PoP binary
    - `setup_backup_schedule.sh`: Script for setting up regular backups
+   - `easy_setup.sh`: Simplified setup script with guided installation
+   - `install_global_pop.sh`: Script for installing the global `pop` command
 
 3. **Configuration**
    - `pipe-pop.service`: Systemd service file
