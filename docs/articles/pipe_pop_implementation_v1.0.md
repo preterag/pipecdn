@@ -1,7 +1,7 @@
 ---
 title: "Building a User-Friendly Pipe Network PoP Node"
 version: 1.0.0
-date: "2023-08-15"
+date: "2024-03-03"
 author: "Preterag Team"
 tags: ["pipe network", "decentralized cdn", "pop node", "implementation", "surrealine"]
 ---
@@ -9,7 +9,7 @@ tags: ["pipe network", "decentralized cdn", "pop node", "implementation", "surre
 # Building a User-Friendly Pipe Network PoP Node: Our Journey to Simplify Decentralized Content Delivery
 
 > **Version**: 1.0.0  
-> **Last Updated**: August 15, 2023  
+> **Last Updated**: March 3, 2024  
 > **Status**: Production-Ready Implementation
 
 ## Introduction
@@ -89,6 +89,19 @@ We implemented several features to ensure security and reliability:
 - **Error Handling**: Robust error handling throughout the system
 - **Service Monitoring**: Continuous monitoring of the service status
 - **Resource Management**: Monitoring of system resources to prevent performance issues
+
+### 7. Versioning System and Community Contributions
+
+We implemented a comprehensive versioning system and contributor-friendly features:
+
+- **Semantic Versioning**: All scripts follow semantic versioning (MAJOR.MINOR.PATCH) for clear version tracking
+- **Version Information**: Each script includes version information in its header
+- **Contributors Section**: Scripts include a contributors section to acknowledge community contributions
+- **Deprecation Notices**: Clear deprecation notices for scripts that have been replaced by more comprehensive alternatives
+- **Contribution Guidelines**: Detailed guidelines for community contributions in the README
+- **Welcome Message**: A welcoming message for contributors to encourage community participation
+
+This approach ensures that the codebase remains maintainable and encourages community involvement in the project's development.
 
 ## Technical Implementation Details
 
@@ -231,6 +244,17 @@ Creating a user-friendly experience for users with varying levels of technical e
 - Intuitive command structure
 - Guided installation process
 
+### Challenge: Script Organization
+
+Managing multiple scripts with overlapping functionality presented organizational challenges.
+
+**Solution**: We implemented a clear script organization system:
+- Consistent version numbering across all scripts
+- Clear deprecation notices for outdated scripts
+- Redirecting deprecated scripts to their newer counterparts
+- Comprehensive documentation of script relationships
+- A central script reference table in the README
+
 ## Future Directions
 
 While we've made significant progress, our work continues. Future enhancements include:
@@ -246,7 +270,7 @@ While we've made significant progress, our work continues. Future enhancements i
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.0.0   | 2023-08-15 | Initial production-ready implementation with complete setup, monitoring, backup, and update functionality |
+| 1.0.0   | 2024-03-03 | Initial production-ready implementation with complete setup, monitoring, backup, and update functionality |
 
 ## Conclusion
 
@@ -254,4 +278,12 @@ Our journey to simplify the process of running a Pipe Network PoP node has resul
 
 The combination of streamlined installation, intuitive management tools, robust monitoring, automated updates, and comprehensive documentation creates a solution that truly democratizes content delivery. As we continue to refine and enhance this system, we look forward to seeing the Pipe Network grow and evolve, powered by a diverse community of node operators who are helping to reshape the future of content delivery.
 
-Whether you're a technical enthusiast looking to support decentralized infrastructure, a content creator seeking better delivery options, or simply someone interested in earning rewards while contributing to a global network, our solution makes it easier than ever to become part of the Pipe Network ecosystem and help propagate Surrealine content globally. 
+Whether you're a technical enthusiast looking to support decentralized infrastructure, a content creator seeking better delivery options, or simply someone interested in earning rewards while contributing to a global network, our solution makes it easier than ever to become part of the Pipe Network ecosystem and help propagate Surrealine content globally.
+
+## Contact Information
+
+If you have questions or would like to contribute to this project, please reach out to the Preterag team:
+
+- **Twitter**: [@preterag](https://twitter.com/preterag)
+- **Email**: [hello@preterag.com](mailto:hello@preterag.com)
+- **Website**: [www.preterag.com](https://www.preterag.com) 

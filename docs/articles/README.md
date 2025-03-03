@@ -6,7 +6,7 @@ This directory contains articles and documentation about our Pipe Network PoP no
 
 | Title | Version | Date | Description |
 |-------|---------|------|-------------|
-| [Building a User-Friendly Pipe Network PoP Node](./pipe_pop_implementation_v1.0.md) | 1.0.0 | 2023-08-15 | Our journey to simplify decentralized content delivery through the Pipe Network PoP node implementation |
+| [Building a User-Friendly Pipe Network PoP Node](./pipe_pop_implementation_v1.0.md) | 1.0.0 | 2024-03-03 | Our journey to simplify decentralized content delivery through the Pipe Network PoP node implementation |
 
 ## Version Tracking
 
@@ -33,4 +33,10 @@ If you have suggestions for improvements or would like to contribute to our docu
 
 ## About Preterag
 
-Preterag is dedicated to developing innovative solutions for content delivery and digital experiences. Our product, Surrealine, leverages decentralized technologies like the Pipe Network to provide faster, more reliable content delivery to users worldwide. 
+Preterag is dedicated to developing innovative solutions for content delivery and digital experiences. Our product, Surrealine, leverages decentralized technologies like the Pipe Network to provide faster, more reliable content delivery to users worldwide.
+
+### Contact Preterag
+
+- **Twitter**: [@preterag](https://twitter.com/preterag)
+- **Email**: [hello@preterag.com](mailto:hello@preterag.com)
+- **Website**: [www.preterag.com](https://www.preterag.com) 
