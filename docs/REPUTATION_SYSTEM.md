@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Pipe Network uses a reputation system to evaluate the reliability and performance of nodes in the network. This document explains how the reputation score is calculated and how to maintain a high score.
+The Pipe Network uses a reputation system to evaluate the reliability and performance of Pipe PoP (Points of Presence) nodes in the network. This document explains how the reputation score is calculated and how to maintain a high score.
 
 ## Reputation Score Calculation
 
@@ -92,7 +92,7 @@ This will display a breakdown of your reputation metrics and overall score.
 1. **Ensure Consistent Uptime**:
    - Use a reliable internet connection
    - Consider using a UPS for power backup
-   - Run the node on a dedicated machine if possible
+   - Run the Pipe PoP node on a dedicated machine if possible
 
 2. **Plan Maintenance Carefully**:
    - Schedule maintenance during low-traffic periods

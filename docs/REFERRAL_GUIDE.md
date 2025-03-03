@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Pipe Network includes a referral system that allows node operators to earn additional rewards by referring new nodes to the network. This guide explains how to generate and use referral codes, as well as how to track your referrals.
+The Pipe Network includes a referral system that allows Pipe PoP (Points of Presence) node operators to earn additional rewards by referring new nodes to the network. This guide explains how to generate and use referral codes, as well as how to track your referrals.
 
 ## How Referrals Work
 

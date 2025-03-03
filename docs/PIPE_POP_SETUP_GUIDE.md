@@ -1,6 +1,6 @@
 # Pipe PoP Node Setup Guide
 
-This guide provides step-by-step instructions for setting up a Pipe PoP node using the Surrealine referral code. By following these instructions, you'll be able to participate in the Pipe Network decentralized CDN and help propagate content globally while earning rewards.
+This guide provides step-by-step instructions for setting up a Pipe PoP (Points of Presence) node using the Surrealine referral code. By following these instructions, you'll be able to participate in the Pipe Network decentralized CDN and help propagate content globally while earning rewards.
 
 ## Prerequisites
 
@@ -45,7 +45,7 @@ mkdir -p cache
 
 ## Step 4: Sign Up with Surrealine Referral Code
 
-Use the Surrealine referral code to sign up your node:
+Use the Surrealine referral code to sign up your Pipe PoP node:
 
 ```bash
 sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
@@ -55,7 +55,7 @@ This step registers your node with the Pipe Network using the Surrealine referra
 
 ## Step 5: Configure Your Node
 
-Create a configuration file for your node:
+Create a configuration file for your Pipe PoP node:
 
 ```bash
 mkdir -p config
@@ -77,7 +77,7 @@ Create a file named `config/config.json` with the following content (replace the
 
 ## Step 6: Set Up the Systemd Service
 
-Create a systemd service file to run the node as a service:
+Create a systemd service file to run the Pipe PoP node as a service:
 
 ```bash
 sudo ./install_service.sh all
@@ -91,7 +91,7 @@ This will:
 
 ## Step 7: Verify Your Node is Running
 
-Check the status of your node:
+Check the status of your Pipe PoP node:
 
 ```bash
 ./monitor.sh

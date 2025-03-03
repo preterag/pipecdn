@@ -1,6 +1,22 @@
 # Pipe PoP Node Setup
 
-This repository contains the setup and configuration for a Pipe PoP (Proof of Participation) node for the [Pipe Network](https://docs.pipe.network/devnet-2) decentralized CDN.
+This repository contains the setup and configuration for a Pipe PoP (Points of Presence) node for the [Pipe Network](https://docs.pipe.network/devnet-2) decentralized CDN.
+
+## About Pipe Network
+
+Pipe Network is a decentralized, permissionless content delivery network (CDN) built on the Solana blockchain. It addresses the limitations of traditional centralized CDNs through a distributed network of hyperlocal Pipe PoP (Points of Presence) nodes strategically deployed in underserved areas.
+
+### Key Features and Benefits:
+
+- **Decentralized Architecture**: Anyone can operate nodes, creating a truly global and resilient network
+- **Hyperlocal Focus**: Pipe PoP nodes are distributed in underserved regions to dramatically reduce latency
+- **Blockchain-Powered**: Built on Solana for transparent, secure operations, and fair compensation
+- **Cost-Efficient**: Reduces operational costs compared to traditional CDNs
+- **Equitable Access**: Improves content delivery in regions traditionally underserved by centralized CDNs
+- **Flexible Payment Structure**: Uses Pipe Credits and Data Credits to align incentives between users and node operators
+- **Enhanced Security**: Includes DDoS protection, dynamic IP/geographical blocking, and DMCA complaint handling
+
+By participating in the Pipe Network ecosystem through running a Pipe PoP node, you help expand this revolutionary approach to content delivery while earning rewards for your contribution.
 
 ## About Surrealine
 
@@ -8,7 +24,7 @@ This repository contains the setup and configuration for a Pipe PoP (Proof of Pa
 
 ## Overview
 
-The Pipe PoP node is a component of the Pipe Network ecosystem. This implementation provides a complete framework for setting up, configuring, and maintaining a Pipe PoP node.
+The Pipe PoP (Points of Presence) node is a component of the Pipe Network ecosystem. This implementation provides a complete framework for setting up, configuring, and maintaining a Pipe PoP node.
 
 ## System Requirements
 
@@ -29,7 +45,7 @@ The Pipe PoP node is a component of the Pipe Network ecosystem. This implementat
 
 ## Scripts
 
-- `setup.sh`: Main setup script for installing the Pipe PoP node
+- `setup.sh`: Main setup script for installing the Pipe PoP (Points of Presence) node
 - `run_node.sh`: Script for manually running the node
 - `backup.sh`: Script for backing up important node data
 - `monitor.sh`: Script for monitoring node status
@@ -85,7 +101,7 @@ If you're using Cursor AI agent, you can automate the entire setup process:
 
 ## Current Status
 
-The Pipe PoP node is fully operational with the following configuration:
+The Pipe PoP (Points of Presence) node is fully operational with the following configuration:
 - Running Pipe PoP binary v0.2.8
 - Configured with Solana wallet address: 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
 - Running as a systemd service
@@ -95,7 +111,7 @@ The Pipe PoP node is fully operational with the following configuration:
 
 ## Updating the Binary
 
-When a new version of the Pipe PoP binary is available, you can update it using the update_binary.sh script:
+When a new version of the Pipe PoP (Points of Presence) binary is available, you can update it using the update_binary.sh script:
 
 ```bash
 ./update_binary.sh BINARY_URL
@@ -123,7 +139,7 @@ This will create a cron job to run the backup.sh script at the specified interva
 
 ## Generating Your Own Referral Code
 
-Once your node is running successfully, you can generate your own referral code to share with others:
+Once your Pipe PoP (Points of Presence) node is running successfully, you can generate your own referral code to share with others:
 
 ```bash
 ./bin/pipe-pop --gen-referral-route
@@ -145,14 +161,20 @@ For more detailed information, please refer to the following documentation files
 
 ## Key Features of Pipe Network
 
-From the [official documentation](https://docs.pipe.network/devnet-2):
+Pipe Network offers several advantages over traditional centralized CDNs:
 
-- **High Performance**: Optimized for efficient file distribution and caching
+- **Hyperlocal Content Delivery**: Strategic deployment of Pipe PoP nodes in underserved areas optimizes latency and ensures faster content delivery
+- **Blockchain Integration**: Built on the Solana blockchain for transparent operations, secure transactions, and fair compensation
+- **Economic Model**: Uses Pipe Credits and Data Credits to create flexible, transparent payment structures that align incentives between users and node operators
+- **Permissionless Participation**: Anyone with the necessary hardware can contribute to the network, eliminating central points of control
+- **Cost Efficiency**: Decentralized infrastructure reduces operational costs compared to traditional CDNs
+- **Advanced Security**: Features include DDoS protection, dynamic IP/geographical blocking, DMCA complaint handling, and access to rolling logs
 - **Reputation System**: Nodes earn reputation based on uptime, historical performance, and egress data
 - **Referral System**: Earn rewards by referring new nodes to the network
 - **Automatic Updates**: Nodes check for updates on startup
 - **Geographic Distribution**: Intelligent peer selection based on geographic location
-- **Security**: IP-based rate limiting, node ID verification, and geographic distribution tracking
+
+For more information, visit the [official documentation](https://docs.pipe.network/devnet-2).
 
 ## Maintenance
 
@@ -167,6 +189,23 @@ Regular maintenance tasks:
 - A Solana wallet is required for operation
 - Cache data should be stored in a location with sufficient disk space
 - Backup your node_info.json file regularly, as it's linked to your IP address and not recoverable if lost
+
+## Why Decentralized CDNs Matter
+
+Traditional centralized CDNs face several limitations in today's rapidly evolving digital landscape:
+
+- **Geographic Limitations**: Centralized CDNs are primarily concentrated in urban or high-traffic areas, leading to slower speeds in remote or underserved locations
+- **High Capital Investment**: Traditional CDNs require significant infrastructure investment, creating barriers for smaller businesses
+- **Proprietary Systems**: Many CDNs operate within closed ecosystems, limiting accessibility and flexibility
+- **Centralized Bottlenecks**: Single points of failure can impact content delivery across entire regions
+
+Pipe Network addresses these challenges through its decentralized, permissionless model that:
+- Expands content delivery to underserved regions through hyperlocal Pipe PoP nodes
+- Reduces costs through shared infrastructure and blockchain-based incentives
+- Creates an open ecosystem where anyone can participate
+- Eliminates central points of failure for greater resilience
+
+By running a Pipe PoP node, you're contributing to a more equitable, efficient, and resilient internet infrastructure.
 
 ## License
 
