@@ -2,6 +2,10 @@
 
 # Script to open the required ports for Pipe PoP node
 # This script will open ports 80, 443, and 8003 in the firewall
+#
+# DEPRECATION NOTICE: This script is deprecated and will be removed in a future update.
+# Please use fix_ports.sh instead, which provides more comprehensive port configuration
+# and troubleshooting functionality.
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -21,6 +25,15 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Display deprecation warning
+print_warning "DEPRECATION NOTICE: This script is deprecated. Please use fix_ports.sh instead."
+print_warning "Continue anyway? (y/n)"
+read -r response
+if [[ "$response" != "y" && "$response" != "Y" ]]; then
+    print_message "Exiting. Please run fix_ports.sh instead."
+    exit 0
+fi
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then

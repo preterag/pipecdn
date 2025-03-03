@@ -2,6 +2,9 @@
 
 # Backup script for Pipe PoP node
 # This script creates backups of important node data
+#
+# NOTE: This script will use the global backup script if available,
+# or fall back to the local implementation if the global script doesn't exist.
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -21,6 +24,15 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Check if the global backup script exists
+if [ -f "/opt/pipe-pop/backup.sh" ]; then
+    print_message "Using global backup script..."
+    sudo /opt/pipe-pop/backup.sh
+    exit $?
+fi
+
+print_message "Global backup script not found. Using local implementation..."
 
 # Create backup directory if it doesn't exist
 mkdir -p backups

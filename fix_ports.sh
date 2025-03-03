@@ -2,6 +2,10 @@
 
 # Script to fix port issues for Pipe PoP node
 # This script will open ports in the firewall and update the configuration
+#
+# NOTE: This script is a more comprehensive version of open_ports.sh.
+# It includes additional functionality to check for port conflicts and
+# verify the configuration file. Please use this script instead of open_ports.sh.
 
 # Colors for output
 GREEN='\033[0;32m'

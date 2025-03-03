@@ -2,6 +2,10 @@
 
 # Pipe PoP Node Setup Script
 # This script helps set up a Pipe PoP node
+#
+# NOTE: This is a non-interactive setup script. If you prefer a more
+# user-friendly guided installation with interactive prompts, please
+# use easy_setup.sh instead.
 
 set -e
 
