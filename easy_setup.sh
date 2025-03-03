@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # Pipe PoP Node Easy Setup Script
+# Version: 1.1.0
+#
 # This script provides a one-command setup for the Pipe PoP node
 #
 # NOTE: This is a more user-friendly version of setup.sh that provides
 # a guided installation process with interactive prompts. If you prefer
 # a non-interactive setup, you can use setup.sh instead.
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 set -e
 
@@ -37,6 +43,9 @@ print_header() {
 print_highlight() {
     echo -e "${CYAN}$1${NC}"
 }
+
+# Display version information
+print_message "Pipe PoP Easy Setup Tool v1.1.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then

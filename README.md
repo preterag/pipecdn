@@ -201,3 +201,53 @@ We're continuously improving the Pipe PoP node implementation. Future enhancemen
 4. **📱 Mobile Notifications**: Alerts and notifications for important node events
 5. **🔄 Multi-Node Management**: Tools for managing multiple nodes from a single interface
 6. **💻 Cross-Platform Support**: Extending support beyond Linux to Windows and macOS systems
+
+## Scripts and Tools
+
+The Pipe PoP node comes with several scripts to help you set up and manage your node:
+
+| Script | Version | Description |
+|--------|---------|-------------|
+| `easy_setup.sh` | v1.1.0 | Interactive setup script with guided installation |
+| `setup.sh` | v1.0.0 | Non-interactive setup script for automated deployments |
+| `fix_ports.sh` | v1.1.0 | Comprehensive port configuration and troubleshooting |
+| `backup.sh` | v1.0.0 | Creates backups of important node data |
+| `install_global_pop.sh` | v1.0.0 | Installs the global `pop` command for easy management |
+| `monitor.sh` | v1.0.0 | Monitors the node's performance and status |
+| `check_updates.sh` | v1.0.0 | Checks for updates to the Pipe PoP node |
+| `update_binary.sh` | v1.0.0 | Updates the Pipe PoP binary to the latest version |
+
+> Note: Some scripts may be deprecated in favor of more comprehensive alternatives. Always use the recommended script for each task.
+
+## Contributing
+
+We welcome contributions from the community! If you'd like to contribute to the Pipe PoP node implementation, please follow these guidelines:
+
+### How to Contribute
+
+1. **Fork the Repository**: Create your own fork of the repository on GitHub.
+2. **Create a Branch**: Create a branch for your feature or bugfix.
+3. **Make Changes**: Implement your changes, following the coding style and guidelines.
+4. **Add Tests**: If applicable, add tests for your changes.
+5. **Update Documentation**: Update the documentation to reflect your changes.
+6. **Submit a Pull Request**: Submit a pull request to the main repository.
+
+### Coding Guidelines
+
+- Follow the existing coding style and conventions.
+- Add appropriate comments to explain complex logic.
+- Include version information in all scripts (e.g., `# Version: 1.0.0`).
+- Update the version number when making significant changes.
+- Add your name to the contributors section of the script.
+
+### Versioning
+
+We use semantic versioning for all scripts:
+
+- **MAJOR**: Incompatible API changes
+- **MINOR**: Added functionality in a backward-compatible manner
+- **PATCH**: Backward-compatible bug fixes
+
+### Getting Help
+
+If you need help with contributing, please open an issue on GitHub or contact the Preterag team.

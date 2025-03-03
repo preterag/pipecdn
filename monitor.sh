@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Pipe PoP Node Monitoring Script
+# Version: 1.0.0
+#
+# This script monitors the Pipe PoP node's performance and status
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
+
 # Monitoring script for Pipe PoP node
 # This script checks the status of the node and provides basic monitoring
 

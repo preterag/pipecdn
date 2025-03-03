@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# Script to check for updates to the Pipe PoP binary
-# This script compares the local version with the latest available version
+# Script to check for updates to the Pipe PoP node
+# Version: 1.0.0
+#
+# This script checks for updates to the Pipe PoP node binary and scripts
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 # Colors for output
 GREEN='\033[0;32m'

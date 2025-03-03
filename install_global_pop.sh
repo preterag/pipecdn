@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# Script to install the global pop command
-# This script creates a global pop command that can be run from anywhere
+# Script to install the global 'pop' command
+# Version: 1.0.0
+#
+# This script installs the 'pop' command globally for easy management of the Pipe PoP node
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 # Colors for output
 GREEN='\033[0;32m'

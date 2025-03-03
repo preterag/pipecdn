@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # Script to fix port issues for Pipe PoP node
+# Version: 1.1.0
+#
 # This script will open ports in the firewall and update the configuration
 #
 # NOTE: This script is a more comprehensive version of open_ports.sh.
 # It includes additional functionality to check for port conflicts and
-# verify the configuration file. Please use this script instead of open_ports.sh.
+# verify the configuration file.
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -25,6 +31,9 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Display version information
+print_message "Pipe PoP Port Configuration Tool v1.1.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then

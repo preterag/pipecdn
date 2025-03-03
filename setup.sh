@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # Pipe PoP Node Setup Script
+# Version: 1.0.0
+#
 # This script helps set up a Pipe PoP node
 #
 # NOTE: This is a non-interactive setup script. If you prefer a more
 # user-friendly guided installation with interactive prompts, please
 # use easy_setup.sh instead.
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 set -e
 
@@ -27,6 +33,9 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Display version information
+print_message "Pipe PoP Setup Tool v1.0.0"
 
 # Check and install dependencies
 check_dependencies() {

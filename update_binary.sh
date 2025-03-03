@@ -1,6 +1,14 @@
 #!/bin/bash
 
 # Script to update the Pipe PoP binary
+# Version: 1.0.0
+#
+# This script downloads and installs the latest version of the Pipe PoP binary
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
+
 # Usage: sudo ./update_binary.sh [version]
 # If version is not provided, it will try to get the latest version
 

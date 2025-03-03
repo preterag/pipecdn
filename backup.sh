@@ -1,10 +1,16 @@
 #!/bin/bash
 
 # Backup script for Pipe PoP node
+# Version: 1.0.0
+#
 # This script creates backups of important node data
 #
 # NOTE: This script will use the global backup script if available,
 # or fall back to the local implementation if the global script doesn't exist.
+#
+# Contributors:
+# - Preterag Team (original implementation)
+# - Community contributors welcome! See README.md for contribution guidelines
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -24,6 +30,9 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Display version information
+print_message "Pipe PoP Backup Tool v1.0.0"
 
 # Check if the global backup script exists
 if [ -f "/opt/pipe-pop/backup.sh" ]; then
