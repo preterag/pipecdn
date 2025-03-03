@@ -53,6 +53,9 @@ pop --stats
 
 # Perform a quick egress test
 pop --egress-test
+
+# Display the current wallet address connected to the node
+pop --wallet-info
 ```
 
 ### Updates and Maintenance
@@ -69,6 +72,16 @@ sudo pop --update vX.Y.Z --force
 
 # Check for upgrades and refresh token (requires sudo)
 sudo pop --refresh
+```
+
+### Configuration
+
+```bash
+# Enable ports 80 and 443 (requires sudo)
+sudo pop --enable-80-443
+
+# Set a new wallet address for the node (requires sudo)
+sudo pop --set-wallet <address>
 ```
 
 ### Monitoring and Logs
@@ -146,6 +159,28 @@ To update to the latest version:
 sudo pop --update
 ```
 
+### Managing Wallet Configuration
+
+To check your current wallet address:
+
+```bash
+pop --wallet-info
+```
+
+To set a new wallet address:
+
+```bash
+sudo pop --set-wallet H6sA2GwmppUTWHW7NAhw66NBDi9Bh7LvmGTJ6CUQU5e8
+```
+
+### Enabling Additional Ports
+
+To enable ports 80 and 443 for your node:
+
+```bash
+sudo pop --enable-80-443
+```
+
 ### Creating a Backup
 
 To create a backup of your node's important data:
@@ -181,7 +216,19 @@ If you encounter issues with the global `pop` command, try the following:
    ls -la /opt/pipe-pop/bin/pipe-pop
    ```
 
-4. **Reinstall the command**: If needed, reinstall the global command:
+4. **Wallet configuration issues**: If you're having trouble with wallet settings, check both config files:
+   ```bash
+   cat /home/karo/Workspace/PipeNetwork/config/config.json
+   cat /home/karo/Workspace/PipeNetwork/start_pipe_pop.sh
+   ```
+
+5. **Port configuration issues**: If ports 80 and 443 aren't working after enabling:
+   ```bash
+   sudo netstat -tuln | grep -E ':80|:443'
+   sudo systemctl status pipe-pop.service
+   ```
+
+6. **Reinstall the command**: If needed, reinstall the global command:
    ```bash
    sudo ./install_global_pop.sh
    ```
