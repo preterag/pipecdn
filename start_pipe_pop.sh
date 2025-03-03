@@ -72,5 +72,5 @@ EOF
 print_message "Created node_info.json with temporary registration"
 
 # Start the Pipe PoP node
-print_message "Starting Pipe PoP node..."
-exec "$BINARY" --cache-dir "$CACHE_DIR" --pubKey "$PUBKEY" 
+print_message "Starting Pipe PoP node with ports 80 and 443 enabled..."
+exec "$BINARY" --cache-dir "$CACHE_DIR" --pubKey "$PUBKEY" --enable-80-443 
