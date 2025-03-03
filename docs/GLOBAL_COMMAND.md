@@ -4,16 +4,16 @@ This document provides information about the global `pop` command, which allows 
 
 ## 🔧 Installation
 
-The global `pop` command is installed using the `fixed_install_global_pop.sh` script. This script creates a global command that can be run from anywhere on your system.
+The global `pop` command is installed using the `install_global_pop.sh` script. This script creates a global command that can be run from anywhere on your system.
 
 To install the global command:
 
 ```bash
 # Make the script executable
-chmod +x fixed_install_global_pop.sh
+chmod +x install_global_pop.sh
 
 # Run the script with sudo
-sudo ./fixed_install_global_pop.sh
+sudo ./install_global_pop.sh
 ```
 
 The script will:
@@ -183,7 +183,7 @@ If you encounter issues with the global `pop` command, try the following:
 
 4. **Reinstall the command**: If needed, reinstall the global command:
    ```bash
-   sudo ./fixed_install_global_pop.sh
+   sudo ./install_global_pop.sh
    ```
 
 ## 🗑️ Uninstallation
