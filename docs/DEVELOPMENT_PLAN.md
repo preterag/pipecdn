@@ -28,6 +28,10 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Set up regular backup schedule
 - [x] Global pop command implementation
 - [x] Documentation update for global command
+- [x] Wallet management features implementation
+- [x] Port enabling option implementation
+- [x] Node ID consolidation implementation
+- [x] Installation package creation
 
 ## Upcoming Milestones
 
@@ -69,6 +73,19 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Update documentation to reflect global command usage
 - [x] Create dedicated documentation for global command
 
+### Milestone 7: Advanced Features (Completed)
+- [x] Implement wallet management features
+- [x] Add port enabling option
+- [x] Implement node ID consolidation
+- [x] Update documentation for new features
+
+### Milestone 8: Packaging and Distribution (In Progress)
+- [x] Create installation package
+- [x] Develop installer with quick and manual setup options
+- [ ] Test installation package
+- [ ] Create distribution channels
+- [ ] Rename repository for public release
+
 ## Recently Completed Items
 
 - Created directory structure for the Pipe PoP node
@@ -100,6 +117,12 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Updated documentation to reflect global command usage
 - Created GLOBAL_COMMAND.md documentation
 - Updated easy_setup.sh to include global command installation
+- Implemented wallet management features (--wallet-info, --set-wallet)
+- Added port enabling option (--enable-80-443)
+- Implemented node ID consolidation
+- Updated documentation for new features
+- Created create_package.sh script for packaging the installation
+- Developed self-extracting installer with multiple installation options
 
 ## Known Issues and Challenges
 
@@ -115,7 +138,14 @@ This document outlines the development plan for setting up and maintaining a Pip
 6. ~~Investigate port usage warning in monitoring script~~ (Completed)
 7. ~~Set up regular backup schedule~~ (Completed)
 8. ~~Implement global pop command~~ (Completed)
-9. Monitor for future binary updates
+9. ~~Implement wallet management features~~ (Completed)
+10. ~~Add port enabling option~~ (Completed)
+11. ~~Implement node ID consolidation~~ (Completed)
+12. ~~Create installation package with quick and manual setup options~~ (Completed)
+13. Test installation package
+14. Create distribution channels
+15. Rename repository for public release
+16. Monitor for future binary updates
 
 ## Resources
 
