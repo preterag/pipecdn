@@ -7,6 +7,7 @@ This directory contains comprehensive documentation for setting up, configuring,
 ### Setup and Installation
 - [**SETUP_GUIDE.md**](./PIPE_POP_SETUP_GUIDE.md): Step-by-step instructions for setting up a Pipe PoP node
 - [**REFERRAL_GUIDE.md**](./REFERRAL_GUIDE.md): Information about the referral system and how to use referral codes
+- [**GLOBAL_COMMAND.md**](./GLOBAL_COMMAND.md): Guide to installing and using the global `pop` command
 
 ### Operation and Maintenance
 - [**MAINTENANCE.md**](./MAINTENANCE.md): Guide for maintaining and operating your Pipe PoP node
@@ -26,13 +27,47 @@ This directory contains comprehensive documentation for setting up, configuring,
 
 If you're new to Pipe PoP nodes, we recommend starting with the [SETUP_GUIDE.md](./PIPE_POP_SETUP_GUIDE.md) document, which provides a comprehensive guide to setting up your node.
 
+## Global Pop Command
+
+The global `pop` command is automatically installed during setup and allows you to manage your node from anywhere on your system without having to navigate to the installation directory.
+
+```bash
+# Check node status
+pop --status
+
+# Monitor node performance
+pop --monitor
+
+# Create a backup
+pop --backup
+```
+
+For more details, see the [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md) document.
+
 ## Using the Surrealine Referral Code
 
 When setting up your Pipe PoP node, you can use the Surrealine referral code to earn additional rewards:
 
 ```bash
-sudo ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
+sudo pop --signup-by-referral-route 3a069772281d9b1b
 ```
+
+## Managing Your Node
+
+After installation, you can manage your node using the global `pop` command from anywhere on your system:
+
+```bash
+# Check node status
+pop --status
+
+# Monitor node performance
+pop --monitor
+
+# Create a backup
+pop --backup
+```
+
+For more details, see the [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md) document.
 
 ## Support
 

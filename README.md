@@ -7,6 +7,7 @@ A complete implementation for setting up and managing a Pipe PoP node for the [P
 - **Complete Setup Framework**: One-command setup script for easy deployment
 - **Production-Ready Implementation**: Systemd service integration for reliable operation
 - **Comprehensive Management Tools**: Scripts for monitoring, updating, and maintaining your node
+- **Global Command Access**: Manage your node from anywhere with the global `pop` command
 - **Detailed Documentation**: Step-by-step guides and reference materials
 - **Surrealine Integration**: Pre-configured with Surrealine referral code
 - **Optimized Performance**: Tuned for efficient operation
@@ -30,6 +31,17 @@ This script will:
 4. Set up a systemd service for reliable operation
 5. Configure automatic backups
 6. Apply the Surrealine referral code (optional)
+7. **Install the global `pop` command for easy management from anywhere**
+
+After installation, you can immediately use the global `pop` command from anywhere on your system:
+
+```bash
+# Check your node status
+pop --status
+
+# View available commands
+pop --help
+```
 
 ## Manual Setup Instructions
 
@@ -48,6 +60,11 @@ If you prefer to set up your node manually, follow these steps:
    ```
 
 3. Follow the on-screen instructions to complete the setup.
+
+4. Install the global `pop` command:
+   ```bash
+   sudo ./install_global_pop.sh
+   ```
 
 ## About Pipe Network
 
@@ -71,35 +88,35 @@ The Pipe Network is a decentralized content delivery network (CDN) with several 
 
 ## Managing Your Node
 
-After setting up your Pipe PoP node, you can manage it using the `pop` script:
+After setting up your Pipe PoP node, you can manage it using the global `pop` command from anywhere on your system:
 
 ```bash
 # Check node status
-./pop --status
+pop --status
 
 # Monitor node performance
-./pop --monitor
+pop --monitor
 
 # Create a backup
-./pop --backup
+pop --backup
 
 # Check for updates
-./pop --check-update
+pop --check-update
 
-# Update to the latest version
-sudo ./pop --update
+# Update to the latest version (requires sudo)
+sudo pop --update
 
 # View service logs
-./pop --logs
+pop --logs
 
-# Restart the service
-sudo ./pop --restart
+# Restart the service (requires sudo)
+sudo pop --restart
 
 # Generate a referral code
-./pop --gen-referral-route
+pop --gen-referral-route
 
 # Check points and rewards
-./pop --points-route
+pop --points-route
 ```
 
 ## System Requirements
@@ -129,6 +146,7 @@ For more detailed information, please refer to the following documentation:
 - [Referral Guide](docs/REFERRAL_GUIDE.md): Information about the referral system
 - [Reputation System](docs/REPUTATION_SYSTEM.md): Explanation of the reputation system
 - [Development Information](docs/DEVELOPMENT.md): Development details and implementation
+- [Global Command Guide](docs/GLOBAL_COMMAND.md): Guide to using the global `pop` command
 
 ## Key Features of Pipe Network
 
@@ -147,9 +165,9 @@ For more detailed information, please refer to the following documentation:
 
 Regular maintenance tasks:
 
-1. **Backup**: Regularly backup your node_info.json file
-2. **Monitor**: Check your node status with `./pop --status`
-3. **Update**: Keep your Pipe PoP binary updated with `sudo ./pop --update`
+1. **Backup**: Regularly backup your node_info.json file with `pop --backup`
+2. **Monitor**: Check your node status with `pop --status`
+3. **Update**: Keep your Pipe PoP binary updated with `sudo pop --update`
 
 ## Important Notes
 

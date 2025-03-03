@@ -10,6 +10,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Function to print colored messages
@@ -27,6 +28,10 @@ print_error() {
 
 print_header() {
     echo -e "${BLUE}==== $1 ====${NC}"
+}
+
+print_highlight() {
+    echo -e "${CYAN}$1${NC}"
 }
 
 # Check if running as root
@@ -49,6 +54,7 @@ echo "  - Download and configure the Pipe PoP binary"
 echo "  - Set up a systemd service for reliable operation"
 echo "  - Configure automatic backups"
 echo "  - Apply the Surrealine referral code (optional)"
+print_highlight "  - Install the global 'pop' command for easy management from anywhere"
 echo ""
 read -p "Press Enter to continue or Ctrl+C to cancel..."
 
@@ -212,22 +218,163 @@ print_message "Setting up weekly backups..."
 chmod +x setup_backup_schedule.sh
 ./setup_backup_schedule.sh weekly
 
-# Step 9: Final steps
+# Step 9: Install global pop command
+print_header "Installing Global Pop Command"
+
+print_message "Creating global pop command for system-wide access..."
+cat > /usr/local/bin/pop << 'EOF'
+#!/bin/bash
+
+# Pipe PoP Node Management Script
+# This script provides a convenient wrapper around the pipe-pop binary
+
+# Installation directory
+INSTALL_DIR="/opt/pipe-pop"
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+print_message() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Check if the binary exists
+if [ ! -f "${INSTALL_DIR}/bin/pipe-pop" ]; then
+    print_error "Pipe PoP binary not found. Please check your installation."
+    exit 1
+fi
+
+# Function to show help
+show_help() {
+    echo "Pipe PoP Node Management Script"
+    echo "Usage: pop [OPTION]"
+    echo ""
+    echo "Options:"
+    echo "  --status                Check node status and reputation"
+    echo "  --check-update          Check for available updates"
+    echo "  --update                Update to the latest version"
+    echo "  --gen-referral-route    Generate a referral code"
+    echo "  --points-route          Check points and rewards"
+    echo "  --monitor               Monitor node status"
+    echo "  --backup                Create a backup"
+    echo "  --restart               Restart the node service"
+    echo "  --logs                  View service logs"
+    echo "  --help                  Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  pop --status            Check node status"
+    echo "  pop --update            Update to the latest version"
+}
+
+# Main execution
+case "$1" in
+    --status)
+        print_message "Checking node status..."
+        ${INSTALL_DIR}/bin/pipe-pop --status
+        ;;
+    --check-update)
+        print_message "Checking for updates..."
+        ${INSTALL_DIR}/bin/pipe-pop --check-update
+        ;;
+    --update)
+        print_message "Updating to the latest version..."
+        if [ "$EUID" -ne 0 ]; then
+            print_error "This command must be run as root (with sudo)"
+            exit 1
+        fi
+        ${INSTALL_DIR}/bin/pipe-pop --update
+        ;;
+    --gen-referral-route)
+        print_message "Generating referral code..."
+        ${INSTALL_DIR}/bin/pipe-pop --gen-referral-route
+        ;;
+    --points-route)
+        print_message "Checking points and rewards..."
+        ${INSTALL_DIR}/bin/pipe-pop --points-route
+        ;;
+    --monitor)
+        print_message "Monitoring node status..."
+        ${INSTALL_DIR}/monitor.sh
+        ;;
+    --backup)
+        print_message "Creating backup..."
+        ${INSTALL_DIR}/backup.sh
+        ;;
+    --restart)
+        print_message "Restarting node service..."
+        if [ "$EUID" -ne 0 ]; then
+            print_error "This command must be run as root (with sudo)"
+            exit 1
+        fi
+        sudo systemctl restart pipe-pop.service
+        print_message "Service restarted."
+        ;;
+    --logs)
+        print_message "Viewing service logs..."
+        journalctl -u pipe-pop.service -n 50
+        ;;
+    --help|*)
+        show_help
+        ;;
+esac
+
+exit 0
+EOF
+
+print_message "Making the command executable..."
+chmod +x /usr/local/bin/pop
+
+print_message "Copying necessary scripts to installation directory..."
+if [ -f "$INSTALL_DIR/monitor.sh" ]; then
+    chmod +x "$INSTALL_DIR/monitor.sh"
+fi
+
+if [ -f "$INSTALL_DIR/backup.sh" ]; then
+    chmod +x "$INSTALL_DIR/backup.sh"
+fi
+
+print_message "Global pop command installed successfully!"
+print_highlight "You can now use the 'pop' command from anywhere on your system!"
+
+# Step 10: Final steps
 print_header "Setup Complete"
 
 print_message "Pipe PoP node has been successfully set up!"
-print_message "You can manage your node using the following commands:"
+print_highlight "You can manage your node using the global 'pop' command from anywhere on your system:"
 echo ""
-echo "  Check node status:    $INSTALL_DIR/pop --status"
-echo "  Monitor node:         $INSTALL_DIR/pop --monitor"
-echo "  Create backup:        $INSTALL_DIR/pop --backup"
-echo "  Check for updates:    $INSTALL_DIR/pop --check-update"
-echo "  Update node:          sudo $INSTALL_DIR/pop --update"
-echo "  View logs:            $INSTALL_DIR/pop --logs"
+echo "  Check node status:    pop --status"
+echo "  Monitor node:         pop --monitor"
+echo "  Create backup:        pop --backup"
+echo "  Check for updates:    pop --check-update"
+echo "  Update node:          sudo pop --update"
+echo "  View logs:            pop --logs"
 echo ""
 print_message "For more information, refer to the documentation in the $INSTALL_DIR/docs directory."
 echo ""
 print_message "Thank you for joining the Pipe Network ecosystem!"
+
+# Test the global pop command
+print_header "Testing Global Pop Command"
+print_message "Running a quick test of the global pop command..."
+if command -v pop &> /dev/null; then
+    print_highlight "Success! The global 'pop' command is installed and accessible."
+    echo "Try it now with: pop --help"
+else
+    print_warning "The global 'pop' command may not be accessible. Please check your PATH settings."
+    print_message "You can still use it with the full path: /usr/local/bin/pop"
+fi
 
 # Clean up
 rm -rf "$TEMP_DIR"

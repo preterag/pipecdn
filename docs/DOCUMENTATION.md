@@ -26,6 +26,19 @@ The Pipe PoP (Proof of Participation) node is a component of the Pipe Network ec
 2. Run the setup script: `./setup.sh`
 3. Follow the prompts to complete the installation
 4. Configure the node with your Solana wallet address
+5. Install the global `pop` command: `sudo ./install_global_pop.sh`
+
+### Quick Setup
+
+For a faster setup, you can use the one-command setup script:
+
+```bash
+curl -L https://raw.githubusercontent.com/preterag/pipecdn/master/easy_setup.sh -o easy_setup.sh
+chmod +x easy_setup.sh
+sudo ./easy_setup.sh
+```
+
+This script will handle all the setup steps, including installing the global `pop` command, which allows you to manage your node from anywhere on your system.
 
 ## Configuration
 
@@ -55,6 +68,12 @@ To check the status of the service:
 sudo systemctl status pipe-pop.service
 ```
 
+Or using the global `pop` command (available from anywhere on your system):
+
+```bash
+pop --status
+```
+
 ### Manually
 
 To run the node manually:
@@ -65,12 +84,66 @@ To run the node manually:
 
 This will start the node in the foreground with logs displayed in the terminal.
 
-## Monitoring
+## Global Pop Command
 
-The `monitor.sh` script provides basic monitoring of the node:
+The global `pop` command is automatically installed during setup and allows you to manage your node from anywhere on your system without having to navigate to the installation directory.
 
 ```bash
-./monitor.sh
+# Check node status
+pop --status
+
+# Monitor node performance
+pop --monitor
+
+# Create a backup
+pop --backup
+```
+
+This command is available system-wide, so you can run it from any directory.
+
+## Managing Your Node
+
+After installation, you can manage your node using the global `pop` command from anywhere on your system:
+
+```bash
+# Check node status
+pop --status
+
+# Monitor node performance
+pop --monitor
+
+# Create a backup
+pop --backup
+
+# Check for updates
+pop --check-update
+
+# Generate a referral code
+pop --gen-referral-route
+
+# Check points and rewards
+pop --points-route
+
+# View service logs
+pop --logs
+```
+
+For commands that require root privileges:
+
+```bash
+# Update to the latest version
+sudo pop --update
+
+# Restart the service
+sudo pop --restart
+```
+
+## Monitoring
+
+You can monitor your node using the global `pop` command:
+
+```bash
+pop --monitor
 ```
 
 This will display:
@@ -82,10 +155,10 @@ This will display:
 
 ## Backup
 
-Regular backups are essential for node recovery. The `backup.sh` script creates backups of critical node data:
+Regular backups are essential for node recovery. Create backups using the global `pop` command:
 
 ```bash
-./backup.sh
+pop --backup
 ```
 
 This will create a compressed archive in the `backups` directory containing:
@@ -100,7 +173,7 @@ This will create a compressed archive in the `backups` directory containing:
 1. **Node not starting**
    - Check system resources
    - Verify port availability
-   - Check logs for errors
+   - Check logs with `pop --logs`
 
 2. **Connection issues**
    - Verify firewall settings
@@ -108,35 +181,52 @@ This will create a compressed archive in the `backups` directory containing:
    - Ensure ports 80, 443, and 8003 are open
 
 3. **Performance problems**
-   - Monitor RAM and disk usage
+   - Monitor RAM and disk usage with `pop --monitor`
    - Check for competing processes
    - Consider upgrading hardware if consistently at capacity
 
+4. **Global command not working**
+   - Ensure the installation script completed successfully
+   - Check if `/usr/local/bin/` is in your PATH
+   - Try reinstalling the global command: `sudo ./install_global_pop.sh`
+
 ### Logs
 
-Logs are stored in the `logs` directory. To view the latest logs:
+View logs using the global `pop` command:
 
 ```bash
-tail -f logs/pipe-pop_*.log | grep ERROR
+pop --logs
+```
+
+Or filter logs for errors:
+
+```bash
+pop --logs | grep ERROR
 ```
 
 ## Maintenance
 
 ### Regular Tasks
 
-1. **Monitor node status**: Run `./monitor.sh` regularly
-2. **Create backups**: Run `./backup.sh` weekly
-3. **Check for updates**: Visit the official Pipe Network website
+1. **Monitor node status**: Run `pop --status` regularly
+2. **Create backups**: Run `pop --backup` weekly
+3. **Check for updates**: Run `pop --check-update`
 4. **Clean cache**: If cache size grows too large, consider cleaning older data
 
 ### Updating
 
 When a new version is released:
 
-1. Stop the node: `sudo systemctl stop pipe-pop.service`
-2. Download the new binary
-3. Replace the old binary in the `bin` directory
-4. Start the node: `sudo systemctl start pipe-pop.service`
+```bash
+# Check for updates
+pop --check-update
+
+# Update to the latest version
+sudo pop --update
+
+# Restart the service if needed
+sudo pop --restart
+```
 
 ## Security Considerations
 
