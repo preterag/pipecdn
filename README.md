@@ -85,6 +85,22 @@ The Pipe PoP (Points of Presence) node is a component of the Pipe Network ecosys
    sudo ./install_service.sh all
    ```
 
+### Quick Start
+
+For a faster way to start your Pipe PoP node, you can use the quick start script:
+
+```bash
+sudo ./pop
+```
+
+This script will:
+1. Check if the Pipe PoP service is already running
+2. Start the service if it's installed but not running
+3. Run the node in foreground mode if the service is not installed
+4. Automatically use your configured Solana wallet address
+
+It's the simplest way to get your node up and running with a single command!
+
 ### Using Surrealine Referral Code
 
 When setting up your Pipe PoP node, you can use our referral code to earn additional rewards:
