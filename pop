@@ -3,6 +3,11 @@
 # Pipe PoP Node Management Script
 # This script provides a convenient wrapper around the pipe-pop binary
 
+# Installation directory
+INSTALL_DIR="/opt/pipe-pop"
+# Main PipeNetwork directory
+PIPE_DIR="/home/karo/Workspace/PipeNetwork"
+
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -23,22 +28,26 @@ print_error() {
 }
 
 # Check if the binary exists
-if [ ! -f "bin/pipe-pop" ]; then
-    print_error "Pipe PoP binary not found. Please run setup.sh first."
+if [ ! -f "${PIPE_DIR}/bin/pipe-pop" ]; then
+    print_error "Pipe PoP binary not found. Please check your installation."
     exit 1
 fi
 
 # Function to show help
 show_help() {
     echo "Pipe PoP Node Management Script"
-    echo "Usage: ./pop [OPTION]"
+    echo "Usage: pop [OPTION]"
     echo ""
     echo "Options:"
     echo "  --status                Check node status and reputation"
-    echo "  --check-update          Check for available updates"
-    echo "  --update                Update to the latest version"
+    echo "  --version               Show the version of the Pipe PoP binary"
+    echo "  --refresh               Check for upgrades and refresh token"
     echo "  --gen-referral-route    Generate a referral code"
-    echo "  --points-route          Check points and rewards"
+    echo "  --points                Check points and rewards"
+    echo "  --stats                 Fetch node's uptime stats"
+    echo "  --egress-test           Perform a quick egress test"
+    echo "  --check-update          Check for updates to the Pipe PoP binary"
+    echo "  --update                Update the Pipe PoP binary to the latest version"
     echo "  --monitor               Monitor node status"
     echo "  --backup                Create a backup"
     echo "  --restart               Restart the node service"
@@ -46,43 +55,66 @@ show_help() {
     echo "  --help                  Show this help message"
     echo ""
     echo "Examples:"
-    echo "  ./pop --status          Check node status"
-    echo "  ./pop --update          Update to the latest version"
+    echo "  pop --status            Check node status"
+    echo "  pop --check-update      Check for updates"
+    echo "  pop --update            Update to the latest version"
 }
 
 # Main execution
 case "$1" in
     --status)
         print_message "Checking node status..."
-        ./bin/pipe-pop --status
+        ${PIPE_DIR}/bin/pipe-pop --status
         ;;
-    --check-update)
-        print_message "Checking for updates..."
-        ./bin/pipe-pop --check-update
+    --version|-V)
+        print_message "Checking version..."
+        ${PIPE_DIR}/bin/pipe-pop --version
         ;;
-    --update)
-        print_message "Updating to the latest version..."
+    --refresh)
+        print_message "Checking for upgrades and refreshing token..."
         if [ "$EUID" -ne 0 ]; then
             print_error "This command must be run as root (with sudo)"
             exit 1
         fi
-        ./bin/pipe-pop --update
+        ${PIPE_DIR}/bin/pipe-pop --refresh
         ;;
     --gen-referral-route)
         print_message "Generating referral code..."
-        ./bin/pipe-pop --gen-referral-route
+        ${PIPE_DIR}/bin/pipe-pop --gen-referral-route
         ;;
-    --points-route)
+    --points)
         print_message "Checking points and rewards..."
-        ./bin/pipe-pop --points-route
+        ${PIPE_DIR}/bin/pipe-pop --points
+        ;;
+    --stats)
+        print_message "Fetching uptime stats..."
+        ${PIPE_DIR}/bin/pipe-pop --stats
+        ;;
+    --egress-test)
+        print_message "Performing egress test..."
+        ${PIPE_DIR}/bin/pipe-pop --egress-test
+        ;;
+    --check-update)
+        print_message "Checking for updates to the Pipe PoP binary..."
+        cd ${PIPE_DIR}
+        ./check_updates.sh
+        ;;
+    --update)
+        print_message "Updating the Pipe PoP binary..."
+        if [ "$EUID" -ne 0 ]; then
+            print_error "This command must be run as root (with sudo)"
+            exit 1
+        fi
+        cd ${PIPE_DIR}
+        ./update_binary.sh
         ;;
     --monitor)
         print_message "Monitoring node status..."
-        ./monitor.sh
+        ${PIPE_DIR}/monitor.sh
         ;;
     --backup)
         print_message "Creating backup..."
-        ./backup.sh
+        ${PIPE_DIR}/backup.sh
         ;;
     --restart)
         print_message "Restarting node service..."
@@ -97,7 +129,7 @@ case "$1" in
         print_message "Viewing service logs..."
         journalctl -u pipe-pop.service -n 50
         ;;
-    --help|*)
+    --help|-h|*)
         show_help
         ;;
 esac

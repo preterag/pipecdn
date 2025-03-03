@@ -1,8 +1,8 @@
-# Global Command Documentation
+# 🌐 Global Command Documentation
 
 This document provides information about the global `pop` command, which allows you to manage your Pipe PoP node from anywhere on your system.
 
-## Installation
+## 🔧 Installation
 
 The global `pop` command is installed using the `fixed_install_global_pop.sh` script. This script creates a global command that can be run from anywhere on your system.
 
@@ -23,7 +23,7 @@ The script will:
 4. Create the global `pop` command at `/usr/local/bin/pop`
 5. Set the appropriate permissions
 
-## Usage
+## 🚀 Usage
 
 Once installed, you can use the `pop` command from anywhere on your system:
 
@@ -35,7 +35,7 @@ pop --status
 pop --help
 ```
 
-## Available Commands
+## 📋 Available Commands
 
 The global `pop` command provides the following functionality:
 
@@ -112,7 +112,7 @@ pop --points
 pop --help
 ```
 
-## Examples
+## 💡 Examples
 
 Here are some common usage examples:
 
@@ -162,7 +162,7 @@ To view the service logs:
 pop --logs
 ```
 
-## Troubleshooting
+## ❓ Troubleshooting
 
 If you encounter issues with the global `pop` command, try the following:
 
@@ -186,7 +186,7 @@ If you encounter issues with the global `pop` command, try the following:
    sudo ./fixed_install_global_pop.sh
    ```
 
-## Uninstallation
+## 🗑️ Uninstallation
 
 If you need to uninstall the global `pop` command:
 

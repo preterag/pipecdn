@@ -1,8 +1,8 @@
-# Pipe PoP Node Documentation
+# 📚 Pipe PoP Node Documentation
 
 This directory contains comprehensive documentation for setting up, configuring, and maintaining a Pipe PoP node for the [Pipe Network](https://docs.pipe.network/devnet-2) decentralized CDN.
 
-## Documentation Index
+## 📑 Documentation Index
 
 ### Setup and Installation
 - [**SETUP_GUIDE.md**](./SETUP_GUIDE.md): Step-by-step instructions for setting up a Pipe PoP node
@@ -22,91 +22,25 @@ This directory contains comprehensive documentation for setting up, configuring,
 ### Articles and Implementation Journey
 - [**articles/**](./articles/): Detailed articles about our implementation journey and future directions
 
-## Quick Links
+## 🔗 Quick Links
 
 - [Pipe Network Documentation](https://docs.pipe.network/devnet-2)
 - [Surrealine Website](https://www.surrealine.com)
 - [Pipe Network Dashboard](https://dashboard.pipenetwork.com)
 
-## Getting Started
+## 🚀 Getting Started
 
 If you're new to Pipe PoP nodes, we recommend starting with the [SETUP_GUIDE.md](./SETUP_GUIDE.md) document, which provides a comprehensive guide to setting up your node.
 
-## Port Configuration
+## 🔌 Port Configuration
 
-The Pipe PoP node requires the following ports to be open:
+The Pipe PoP node requires ports 80, 443, and 8003 to be open. For detailed information about port configuration, see the main [README.md](../README.md#-port-configuration).
 
-- **Port 80**: HTTP traffic
-- **Port 443**: HTTPS traffic
-- **Port 8003**: Pipe PoP node communication
+## 🌐 Global Command Overview
 
-These ports are automatically configured during installation, but you may need to ensure they are properly forwarded in your router if you want your node to be accessible from the internet. The node may not actively listen on all ports until it receives traffic, which is normal behavior.
+The global `pop` command allows you to manage your node from anywhere on your system. For a complete list of available commands and usage examples, see [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md).
 
-To check if the ports are properly configured, run:
-
-```bash
-pop --monitor
-```
-
-## Global Pop Command
-
-The global `pop` command is automatically installed during setup and allows you to manage your node from anywhere on your system without having to navigate to the installation directory.
-
-```bash
-# Check node status
-pop --status
-
-# Monitor node performance
-pop --monitor
-
-# Create a backup
-pop --backup
-```
-
-For more details, see the [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md) document.
-
-## Using the Surrealine Referral Code
-
-When setting up your Pipe PoP node, you can use the Surrealine referral code to earn additional rewards:
-
-```bash
-sudo pop --signup-by-referral-route 3a069772281d9b1b
-```
-
-## Managing Your Node
-
-After installation, you can manage your node using the global `pop` command from anywhere on your system:
-
-```bash
-# Check node status
-pop --status
-
-# Monitor node performance
-pop --monitor
-
-# Create a backup
-pop --backup
-
-# Check for updates
-pop --check-update
-
-# Update to the latest version
-sudo pop --update
-
-# View service logs
-pop --logs
-
-# Restart the service
-sudo pop --restart
-
-# Generate a referral code
-pop --gen-referral-route
-
-# Check points and rewards
-pop --points
-```
-
-## Checking for Updates and Updating
+## 🔄 Checking for Updates and Updating
 
 The Pipe PoP node includes functionality to check for updates and update the binary when new versions are available:
 
@@ -131,7 +65,7 @@ When updating:
 - The Pipe PoP service is automatically restarted after updating.
 - You can force a reinstall of the same version using the `--force` flag if needed.
 
-## Support
+## ❓ Support
 
 If you need help with your Pipe PoP node:
 
@@ -139,25 +73,6 @@ If you need help with your Pipe PoP node:
 2. Visit the [Pipe Network Documentation](https://docs.pipe.network/devnet-2)
 3. Contact Surrealine support at [hello@surrealine.com](mailto:hello@surrealine.com)
 
-## About Pipe Network
+## 🔮 Future Directions
 
-The Pipe Network is a decentralized content delivery network (CDN) with several key features:
-
-- **Decentralized Architecture**: Distributed network of nodes for content delivery
-- **Hyperlocal Focus**: Content delivered from the closest geographical point
-- **Blockchain-Powered**: Built on Solana for transparent operations
-- **Cost Efficiency**: Lower costs compared to traditional CDNs
-- **Equitable Access**: Fair compensation for node operators
-- **Flexible Payment Structure**: Pay-as-you-go model
-- **Enhanced Security**: Distributed architecture reduces single points of failure
-
-## Future Directions
-
-We're continuously improving the Pipe PoP node implementation. Future enhancements include:
-
-1. **Web-Based Dashboard**: A user-friendly web interface for monitoring and managing nodes
-2. **Enhanced Analytics**: More detailed performance analytics for node operators
-3. **Automated Optimization**: Intelligent optimization of node configuration
-4. **Mobile Notifications**: Alerts and notifications for important node events
-5. **Multi-Node Management**: Tools for managing multiple nodes from a single interface
-6. **Cross-Platform Support**: Extending support beyond Linux to Windows and macOS systems 
+We're continuously improving the Pipe PoP node implementation. For details about our planned enhancements, see the [Future Directions](../README.md#-future-directions) section in the main README. 

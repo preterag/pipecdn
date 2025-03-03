@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# Script to install the pop command globally
-# This will allow you to run the pop command from anywhere
+# Script to install the global pop command
+# This script creates a global pop command that can be run from anywhere
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
+BOLD='\033[1m'
 
 # Function to print colored messages
 print_message() {
@@ -25,16 +24,8 @@ print_error() {
 }
 
 print_header() {
-    echo -e "${BLUE}==== $1 ====${NC}"
+    echo -e "${BOLD}$1${NC}"
 }
-
-print_highlight() {
-    echo -e "${CYAN}$1${NC}"
-}
-
-# Get the current directory
-CURRENT_DIR=$(pwd)
-INSTALL_DIR="/opt/pipe-pop"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -42,11 +33,264 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-print_header "Installing Global Pop Command"
-print_message "Installing pop command for system-wide access..."
+# Get the current directory (where the PipeNetwork is installed)
+PIPE_DIR="$(pwd)"
+INSTALL_DIR="/opt/pipe-pop"
+GLOBAL_CMD="/usr/local/bin/pop"
 
-# Create a modified version of the pop script that uses absolute paths
-cat > /usr/local/bin/pop << 'EOF'
+print_header "Installing Global Pop Command"
+print_message "This will install the pop command globally on your system."
+print_message "Installation directory: ${INSTALL_DIR}"
+print_message "Global command: ${GLOBAL_CMD}"
+print_message "PipeNetwork directory: ${PIPE_DIR}"
+
+# Create the installation directory
+print_message "Creating installation directory..."
+mkdir -p "${INSTALL_DIR}/bin"
+
+# Copy the binary
+print_message "Copying binary..."
+cp "${PIPE_DIR}/bin/pipe-pop" "${INSTALL_DIR}/bin/"
+
+# Create the monitor script with absolute paths
+print_message "Creating monitor script with absolute paths..."
+cat > "${INSTALL_DIR}/monitor.sh" << 'EOF'
+#!/bin/bash
+
+# Monitoring script for Pipe PoP node
+# This script checks the status of the node and provides basic monitoring
+
+# Installation directory
+INSTALL_DIR="/opt/pipe-pop"
+# Main PipeNetwork directory
+PIPE_DIR="/home/karo/Workspace/PipeNetwork"
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+print_message() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Check if the node is running
+check_node_status() {
+    if pgrep -f "pipe-pop" > /dev/null; then
+        print_message "Pipe PoP node is running."
+        return 0
+    else
+        print_error "Pipe PoP node is not running."
+        return 1
+    fi
+}
+
+# Check system resources
+check_system_resources() {
+    print_message "Checking system resources..."
+    
+    # Check RAM usage
+    total_ram=$(free -m | awk '/^Mem:/{print $2}')
+    used_ram=$(free -m | awk '/^Mem:/{print $3}')
+    free_ram=$(free -m | awk '/^Mem:/{print $4}')
+    
+    ram_usage_percent=$((used_ram * 100 / total_ram))
+    
+    if [ "$ram_usage_percent" -gt 90 ]; then
+        print_error "RAM usage is high: ${ram_usage_percent}% (${used_ram}MB/${total_ram}MB)"
+    elif [ "$ram_usage_percent" -gt 70 ]; then
+        print_warning "RAM usage is moderate: ${ram_usage_percent}% (${used_ram}MB/${total_ram}MB)"
+    else
+        print_message "RAM usage is normal: ${ram_usage_percent}% (${used_ram}MB/${total_ram}MB)"
+    fi
+    
+    # Check disk space
+    disk_total=$(df -m . | awk 'NR==2 {print $2}')
+    disk_used=$(df -m . | awk 'NR==2 {print $3}')
+    disk_free=$(df -m . | awk 'NR==2 {print $4}')
+    
+    disk_usage_percent=$((disk_used * 100 / disk_total))
+    
+    if [ "$disk_usage_percent" -gt 90 ]; then
+        print_error "Disk usage is high: ${disk_usage_percent}% (${disk_used}MB/${disk_total}MB)"
+    elif [ "$disk_usage_percent" -gt 70 ]; then
+        print_warning "Disk usage is moderate: ${disk_usage_percent}% (${disk_used}MB/${disk_total}MB)"
+    else
+        print_message "Disk usage is normal: ${disk_usage_percent}% (${disk_used}MB/${disk_total}MB)"
+    fi
+}
+
+# Check cache directory size
+check_cache_size() {
+    if [ -d "${PIPE_DIR}/cache" ]; then
+        cache_size=$(du -sm "${PIPE_DIR}/cache" | cut -f1)
+        print_message "Cache directory size: ${cache_size}MB"
+        
+        if [ "$cache_size" -gt 5000 ]; then
+            print_warning "Cache directory is quite large. Consider cleaning up old data if needed."
+        fi
+    else
+        print_warning "Cache directory not found."
+    fi
+}
+
+# Check node_info.json
+check_node_info() {
+    if [ -f "${PIPE_DIR}/cache/node_info.json" ]; then
+        print_message "node_info.json exists."
+        
+        # Check when it was last modified
+        last_modified=$(stat -c %y "${PIPE_DIR}/cache/node_info.json" | cut -d. -f1)
+        print_message "Last modified: ${last_modified}"
+        
+        # Check file size
+        file_size=$(du -h "${PIPE_DIR}/cache/node_info.json" | cut -f1)
+        print_message "File size: ${file_size}"
+    else
+        print_warning "node_info.json not found."
+    fi
+}
+
+# Check port availability
+check_ports() {
+    print_message "Checking required ports..."
+    
+    # First check if the ports are in use by any process
+    for port in 80 443 8003; do
+        if netstat -tuln | grep ":${port} " > /dev/null; then
+            print_message "Port ${port} is in use."
+        else
+            print_warning "Port ${port} is not in use. It may need to be opened in your firewall."
+            print_message "  - To open port ${port}, run: sudo ufw allow ${port}/tcp"
+        fi
+    done
+    
+    # Check if the Pipe PoP service is configured to use these ports
+    if [ -f "${PIPE_DIR}/config/config.json" ]; then
+        if grep -q "\"ports\".*\[.*80.*443.*8003" "${PIPE_DIR}/config/config.json"; then
+            print_message "Ports are correctly configured in config.json."
+        else
+            print_warning "Ports may not be correctly configured in config.json. Please check the configuration."
+        fi
+    else
+        print_warning "config.json not found. Cannot verify port configuration."
+    fi
+    
+    print_message "Note: The Pipe PoP node may not actively listen on these ports until it receives traffic."
+    print_message "      This is normal behavior and doesn't indicate a problem with the node."
+}
+
+# Main function
+main() {
+    print_message "=== Pipe PoP Node Monitoring ==="
+    print_message "Time: $(date)"
+    print_message "================================="
+    
+    check_node_status
+    check_system_resources
+    check_cache_size
+    check_node_info
+    check_ports
+    
+    print_message "================================="
+    print_message "Monitoring completed."
+}
+
+# Run the main function
+main
+EOF
+
+# Create the backup script with absolute paths
+print_message "Creating backup script with absolute paths..."
+cat > "${INSTALL_DIR}/backup.sh" << 'EOF'
+#!/bin/bash
+
+# Backup script for Pipe PoP node
+# This script creates backups of important node data
+
+# Installation directory
+INSTALL_DIR="/opt/pipe-pop"
+# Main PipeNetwork directory
+PIPE_DIR="/home/karo/Workspace/PipeNetwork"
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+print_message() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Create backup directory if it doesn't exist
+mkdir -p "${PIPE_DIR}/backups"
+
+# Get current timestamp for backup file
+timestamp=$(date +"%Y%m%d_%H%M%S")
+backup_dir="${PIPE_DIR}/backups/backup_${timestamp}"
+mkdir -p "${backup_dir}"
+
+# Backup node_info.json if it exists
+if [ -f "${PIPE_DIR}/cache/node_info.json" ]; then
+    print_message "Backing up node_info.json..."
+    cp "${PIPE_DIR}/cache/node_info.json" "${backup_dir}/"
+    print_message "node_info.json backed up successfully."
+else
+    print_warning "node_info.json not found. Skipping backup."
+fi
+
+# Backup Solana wallet if it exists
+if [ -f "$HOME/.config/solana/id.json" ]; then
+    print_message "Backing up Solana wallet..."
+    cp "$HOME/.config/solana/id.json" "${backup_dir}/solana_id.json"
+    print_message "Solana wallet backed up successfully."
+else
+    print_warning "Solana wallet not found. Skipping backup."
+fi
+
+# Backup configuration files
+print_message "Backing up configuration files..."
+if [ -d "${PIPE_DIR}/config" ]; then
+    cp -r "${PIPE_DIR}/config" "${backup_dir}/"
+    print_message "Configuration files backed up successfully."
+else
+    print_warning "Configuration directory not found. Skipping backup."
+fi
+
+# Create a compressed archive of the backup
+print_message "Creating compressed archive..."
+tar -czf "${backup_dir}.tar.gz" -C "${PIPE_DIR}/backups" "backup_${timestamp}"
+
+# Remove the uncompressed backup directory
+rm -rf "${backup_dir}"
+
+print_message "Backup completed successfully: ${backup_dir}.tar.gz"
+print_message "Please store this backup in a safe location."
+EOF
+
+# Create the global pop command
+print_message "Creating global pop command..."
+cat > "${GLOBAL_CMD}" << 'EOF'
 #!/bin/bash
 
 # Pipe PoP Node Management Script
@@ -54,6 +298,8 @@ cat > /usr/local/bin/pop << 'EOF'
 
 # Installation directory
 INSTALL_DIR="/opt/pipe-pop"
+# Main PipeNetwork directory
+PIPE_DIR="/home/karo/Workspace/PipeNetwork"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -157,95 +403,25 @@ esac
 exit 0
 EOF
 
-# Make the script executable
-chmod +x /usr/local/bin/pop
+# Make all scripts executable
+print_message "Setting executable permissions..."
+chmod +x "${INSTALL_DIR}/monitor.sh"
+chmod +x "${INSTALL_DIR}/backup.sh"
+chmod +x "${INSTALL_DIR}/bin/pipe-pop"
+chmod +x "${GLOBAL_CMD}"
 
-print_message "Creating installation directory if it doesn't exist..."
-mkdir -p ${INSTALL_DIR}
-mkdir -p ${INSTALL_DIR}/bin
-mkdir -p ${INSTALL_DIR}/config
-mkdir -p ${INSTALL_DIR}/logs
-mkdir -p ${INSTALL_DIR}/backups
-mkdir -p ${INSTALL_DIR}/cache
-
-# Check if we're in the PipeNetwork directory
-if [ -f "./bin/pipe-pop" ]; then
-    print_message "Found Pipe PoP installation in current directory."
-    
-    # Copy necessary files to the installation directory
-    print_message "Copying files to ${INSTALL_DIR}..."
-    cp -r ./bin/* ${INSTALL_DIR}/bin/
-    
-    if [ -f "./monitor.sh" ]; then
-        cp ./monitor.sh ${INSTALL_DIR}/
-        chmod +x ${INSTALL_DIR}/monitor.sh
-    fi
-    
-    if [ -f "./backup.sh" ]; then
-        cp ./backup.sh ${INSTALL_DIR}/
-        chmod +x ${INSTALL_DIR}/backup.sh
-    fi
-    
-    if [ -d "./config" ]; then
-        cp -r ./config/* ${INSTALL_DIR}/config/
-    fi
-    
-    print_highlight "Installation complete!"
-    print_highlight "You can now run the 'pop' command from anywhere on your system."
+# Test the installation
+print_message "Testing the installation..."
+if [ -f "${GLOBAL_CMD}" ] && [ -x "${GLOBAL_CMD}" ]; then
+    print_message "Global pop command installed successfully!"
+    print_message "You can now run 'pop --help' from anywhere on your system."
 else
-    print_warning "Current directory doesn't seem to be a Pipe PoP installation."
-    print_warning "Please run this script from your PipeNetwork directory."
-    
-    # Ask for the location of the PipeNetwork directory
-    read -p "Enter the path to your PipeNetwork directory (or press Enter to cancel): " pipe_dir
-    
-    if [ -z "$pipe_dir" ]; then
-        print_error "Installation cancelled."
-        # Remove the script we created
-        rm -f /usr/local/bin/pop
-        exit 1
-    fi
-    
-    if [ -f "${pipe_dir}/bin/pipe-pop" ]; then
-        print_message "Found Pipe PoP installation in ${pipe_dir}."
-        
-        # Copy necessary files to the installation directory
-        print_message "Copying files to ${INSTALL_DIR}..."
-        cp -r ${pipe_dir}/bin/* ${INSTALL_DIR}/bin/
-        
-        if [ -f "${pipe_dir}/monitor.sh" ]; then
-            cp ${pipe_dir}/monitor.sh ${INSTALL_DIR}/
-            chmod +x ${INSTALL_DIR}/monitor.sh
-        fi
-        
-        if [ -f "${pipe_dir}/backup.sh" ]; then
-            cp ${pipe_dir}/backup.sh ${INSTALL_DIR}/
-            chmod +x ${INSTALL_DIR}/backup.sh
-        fi
-        
-        if [ -d "${pipe_dir}/config" ]; then
-            cp -r ${pipe_dir}/config/* ${INSTALL_DIR}/config/
-        fi
-        
-        print_highlight "Installation complete!"
-        print_highlight "You can now run the 'pop' command from anywhere on your system."
-    else
-        print_error "Invalid directory. Installation cancelled."
-        # Remove the script we created
-        rm -f /usr/local/bin/pop
-        exit 1
-    fi
+    print_error "Failed to install global pop command."
+    exit 1
 fi
 
-# Test the global pop command
-print_header "Testing Global Pop Command"
-print_message "Running a quick test of the global pop command..."
-if command -v pop &> /dev/null; then
-    print_highlight "Success! The global 'pop' command is installed and accessible."
-    echo "Try it now with: pop --help"
-else
-    print_warning "The global 'pop' command may not be accessible. Please check your PATH settings."
-    print_message "You can still use it with the full path: /usr/local/bin/pop"
-fi
-
-print_message "To test, try running: pop --status" 
+print_header "Installation Complete!"
+print_message "The global pop command has been installed and is ready to use."
+print_message "Try running 'pop --status' to check your node status."
+print_message "Or 'pop --monitor' to monitor your node."
+print_message "For a list of all available commands, run 'pop --help'." 

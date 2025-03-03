@@ -3,6 +3,11 @@
 # Monitoring script for Pipe PoP node
 # This script checks the status of the node and provides basic monitoring
 
+# Installation directory
+INSTALL_DIR="/opt/pipe-pop"
+# Main PipeNetwork directory
+PIPE_DIR="/home/karo/Workspace/PipeNetwork"
+
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -70,8 +75,8 @@ check_system_resources() {
 
 # Check cache directory size
 check_cache_size() {
-    if [ -d "cache" ]; then
-        cache_size=$(du -sm cache | cut -f1)
+    if [ -d "${PIPE_DIR}/cache" ]; then
+        cache_size=$(du -sm "${PIPE_DIR}/cache" | cut -f1)
         print_message "Cache directory size: ${cache_size}MB"
         
         if [ "$cache_size" -gt 5000 ]; then
@@ -84,15 +89,15 @@ check_cache_size() {
 
 # Check node_info.json
 check_node_info() {
-    if [ -f "cache/node_info.json" ]; then
+    if [ -f "${PIPE_DIR}/cache/node_info.json" ]; then
         print_message "node_info.json exists."
         
         # Check when it was last modified
-        last_modified=$(stat -c %y "cache/node_info.json" | cut -d. -f1)
+        last_modified=$(stat -c %y "${PIPE_DIR}/cache/node_info.json" | cut -d. -f1)
         print_message "Last modified: ${last_modified}"
         
         # Check file size
-        file_size=$(du -h "cache/node_info.json" | cut -f1)
+        file_size=$(du -h "${PIPE_DIR}/cache/node_info.json" | cut -f1)
         print_message "File size: ${file_size}"
     else
         print_warning "node_info.json not found."
@@ -114,8 +119,8 @@ check_ports() {
     done
     
     # Check if the Pipe PoP service is configured to use these ports
-    if [ -f "config/config.json" ]; then
-        if grep -q "\"ports\".*\[.*80.*443.*8003" config/config.json; then
+    if [ -f "${PIPE_DIR}/config/config.json" ]; then
+        if grep -q "\"ports\".*\[.*80.*443.*8003" "${PIPE_DIR}/config/config.json"; then
             print_message "Ports are correctly configured in config.json."
         else
             print_warning "Ports may not be correctly configured in config.json. Please check the configuration."
