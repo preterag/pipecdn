@@ -76,8 +76,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Created first backup
 - Tested monitoring script
 - Installed Solana CLI v1.17.7
-- Created Solana wallet with address 8wL67Jn2txPeHYoLyuKRGNeaxXYrkzU9TBDzabwWu1PR
-- Updated to use wallet address 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
+- Created Solana wallet configuration for user's own wallet
 - Configured node to use Solana wallet
 - Updated placeholder binary to support configuration file
 - Created configuration file with Solana wallet information

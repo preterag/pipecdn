@@ -22,6 +22,12 @@ By participating in the Pipe Network ecosystem through running a Pipe PoP node, 
 
 [Surrealine](https://www.surrealine.com) is a streaming platform that utilizes the Pipe Network decentralized CDN for content delivery. By setting up a Pipe PoP node using this repository, you can participate in the Pipe Network ecosystem and help propagate Surrealine content globally, while earning rewards for your contribution.
 
+### Contact Surrealine
+
+- **Website**: [www.surrealine.com](https://www.surrealine.com)
+- **Email**: [hello@surrealine.com](mailto:hello@surrealine.com)
+- **Twitter**: [@surrealine](https://twitter.com/surrealine)
+
 ## Overview
 
 The Pipe PoP (Points of Presence) node is a component of the Pipe Network ecosystem. This implementation provides a complete framework for setting up, configuring, and maintaining a Pipe PoP node.
@@ -103,7 +109,7 @@ If you're using Cursor AI agent, you can automate the entire setup process:
 
 The Pipe PoP (Points of Presence) node is fully operational with the following configuration:
 - Running Pipe PoP binary v0.2.8
-- Configured with Solana wallet address: 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
+- Configured to use your own Solana wallet address for direct rewards
 - Running as a systemd service
 - Monitoring and backup scripts in place
 - Weekly backup schedule set up (Sundays at 2:00 AM)
@@ -206,30 +212,3 @@ Pipe Network addresses these challenges through its decentralized, permissionles
 - Eliminates central points of failure for greater resilience
 
 By running a Pipe PoP node, you're contributing to a more equitable, efficient, and resilient internet infrastructure.
-
-## License
-
-This project is licensed under the MIT License.
-
-```
-MIT License
-
-Copyright (c) 2023 Surrealine
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE. 

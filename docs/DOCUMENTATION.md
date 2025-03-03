@@ -31,7 +31,7 @@ The Pipe PoP (Proof of Participation) node is a component of the Pipe Network ec
 
 The Pipe PoP node configuration is stored in the `config` directory. The main configuration parameters include:
 
-- **Solana Wallet Address**: Your public key for receiving rewards
+- **Solana Wallet Address**: Your public key for receiving rewards. It's recommended to use your own wallet address to receive rewards directly.
 - **Cache Directory**: Location for storing cache data
 - **Log Level**: Verbosity of logging (info, debug, warn, error)
 - **Network Settings**: Configuration for network connectivity
@@ -153,6 +153,7 @@ For support, visit the official Pipe Network community channels:
 - Discord: [Pipe Network Discord](https://discord.gg/pipe-network)
 - Twitter: [@PipeNetwork](https://twitter.com/PipeNetwork)
 
-## License
-
-The Pipe PoP node is licensed under [LICENSE INFORMATION]. 
+For Surrealine-specific support:
+- Email: support@surrealine.com
+- Website: [https://surrealine.com](https://surrealine.com)
+- Twitter: [@Surrealine](https://twitter.com/Surrealine) 

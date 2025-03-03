@@ -53,6 +53,14 @@ sudo ./bin/pipe-pop --signup-by-referral-route 6ae5e9a2e5063d8
 
 This step registers your node with the Pipe Network using the Surrealine referral code, which helps support the Surrealine platform while also benefiting your node.
 
+### Surrealine Contact Information
+
+If you have questions about Surrealine or using their referral code:
+
+- **Website**: [www.surrealine.com](https://www.surrealine.com)
+- **Email**: [hello@surrealine.com](mailto:hello@surrealine.com)
+- **Twitter**: [@surrealine](https://twitter.com/surrealine)
+
 ## Step 5: Configure Your Node
 
 Create a configuration file for your Pipe PoP node:
@@ -61,7 +69,7 @@ Create a configuration file for your Pipe PoP node:
 mkdir -p config
 ```
 
-Create a file named `config/config.json` with the following content (replace the Solana wallet address with your own):
+Create a file named `config/config.json` with the following content (make sure to use your own Solana wallet address to receive rewards directly):
 
 ```json
 {
@@ -74,6 +82,8 @@ Create a file named `config/config.json` with the following content (replace the
   }
 }
 ```
+
+It's important to use your own wallet address to ensure you receive rewards directly.
 
 ## Step 6: Set Up the Systemd Service
 
@@ -171,6 +181,6 @@ If you need help with your Pipe PoP node, you can:
 
 1. Check the documentation in the `docs/` directory
 2. Visit the [official Pipe Network documentation](https://docs.pipe.network/devnet-2)
-3. Contact Surrealine support for assistance
+3. Contact Surrealine support at [hello@surrealine.com](mailto:hello@surrealine.com)
 
 Thank you for participating in the Pipe Network ecosystem and supporting Surrealine's content delivery infrastructure! 

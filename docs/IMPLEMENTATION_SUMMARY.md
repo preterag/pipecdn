@@ -14,7 +14,7 @@ This document summarizes the implementation of the Pipe PoP node based on the re
 
 ### User Preferences
 
-- **Solana Wallet**: Using wallet with address 2kyMcRZfVaks8JV8KFhYRXhGnhGxropmHohAxFwWAG1W
+- **Solana Wallet**: Configure with your own wallet address to receive rewards directly
 - **Service Preference**: Systemd service
 - **Port Configuration**: Ports 80, 443, and 8003 are configured
 - **Cache Location**: Default location (./cache)
