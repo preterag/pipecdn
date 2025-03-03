@@ -40,6 +40,7 @@ This document summarizes the implementation of the Pipe PoP node based on the re
    - `easy_setup.sh`: Simplified setup script with guided installation
    - `install_global_pop.sh`: Script for installing the global `pop` command
    - `fix_ports.sh`: Script for configuring and troubleshooting port settings
+   - `create_packages.sh`: Script for creating multi-format installation packages
 
 3. **Configuration**
    - `pipe-pop.service`: Systemd service file
@@ -66,6 +67,12 @@ This document summarizes the implementation of the Pipe PoP node based on the re
    - `REFERRAL_GUIDE.md`: Referral system guide
    - `articles/`: Detailed implementation articles
 
+6. **Installation Packages**
+   - AppImage: Universal Linux package format
+   - DEB: For Debian/Ubuntu-based systems
+   - RPM: For Red Hat/Fedora/CentOS-based systems
+   - Source package: For manual installation
+
 ## Current Status
 
 The implementation is complete:
@@ -89,6 +96,8 @@ The implementation is complete:
 - ✅ Wallet management features added
 - ✅ Port enabling option added
 - ✅ Node ID consolidation implemented
+- ✅ Multi-format installation packages created
+- ✅ Repository renamed from 'pipecdn' to 'ppn'
 
 ## Next Steps
 
@@ -122,6 +131,7 @@ Testing with the actual binary shows:
 - Ports 80 and 443 are configured and active
 - Wallet management features work correctly
 - Node ID consolidation works correctly
+- Installation packages successfully created and tested
 
 ## Conclusion
 
@@ -129,4 +139,6 @@ The Pipe PoP node implementation is complete and follows best practices for Linu
 
 The node is fully operational and ready for production use. Regular maintenance tasks have been automated with a weekly backup schedule, and the monitoring system provides clear information about port usage and system resources.
 
-The global `pop` command provides a convenient interface for managing the node from anywhere on the system, with features for checking status, managing the wallet, configuring ports, and performing maintenance tasks. The documentation has been updated to reflect all the new features and improvements. 
+The global `pop` command provides a convenient interface for managing the node from anywhere on the system, with features for checking status, managing the wallet, configuring ports, and performing maintenance tasks. The documentation has been updated to reflect all the new features and improvements.
+
+Multi-format installation packages (AppImage, DEB, RPM, and source) have been created to make installation easy across different Linux distributions. The repository has been renamed from 'pipecdn' to 'ppn' for the public release. 

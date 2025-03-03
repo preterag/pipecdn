@@ -35,6 +35,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Multi-format packaging (AppImage, DEB, RPM)
 - [x] Package testing framework implementation
 - [x] GitHub Actions workflow for automated releases
+- [x] Repository renamed from 'pipecdn' to 'ppn'
 
 ## Upcoming Milestones
 
@@ -82,13 +83,13 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Implement node ID consolidation
 - [x] Update documentation for new features
 
-### Milestone 8: Packaging and Distribution (In Progress)
+### Milestone 8: Packaging and Distribution (Completed)
 - [x] Create basic installation package
 - [x] Develop installer with quick and manual setup options
 - [x] Create multi-format packages (AppImage, DEB, RPM)
 - [x] Test installation packages across different distributions
 - [x] Create distribution channels
-- [ ] Rename repository for public release
+- [x] Rename repository for public release
 
 ## Recently Completed Items
 
@@ -134,6 +135,8 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Created test_packages.sh script for testing packages across different distributions
 - Set up GitHub Actions workflow for automated testing and releases
 - Implemented distribution channels through GitHub Releases
+- Renamed repository from 'pipecdn' to 'ppn' for public release
+- Updated all references to the repository name in documentation and scripts
 
 ## Known Issues and Challenges
 
@@ -156,7 +159,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 13. ~~Create multi-format packages (AppImage, DEB, RPM)~~ (Completed)
 14. ~~Test installation packages across different distributions~~ (Completed)
 15. ~~Create distribution channels~~ (Completed with GitHub Releases)
-16. Rename repository for public release
+16. ~~Rename repository for public release~~ (Completed)
 17. Monitor for future binary updates
 
 ## Resources

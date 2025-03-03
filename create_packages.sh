@@ -105,7 +105,7 @@ BUILD_DIR="${WORKSPACE_DIR}/build"
 PACKAGE_DIR="${BUILD_DIR}/package"
 RELEASE_DIR="${WORKSPACE_DIR}/installers/v1.0.0"
 VERSION="1.0.0"
-PACKAGE_NAME="pipe-pop-node"
+PACKAGE_NAME="ppn"
 FULL_PACKAGE_NAME="${PACKAGE_NAME}-${VERSION}"
 
 # Create directories
@@ -273,7 +273,7 @@ if [ "$DEB_AVAILABLE" = true ]; then
     print_message "Setting up DEB package structure..."
     
     DEB_DIR="${BUILD_DIR}/deb"
-    DEB_PACKAGE_DIR="${DEB_DIR}/pipe-pop-node_${VERSION}_amd64"
+    DEB_PACKAGE_DIR="${DEB_DIR}/${PACKAGE_NAME}_${VERSION}_amd64"
     mkdir -p "${DEB_PACKAGE_DIR}/DEBIAN"
     mkdir -p "${DEB_PACKAGE_DIR}/opt/pipe-pop"
     mkdir -p "${DEB_PACKAGE_DIR}/usr/bin"
@@ -283,7 +283,7 @@ if [ "$DEB_AVAILABLE" = true ]; then
     
     # Create control file
     cat > "${DEB_PACKAGE_DIR}/DEBIAN/control" << EOF
-Package: pipe-pop-node
+Package: ${PACKAGE_NAME}
 Version: ${VERSION}
 Section: net
 Priority: optional
@@ -335,8 +335,8 @@ EOF
     print_message "Building DEB package..."
     cd "${DEB_DIR}"
     dpkg-deb --build "${DEB_PACKAGE_DIR}"
-    mv "${DEB_DIR}/pipe-pop-node_${VERSION}_amd64.deb" "${RELEASE_DIR}/"
-    print_message "DEB package created: ${RELEASE_DIR}/pipe-pop-node_${VERSION}_amd64.deb"
+    mv "${DEB_DIR}/${PACKAGE_NAME}_${VERSION}_amd64.deb" "${RELEASE_DIR}/"
+    print_message "DEB package created: ${RELEASE_DIR}/${PACKAGE_NAME}_${VERSION}_amd64.deb"
 else
     print_warning "Skipping DEB package creation due to missing tools."
 fi
@@ -357,8 +357,8 @@ if [ "$RPM_AVAILABLE" = true ]; then
     tar -czf "${RPM_DIR}/SOURCES/${FULL_PACKAGE_NAME}.tar.gz" -C "${PACKAGE_DIR}" .
     
     # Create spec file
-    cat > "${RPM_DIR}/SPECS/pipe-pop-node.spec" << EOF
-Name:           pipe-pop-node
+    cat > "${RPM_DIR}/SPECS/${PACKAGE_NAME}.spec" << EOF
+Name:           ${PACKAGE_NAME}
 Version:        ${VERSION}
 Release:        1%{?dist}
 Summary:        Pipe Network Point of Presence Node
@@ -409,7 +409,7 @@ EOF
     # Build RPM package
     print_message "Building RPM package..."
     cd "${RPM_DIR}"
-    rpmbuild --define "_topdir $(pwd)" -ba SPECS/pipe-pop-node.spec
+    rpmbuild --define "_topdir $(pwd)" -ba SPECS/${PACKAGE_NAME}.spec
     
     # Copy RPM to release directory
     find "${RPM_DIR}/RPMS" -name "*.rpm" -exec cp {} "${RELEASE_DIR}/" \;
@@ -439,12 +439,12 @@ This directory contains installation packages for the Pipe PoP node for the Pipe
 - Usage: \`sudo ./${FULL_PACKAGE_NAME}-x86_64.AppImage\`
 
 ### Debian/Ubuntu Package (DEB)
-- \`pipe-pop-node_${VERSION}_amd64.deb\`: For Debian-based distributions
-- Installation: \`sudo apt install ./pipe-pop-node_${VERSION}_amd64.deb\`
+- \`${PACKAGE_NAME}_${VERSION}_amd64.deb\`: For Debian-based distributions
+- Installation: \`sudo apt install ./${PACKAGE_NAME}_${VERSION}_amd64.deb\`
 
 ### Red Hat/Fedora/CentOS Package (RPM)
-- \`pipe-pop-node-${VERSION}-1.x86_64.rpm\`: For Red Hat-based distributions
-- Installation: \`sudo dnf install ./pipe-pop-node-${VERSION}-1.x86_64.rpm\`
+- \`${PACKAGE_NAME}-${VERSION}-1.x86_64.rpm\`: For Red Hat-based distributions
+- Installation: \`sudo dnf install ./${PACKAGE_NAME}-${VERSION}-1.x86_64.rpm\`
 
 ### Source Package
 - \`${FULL_PACKAGE_NAME}-source.tar.gz\`: Source code for manual installation
@@ -499,6 +499,6 @@ print_message "You can distribute these files to users for easy installation of 
 echo ""
 print_message "To test the packages:"
 print_message "  - AppImage: sudo ${RELEASE_DIR}/${FULL_PACKAGE_NAME}-*.AppImage"
-print_message "  - DEB: sudo apt install ${RELEASE_DIR}/pipe-pop-node_${VERSION}_amd64.deb"
-print_message "  - RPM: sudo dnf install ${RELEASE_DIR}/pipe-pop-node-${VERSION}-*.rpm"
+print_message "  - DEB: sudo apt install ${RELEASE_DIR}/${PACKAGE_NAME}_${VERSION}_amd64.deb"
+print_message "  - RPM: sudo dnf install ${RELEASE_DIR}/${PACKAGE_NAME}-${VERSION}-*.rpm"
 print_message "  - Source: tar -xzf ${RELEASE_DIR}/${FULL_PACKAGE_NAME}-source.tar.gz && cd ${FULL_PACKAGE_NAME} && sudo ./easy_setup.sh" 

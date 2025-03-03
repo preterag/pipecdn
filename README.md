@@ -20,7 +20,7 @@ The easiest way to set up a Pipe PoP node is to use our one-command setup script
 
 ```bash
 # Download and run the setup script
-curl -L https://raw.githubusercontent.com/preterag/pipecdn/master/easy_setup.sh -o easy_setup.sh
+curl -L https://raw.githubusercontent.com/preterag/ppn/master/easy_setup.sh -o easy_setup.sh
 chmod +x easy_setup.sh
 sudo ./easy_setup.sh
 ```
@@ -54,13 +54,13 @@ AppImage runs on virtually any Linux distribution without installation:
 
 ```bash
 # Download the AppImage
-wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-x86_64.AppImage
+wget https://github.com/preterag/ppn/releases/download/v1.0.0/ppn-1.0.0-x86_64.AppImage
 
 # Make it executable
-chmod +x pipe-pop-node-1.0.0-x86_64.AppImage
+chmod +x ppn-1.0.0-x86_64.AppImage
 
 # Run it (requires sudo)
-sudo ./pipe-pop-node-1.0.0-x86_64.AppImage
+sudo ./ppn-1.0.0-x86_64.AppImage
 ```
 
 ### Debian/Ubuntu Package (DEB)
@@ -69,10 +69,10 @@ For Debian-based distributions (Ubuntu, Mint, etc.):
 
 ```bash
 # Download the DEB package
-wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node_1.0.0_amd64.deb
+wget https://github.com/preterag/ppn/releases/download/v1.0.0/ppn_1.0.0_amd64.deb
 
 # Install it
-sudo apt install ./pipe-pop-node_1.0.0_amd64.deb
+sudo apt install ./ppn_1.0.0_amd64.deb
 
 # Run the setup
 sudo pop --setup
@@ -84,10 +84,10 @@ For Red Hat-based distributions (Fedora, CentOS, RHEL, etc.):
 
 ```bash
 # Download the RPM package
-wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-1.x86_64.rpm
+wget https://github.com/preterag/ppn/releases/download/v1.0.0/ppn-1.0.0-1.x86_64.rpm
 
 # Install it
-sudo dnf install ./pipe-pop-node-1.0.0-1.x86_64.rpm
+sudo dnf install ./ppn-1.0.0-1.x86_64.rpm
 
 # Run the setup
 sudo pop --setup
@@ -99,11 +99,11 @@ For manual installation from source:
 
 ```bash
 # Download the source package
-wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-source.tar.gz
+wget https://github.com/preterag/ppn/releases/download/v1.0.0/ppn-1.0.0-source.tar.gz
 
 # Extract it
-tar -xzf pipe-pop-node-1.0.0-source.tar.gz
-cd pipe-pop-node-1.0.0
+tar -xzf ppn-1.0.0-source.tar.gz
+cd ppn-1.0.0
 
 # Run the setup script
 sudo ./easy_setup.sh
@@ -115,8 +115,8 @@ If you prefer to set up your node manually, follow these steps:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/preterag/pipecdn.git
-   cd pipecdn
+   git clone https://github.com/preterag/ppn.git
+   cd ppn
    ```
 
 2. Run the setup script:
