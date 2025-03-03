@@ -280,6 +280,7 @@ show_help() {
     echo "  --update                Update to the latest version"
     echo "  --gen-referral-route    Generate a referral code"
     echo "  --points-route          Check points and rewards"
+    echo "  --enable-80-443         Enable ports 80 and 443 (requires restart)"
     echo "  --monitor               Monitor node status"
     echo "  --backup                Create a backup"
     echo "  --restart               Restart the node service"
@@ -316,6 +317,41 @@ case "$1" in
     --points-route)
         print_message "Checking points and rewards..."
         ${INSTALL_DIR}/bin/pipe-pop --points-route
+        ;;
+    --enable-80-443)
+        print_message "Enabling ports 80 and 443..."
+        if [ "$EUID" -ne 0 ]; then
+            print_error "This command must be run as root (with sudo)"
+            exit 1
+        fi
+        
+        # Check if the service file already has the flag
+        if grep -q -- "--enable-80-443" /etc/systemd/system/pipe-pop.service; then
+            print_message "Ports 80 and 443 are already enabled in the service configuration."
+        else
+            # Update the service file to include the --enable-80-443 flag
+            sed -i 's|ExecStart=.*pipe-pop|& --enable-80-443|' /etc/systemd/system/pipe-pop.service
+            
+            # Reload systemd and restart the service
+            systemctl daemon-reload
+            systemctl restart pipe-pop.service
+            
+            print_message "Ports 80 and 443 have been enabled. The service has been restarted."
+        fi
+        
+        # Check if the ports are now in use
+        sleep 5
+        if netstat -tuln | grep -q ":80 "; then
+            print_message "Port 80 is now active and listening."
+        else
+            print_warning "Port 80 does not appear to be listening. Please check the service logs."
+        fi
+        
+        if netstat -tuln | grep -q ":443 "; then
+            print_message "Port 443 is now active and listening."
+        else
+            print_warning "Port 443 does not appear to be listening. Please check the service logs."
+        fi
         ;;
     --monitor)
         print_message "Monitoring node status..."
