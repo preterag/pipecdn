@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # Pipe PoP Node Easy Setup Script
-# This script automates the entire setup process for a Pipe PoP node
+# This script provides a one-command setup for the Pipe PoP node
+
+set -e
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Function to print colored messages
@@ -24,163 +25,135 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-print_step() {
-    echo -e "\n${BLUE}[STEP]${NC} $1"
+print_header() {
+    echo -e "${BLUE}==== $1 ====${NC}"
 }
 
-print_question() {
-    echo -e "${CYAN}[QUESTION]${NC} $1"
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    print_error "This script must be run as root (with sudo)"
+    exit 1
+fi
+
+# Welcome message
+clear
+print_header "Pipe PoP Node Easy Setup"
+echo ""
+print_message "Welcome to the Pipe PoP Node Easy Setup!"
+print_message "This script will guide you through setting up a Pipe PoP node for the Pipe Network decentralized CDN."
+echo ""
+print_message "The setup will:"
+echo "  - Install all necessary dependencies"
+echo "  - Set up your Solana wallet (or use your existing one)"
+echo "  - Download and configure the Pipe PoP binary"
+echo "  - Set up a systemd service for reliable operation"
+echo "  - Configure automatic backups"
+echo "  - Apply the Surrealine referral code (optional)"
+echo ""
+read -p "Press Enter to continue or Ctrl+C to cancel..."
+
+# Create a temporary directory for the setup
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
+# Step 1: Check system requirements
+print_header "Checking System Requirements"
+
+# Check RAM
+total_ram=$(free -m | awk '/^Mem:/{print $2}')
+available_ram=$(free -m | awk '/^Mem:/{print $7}')
+
+if [ "$available_ram" -lt 2048 ]; then
+    print_warning "Available RAM is less than 2GB (${available_ram}MB). This might affect performance."
+else
+    print_message "RAM check passed: ${available_ram}MB available out of ${total_ram}MB total."
+fi
+
+# Check disk space
+disk_space=$(df -m . | awk 'NR==2 {print $4}')
+
+if [ "$disk_space" -lt 10240 ]; then
+    print_warning "Available disk space is less than 10GB (${disk_space}MB). This might not be enough for long-term operation."
+else
+    print_message "Disk space check passed: ${disk_space}MB available."
+fi
+
+# Check OS
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    print_message "Operating System: $PRETTY_NAME"
+else
+    print_warning "Could not determine OS version."
+fi
+
+# Step 2: Install dependencies
+print_header "Installing Dependencies"
+
+print_message "Updating package lists..."
+apt-get update
+
+print_message "Installing required packages..."
+apt-get install -y curl net-tools jq
+
+# Step 3: Clone the repository
+print_header "Setting Up Pipe PoP Node"
+
+print_message "Creating installation directory..."
+INSTALL_DIR="/opt/pipe-pop"
+mkdir -p "$INSTALL_DIR"
+
+print_message "Downloading Pipe PoP node files..."
+git clone https://github.com/preterag/pipecdn.git "$INSTALL_DIR" || {
+    print_message "Repository already exists, updating instead..."
+    cd "$INSTALL_DIR"
+    git pull
 }
 
-# Function to check if running as root
-check_root() {
-    if [ "$EUID" -ne 0 ]; then
-        print_error "This script must be run as root (with sudo)"
-        exit 1
-    fi
-}
+cd "$INSTALL_DIR"
 
-# Function to check and install dependencies
-install_dependencies() {
-    print_step "Checking and installing dependencies..."
-    
-    # List of required packages
-    packages=("curl" "net-tools" "jq")
-    
-    # Check which package manager is available
-    if command -v apt-get &> /dev/null; then
-        # Update package lists
-        print_message "Updating package lists..."
-        apt-get update -qq
-        
-        # Install packages
-        for package in "${packages[@]}"; do
-            if ! dpkg -l | grep -q "^ii  $package "; then
-                print_message "Installing $package..."
-                apt-get install -y -qq "$package"
-            else
-                print_message "$package is already installed."
-            fi
-        done
-    elif command -v yum &> /dev/null; then
-        # Install packages using yum
-        for package in "${packages[@]}"; do
-            if ! rpm -q "$package" &> /dev/null; then
-                print_message "Installing $package..."
-                yum install -y -q "$package"
-            else
-                print_message "$package is already installed."
-            fi
-        done
-    else
-        print_warning "Unsupported package manager. Please manually install: ${packages[*]}"
-    fi
-    
-    print_message "Dependencies check completed."
-}
+# Step 4: Set up Solana wallet
+print_header "Setting Up Solana Wallet"
 
-# Function to create directory structure
-create_directory_structure() {
-    print_step "Creating directory structure..."
-    
-    # Create directories
-    mkdir -p bin cache config logs backups docs
-    
-    print_message "Directory structure created."
-}
+print_message "Installing Solana CLI..."
+sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+echo 'export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"' >> ~/.bashrc
 
-# Function to download Pipe PoP binary
-download_binary() {
-    print_step "Downloading Pipe PoP binary..."
-    
-    # Current version
-    BINARY_VERSION="0.2.8"
-    BINARY_URL="https://dl.pipecdn.app/v${BINARY_VERSION}/pop"
-    
-    print_message "Downloading version v${BINARY_VERSION}..."
-    if curl -L -o bin/pipe-pop "$BINARY_URL"; then
-        chmod +x bin/pipe-pop
-        print_message "Binary downloaded and set as executable."
-    else
-        print_error "Failed to download binary. Please check your internet connection."
-        exit 1
-    fi
-}
+# Ask if user wants to use an existing wallet or create a new one
+echo ""
+print_message "Solana wallet setup:"
+echo "  1) Create a new wallet"
+echo "  2) Use an existing wallet address"
+echo ""
+read -p "Enter your choice (1/2): " wallet_choice
 
-# Function to download scripts
-download_scripts() {
-    print_step "Downloading additional scripts..."
-    
-    # List of scripts to download from the repository
-    scripts=(
-        "pop"
-        "monitor.sh"
-        "backup.sh"
-        "update_binary.sh"
-        "install_service.sh"
-        "setup_backup_schedule.sh"
-    )
-    
-    # Base URL for raw GitHub content
-    BASE_URL="https://raw.githubusercontent.com/preterag/pipecdn/master"
-    
-    # Download each script
-    for script in "${scripts[@]}"; do
-        print_message "Downloading $script..."
-        if curl -L -o "$script" "$BASE_URL/$script"; then
-            chmod +x "$script"
-            print_message "$script downloaded and set as executable."
-        else
-            print_warning "Failed to download $script. Will create a basic version locally."
-            # For critical scripts like 'pop', we could include fallback code here
-        fi
-    done
-}
+SOLANA_WALLET=""
 
-# Function to handle Solana wallet setup
-setup_solana_wallet() {
-    print_step "Setting up Solana wallet..."
-    
-    # Ask if user already has a Solana wallet
-    print_question "Do you already have a Solana wallet you want to use? (y/n)"
-    read -r has_wallet
-    
-    if [[ "$has_wallet" =~ ^[Yy]$ ]]; then
-        # User has a wallet, ask for the address
-        print_question "Please enter your Solana wallet address:"
-        read -r wallet_address
-        
-        # Validate the wallet address (basic check)
-        if [[ ${#wallet_address} -lt 32 ]]; then
-            print_error "The wallet address seems too short. Please check and try again."
-            exit 1
-        fi
-    else
-        # User doesn't have a wallet, create one
-        print_message "We'll create a new Solana wallet for you."
-        
-        # Check if Solana CLI is installed
-        if ! command -v solana &> /dev/null; then
-            print_message "Installing Solana CLI..."
-            sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
-            export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-        fi
-        
-        # Create a new wallet
-        print_message "Creating a new Solana wallet..."
-        wallet_output=$(solana-keygen new --no-passphrase --silent)
-        wallet_address=$(solana address)
-        
-        print_message "New wallet created with address: $wallet_address"
-        print_message "IMPORTANT: Please backup your wallet at ~/.config/solana/id.json"
-    fi
-    
-    # Save the wallet address to config
-    mkdir -p config
-    cat > config/config.json << EOF
+if [ "$wallet_choice" = "1" ]; then
+    print_message "Creating new Solana wallet..."
+    solana-keygen new --no-passphrase
+    SOLANA_WALLET=$(solana address)
+    print_message "Wallet created with address: $SOLANA_WALLET"
+else
+    read -p "Enter your Solana wallet address: " SOLANA_WALLET
+    print_message "Using wallet address: $SOLANA_WALLET"
+fi
+
+# Step 5: Download and configure the Pipe PoP binary
+print_header "Setting Up Pipe PoP Binary"
+
+print_message "Creating directories..."
+mkdir -p bin cache config logs backups
+
+print_message "Downloading Pipe PoP binary..."
+curl -L -o bin/pipe-pop https://dl.pipecdn.app/v0.2.8/pop
+chmod +x bin/pipe-pop
+
+print_message "Creating configuration file..."
+cat > config/config.json << EOF
 {
-  "solana_wallet": "$wallet_address",
-  "cache_dir": "$(pwd)/cache",
+  "solana_wallet": "$SOLANA_WALLET",
+  "cache_dir": "$INSTALL_DIR/cache",
   "log_level": "info",
   "network": {
     "ports": [80, 443, 8003],
@@ -188,53 +161,37 @@ setup_solana_wallet() {
   }
 }
 EOF
-    
-    print_message "Wallet address saved to config/config.json"
-}
 
-# Function to apply Surrealine referral code
-apply_referral_code() {
-    print_step "Referral code setup..."
-    
-    # Surrealine referral code
-    REFERRAL_CODE="3a069772281d9b1b"
-    
-    # Ask for confirmation
-    print_question "Would you like to use Surrealine's referral code (3a069772281d9b1b)? (y/n)"
-    read -r use_referral
-    
-    if [[ "$use_referral" =~ ^[Yy]$ ]]; then
-        print_message "Applying Surrealine referral code..."
-        
-        # Run the binary with the referral code
-        ./bin/pipe-pop --signup-by-referral-route "$REFERRAL_CODE"
-        
-        print_message "Referral code applied successfully."
-    else
-        print_message "Skipping referral code application."
-    fi
-}
+# Step 6: Ask about referral code
+print_header "Referral Code Setup"
 
-# Function to create and install systemd service
-setup_service() {
-    print_step "Setting up systemd service..."
-    
-    # Get the current directory
-    CURRENT_DIR=$(pwd)
-    
-    # Get the current user
-    CURRENT_USER=$(whoami)
-    
-    # Create the service file
-    cat > pipe-pop.service << EOF
+echo ""
+print_message "Would you like to use the Surrealine referral code?"
+echo "Using a referral code helps support the Surrealine platform and benefits your node."
+echo ""
+read -p "Use Surrealine referral code? (y/n): " use_referral
+
+if [ "$use_referral" = "y" ] || [ "$use_referral" = "Y" ]; then
+    print_message "Signing up with Surrealine referral code..."
+    ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
+    print_message "Referral code applied successfully."
+else
+    print_message "Skipping referral code."
+fi
+
+# Step 7: Set up systemd service
+print_header "Setting Up Systemd Service"
+
+print_message "Creating systemd service file..."
+cat > /etc/systemd/system/pipe-pop.service << EOF
 [Unit]
 Description=Pipe PoP Node
 After=network.target
 
 [Service]
-User=$CURRENT_USER
-WorkingDirectory=$CURRENT_DIR
-ExecStart=$CURRENT_DIR/bin/pipe-pop --cache-dir $CURRENT_DIR/cache --pubKey $(grep -o '"solana_wallet"[^,}]*' config/config.json | cut -d'"' -f4)
+User=$(whoami)
+WorkingDirectory=$INSTALL_DIR
+ExecStart=$INSTALL_DIR/bin/pipe-pop --cache-dir $INSTALL_DIR/cache --pubKey $SOLANA_WALLET
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65535
@@ -242,94 +199,37 @@ LimitNOFILE=65535
 [Install]
 WantedBy=multi-user.target
 EOF
-    
-    # Install the service
-    print_message "Installing systemd service..."
-    cp pipe-pop.service /etc/systemd/system/
-    systemctl daemon-reload
-    systemctl enable pipe-pop.service
-    systemctl start pipe-pop.service
-    
-    # Check if service started successfully
-    if systemctl is-active --quiet pipe-pop.service; then
-        print_message "Service started successfully."
-    else
-        print_error "Failed to start service. Please check the logs with: journalctl -u pipe-pop.service"
-    fi
-}
 
-# Function to set up a weekly backup schedule
-setup_backup_schedule() {
-    print_step "Setting up weekly backup schedule..."
-    
-    if [ -f "setup_backup_schedule.sh" ]; then
-        ./setup_backup_schedule.sh weekly
-        print_message "Weekly backup schedule set up."
-    else
-        print_warning "setup_backup_schedule.sh not found. Skipping backup schedule setup."
-    fi
-}
+print_message "Enabling and starting the service..."
+systemctl daemon-reload
+systemctl enable pipe-pop.service
+systemctl start pipe-pop.service
 
-# Function to display final information
-show_final_info() {
-    print_step "Setup completed successfully!"
-    
-    echo -e "\n${GREEN}=== Pipe PoP Node Information ===${NC}"
-    echo -e "Node Status: ${GREEN}Running${NC}"
-    echo -e "Solana Wallet: ${GREEN}$(grep -o '"solana_wallet"[^,}]*' config/config.json | cut -d'"' -f4)${NC}"
-    echo -e "Binary Version: ${GREEN}$(./bin/pipe-pop --version 2>&1 | grep -o 'v[0-9]\.[0-9]\.[0-9]')${NC}"
-    echo -e "Service Status: ${GREEN}Active${NC}"
-    
-    echo -e "\n${GREEN}=== Quick Commands ===${NC}"
-    echo -e "Check node status: ${YELLOW}./pop --status${NC}"
-    echo -e "Check points: ${YELLOW}./pop --points-route${NC}"
-    echo -e "Check for updates: ${YELLOW}./pop --check-update${NC}"
-    echo -e "Update the node: ${YELLOW}sudo ./pop --update${NC}"
-    echo -e "Monitor the node: ${YELLOW}./monitor.sh${NC}"
-    echo -e "Create a backup: ${YELLOW}./backup.sh${NC}"
-    
-    echo -e "\n${GREEN}=== Next Steps ===${NC}"
-    echo -e "1. Make sure ports 80, 443, and 8003 are open in your firewall"
-    echo -e "2. Check your node status regularly with ${YELLOW}./pop --status${NC}"
-    echo -e "3. Backup your Solana wallet at ~/.config/solana/id.json"
-    
-    echo -e "\n${GREEN}Thank you for setting up a Pipe PoP node with Surrealine!${NC}"
-}
+# Step 8: Set up backup schedule
+print_header "Setting Up Backup Schedule"
 
-# Main function
-main() {
-    print_step "Starting Pipe PoP node easy setup..."
-    
-    # Check if running as root
-    check_root
-    
-    # Install dependencies
-    install_dependencies
-    
-    # Create directory structure
-    create_directory_structure
-    
-    # Download binary
-    download_binary
-    
-    # Download scripts
-    download_scripts
-    
-    # Setup Solana wallet
-    setup_solana_wallet
-    
-    # Apply referral code
-    apply_referral_code
-    
-    # Setup service
-    setup_service
-    
-    # Setup backup schedule
-    setup_backup_schedule
-    
-    # Show final information
-    show_final_info
-}
+print_message "Setting up weekly backups..."
+chmod +x setup_backup_schedule.sh
+./setup_backup_schedule.sh weekly
 
-# Run the main function
-main 
+# Step 9: Final steps
+print_header "Setup Complete"
+
+print_message "Pipe PoP node has been successfully set up!"
+print_message "You can manage your node using the following commands:"
+echo ""
+echo "  Check node status:    $INSTALL_DIR/pop --status"
+echo "  Monitor node:         $INSTALL_DIR/pop --monitor"
+echo "  Create backup:        $INSTALL_DIR/pop --backup"
+echo "  Check for updates:    $INSTALL_DIR/pop --check-update"
+echo "  Update node:          sudo $INSTALL_DIR/pop --update"
+echo "  View logs:            $INSTALL_DIR/pop --logs"
+echo ""
+print_message "For more information, refer to the documentation in the $INSTALL_DIR/docs directory."
+echo ""
+print_message "Thank you for joining the Pipe Network ecosystem!"
+
+# Clean up
+rm -rf "$TEMP_DIR"
+
+exit 0 
