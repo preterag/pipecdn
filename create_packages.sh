@@ -275,40 +275,42 @@ if [ "$DEB_AVAILABLE" = true ]; then
     DEB_DIR="${BUILD_DIR}/deb"
     DEB_PACKAGE_DIR="${DEB_DIR}/${PACKAGE_NAME}_${VERSION}_amd64"
     mkdir -p "${DEB_PACKAGE_DIR}/DEBIAN"
-    mkdir -p "${DEB_PACKAGE_DIR}/opt/pipe-pop"
+    mkdir -p "${DEB_PACKAGE_DIR}/opt/ppn"
     mkdir -p "${DEB_PACKAGE_DIR}/usr/bin"
     
     # Copy files to package directory
-    cp -r "${PACKAGE_DIR}/"* "${DEB_PACKAGE_DIR}/opt/pipe-pop/"
+    cp -r "${PACKAGE_DIR}/"* "${DEB_PACKAGE_DIR}/opt/ppn/"
     
     # Create control file
     cat > "${DEB_PACKAGE_DIR}/DEBIAN/control" << EOF
-Package: ${PACKAGE_NAME}
+Package: ppn
 Version: ${VERSION}
 Section: net
 Priority: optional
 Architecture: amd64
-Depends: bash, curl, jq
-Maintainer: Preterag Team <hello@preterag.com>
-Description: Pipe Network Point of Presence Node
- A node for the Pipe Network decentralized CDN.
- This package installs the Pipe PoP node software.
+Depends: bash, curl, jq, solana-cli
+Maintainer: Preterag <hello@preterag.com>
+Description: Pipe PoP Node for the Pipe Network decentralized CDN
+ A complete implementation for setting up and managing a Pipe PoP node
+ for the Pipe Network decentralized CDN. This package provides scripts
+ and tools for easy deployment, monitoring, and maintenance of a Pipe
+ PoP node.
 EOF
     
     # Create postinst script
     cat > "${DEB_PACKAGE_DIR}/DEBIAN/postinst" << 'EOF'
 #!/bin/bash
-# Make scripts executable
-chmod +x /opt/pipe-pop/*.sh
-chmod +x /opt/pipe-pop/pop
+set -e
 
-# Create symlink to pop command
-ln -sf /opt/pipe-pop/pop /usr/bin/pop
+# Create symlink for global pop command
+ln -sf /opt/ppn/pop /usr/bin/pop
 
-# Display installation message
+# Set permissions
+chmod +x /opt/ppn/*.sh
+chmod +x /opt/ppn/pop
+
 echo "Pipe PoP Node has been installed."
-echo "To complete the setup, run: sudo pop --setup"
-echo "For more information, see the documentation in /opt/pipe-pop/docs"
+echo "To set up your node, run: sudo pop --setup"
 
 exit 0
 EOF
@@ -317,14 +319,16 @@ EOF
     # Create postrm script
     cat > "${DEB_PACKAGE_DIR}/DEBIAN/postrm" << 'EOF'
 #!/bin/bash
-# Remove symlink to pop command
+set -e
+
+# Remove symlink for global pop command
 if [ -L /usr/bin/pop ]; then
-    rm /usr/bin/pop
+    rm -f /usr/bin/pop
 fi
 
-# If purging, remove configuration files
+# If purge, remove configuration
 if [ "$1" = "purge" ]; then
-    rm -rf /opt/pipe-pop/config
+    rm -rf /opt/ppn/config
 fi
 
 exit 0
@@ -358,40 +362,42 @@ if [ "$RPM_AVAILABLE" = true ]; then
     
     # Create spec file
     cat > "${RPM_DIR}/SPECS/${PACKAGE_NAME}.spec" << EOF
-Name:           ${PACKAGE_NAME}
+Name:           ppn
 Version:        ${VERSION}
 Release:        1%{?dist}
-Summary:        Pipe Network Point of Presence Node
+Summary:        Pipe PoP Node for the Pipe Network decentralized CDN
 
-License:        Proprietary
-URL:            https://pipe.network
-Source0:        ${FULL_PACKAGE_NAME}.tar.gz
+License:        MIT
+URL:            https://github.com/preterag/ppn
+Source0:        %{name}-%{version}.tar.gz
 
 Requires:       bash curl jq
 
 %description
-A node for the Pipe Network decentralized CDN.
-This package installs the Pipe PoP node software.
+A complete implementation for setting up and managing a Pipe PoP node
+for the Pipe Network decentralized CDN. This package provides scripts
+and tools for easy deployment, monitoring, and maintenance of a Pipe
+PoP node.
 
 %prep
 %setup -q -n ${FULL_PACKAGE_NAME}
 
 %install
-mkdir -p %{buildroot}/opt/pipe-pop
+mkdir -p %{buildroot}/opt/ppn
 mkdir -p %{buildroot}/usr/bin
-cp -r * %{buildroot}/opt/pipe-pop/
-ln -sf /opt/pipe-pop/pop %{buildroot}/usr/bin/pop
+cp -r * %{buildroot}/opt/ppn/
+ln -sf /opt/ppn/pop %{buildroot}/usr/bin/pop
 
 %files
-/opt/pipe-pop
+/opt/ppn
 /usr/bin/pop
 
 %post
-chmod +x /opt/pipe-pop/*.sh
-chmod +x /opt/pipe-pop/pop
+chmod +x /opt/ppn/*.sh
+chmod +x /opt/ppn/pop
 echo "Pipe PoP Node has been installed."
 echo "To complete the setup, run: sudo pop --setup"
-echo "For more information, see the documentation in /opt/pipe-pop/docs"
+echo "For more information, see the documentation in /opt/ppn/docs"
 
 %postun
 if [ \$1 -eq 0 ]; then
@@ -402,7 +408,7 @@ if [ \$1 -eq 0 ]; then
 fi
 
 %changelog
-* $(date +"%a %b %d %Y") Preterag Team <hello@preterag.com> - ${VERSION}-1
+* $(date +"%a %b %d %Y") Preterag <hello@preterag.com> - ${VERSION}-1
 - Initial package
 EOF
     
@@ -466,7 +472,7 @@ After installation, you can use the \`pop\` command to manage your Pipe PoP node
 - Update node: \`sudo pop --update\`
 - View logs: \`pop --logs\`
 
-For more information, refer to the documentation in \`/opt/pipe-pop/docs\` or run \`pop --help\`.
+For more information, refer to the documentation in \`/opt/ppn/docs\` or run \`pop --help\`.
 
 ## System Requirements
 
@@ -480,7 +486,7 @@ For more information, refer to the documentation in \`/opt/pipe-pop/docs\` or ru
 
 If you need help with your Pipe PoP node:
 
-1. Check the documentation in \`/opt/pipe-pop/docs\`
+1. Check the documentation in \`/opt/ppn/docs\`
 2. Visit the [Pipe Network Documentation](https://docs.pipe.network)
 3. Contact Preterag support at [hello@preterag.com](mailto:hello@preterag.com)
 EOF
