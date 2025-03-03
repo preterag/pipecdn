@@ -1,3 +1,34 @@
+# Pipe PoP Node
+
+A complete implementation for setting up and managing a Pipe PoP (Points of Presence) node for the Pipe Network decentralized CDN.
+
+## Quick Start (One-Command Setup)
+
+The easiest way to set up a Pipe PoP node is to use our automated setup script:
+
+```bash
+# Download the setup script
+curl -L -o easy_setup.sh https://raw.githubusercontent.com/e3o8o/pipecdn/master/easy_setup.sh
+chmod +x easy_setup.sh
+
+# Run the setup script (requires sudo)
+sudo ./easy_setup.sh
+```
+
+This script will:
+1. Install all required dependencies
+2. Download the Pipe PoP binary and supporting scripts
+3. Help you set up a Solana wallet (or use your existing one)
+4. Apply the Surrealine referral code (with your permission)
+5. Configure and start the node as a system service
+6. Set up automated backups
+
+Just follow the prompts and your node will be up and running in minutes!
+
+## Manual Setup
+
+If you prefer to set up your node manually, follow these steps:
+
 # Pipe PoP Node Setup
 
 This repository contains the setup and configuration for a Pipe PoP (Points of Presence) node for the [Pipe Network](https://docs.pipe.network/devnet-2) decentralized CDN.
