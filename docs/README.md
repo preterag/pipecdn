@@ -86,9 +86,25 @@ pop --monitor
 
 # Create a backup
 pop --backup
-```
 
-For more details, see the [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md) document.
+# Check for updates
+pop --check-update
+
+# Update to the latest version
+sudo pop --update
+
+# View service logs
+pop --logs
+
+# Restart the service
+sudo pop --restart
+
+# Generate a referral code
+pop --gen-referral-route
+
+# Check points and rewards
+pop --points
+```
 
 ## Checking for Updates and Updating
 
@@ -99,7 +115,10 @@ The Pipe PoP node includes functionality to check for updates and update the bin
 pop --check-update
 
 # Update to the latest version
-pop --update
+sudo pop --update
+
+# Force reinstall a specific version
+sudo pop --update vX.Y.Z --force
 ```
 
 When you check for updates:
@@ -122,4 +141,23 @@ If you need help with your Pipe PoP node:
 
 ## About Pipe Network
 
-The Pipe Network is a decentralized content delivery network (CDN) with several key features: 
+The Pipe Network is a decentralized content delivery network (CDN) with several key features:
+
+- **Decentralized Architecture**: Distributed network of nodes for content delivery
+- **Hyperlocal Focus**: Content delivered from the closest geographical point
+- **Blockchain-Powered**: Built on Solana for transparent operations
+- **Cost Efficiency**: Lower costs compared to traditional CDNs
+- **Equitable Access**: Fair compensation for node operators
+- **Flexible Payment Structure**: Pay-as-you-go model
+- **Enhanced Security**: Distributed architecture reduces single points of failure
+
+## Future Directions
+
+We're continuously improving the Pipe PoP node implementation. Future enhancements include:
+
+1. **Web-Based Dashboard**: A user-friendly web interface for monitoring and managing nodes
+2. **Enhanced Analytics**: More detailed performance analytics for node operators
+3. **Automated Optimization**: Intelligent optimization of node configuration
+4. **Mobile Notifications**: Alerts and notifications for important node events
+5. **Multi-Node Management**: Tools for managing multiple nodes from a single interface
+6. **Cross-Platform Support**: Extending support beyond Linux to Windows and macOS systems 

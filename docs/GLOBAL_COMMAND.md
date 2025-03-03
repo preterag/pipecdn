@@ -28,187 +28,171 @@ The script will:
 Once installed, you can use the `pop` command from anywhere on your system:
 
 ```bash
-pop --help
-```
-
-This will display a list of available commands.
-
-## Available Commands
-
-The following commands are available:
-
-| Command | Description |
-|---------|-------------|
-| `--status` | Check node status and reputation |
-| `--check-update` | Check for available updates |
-| `--update` | Update to the latest version |
-| `--gen-referral-route` | Generate a referral code |
-| `--points-route` | Check points and rewards |
-| `--monitor` | Monitor node status |
-| `--backup` | Create a backup |
-| `--restart` | Restart the node service |
-| `--logs` | View service logs |
-| `--help` | Show this help message |
-
-## Examples
-
-Here are some examples of how to use the `pop` command:
-
-```bash
 # Check node status
 pop --status
 
+# View available commands
+pop --help
+```
+
+## Available Commands
+
+The global `pop` command provides the following functionality:
+
+### Status and Information
+
+```bash
+# Check node status and reputation
+pop --status
+
+# Show the version of the Pipe PoP binary
+pop --version
+
+# Fetch node's uptime stats
+pop --stats
+
+# Perform a quick egress test
+pop --egress-test
+```
+
+### Updates and Maintenance
+
+```bash
+# Check for updates to the Pipe PoP binary
+pop --check-update
+
+# Update the Pipe PoP binary to the latest version (requires sudo)
+sudo pop --update
+
+# Update to a specific version with force option (requires sudo)
+sudo pop --update vX.Y.Z --force
+
+# Check for upgrades and refresh token (requires sudo)
+sudo pop --refresh
+```
+
+### Monitoring and Logs
+
+```bash
 # Monitor node status
 pop --monitor
 
-# Create a backup
-pop --backup
-
-# Update to the latest version
-sudo pop --update
+# View service logs
+pop --logs
 ```
 
-## Update Management
+### Service Management
 
-The `pop` command includes functionality to check for updates and update your Pipe PoP binary when new versions are available.
+```bash
+# Restart the node service (requires sudo)
+sudo pop --restart
+```
 
-### Checking for Updates
+### Backup and Recovery
 
-To check if a new version of the Pipe PoP binary is available:
+```bash
+# Create a backup
+pop --backup
+```
+
+### Referrals and Rewards
+
+```bash
+# Generate a referral code
+pop --gen-referral-route
+
+# Check points and rewards
+pop --points
+```
+
+### Help
+
+```bash
+# Show help message
+pop --help
+```
+
+## Examples
+
+Here are some common usage examples:
+
+### Checking Node Status
+
+To check the status of your node, including reputation score and other metrics:
+
+```bash
+pop --status
+```
+
+### Monitoring Node Performance
+
+To monitor your node's performance, including resource usage and port configuration:
+
+```bash
+pop --monitor
+```
+
+### Updating Your Node
+
+To check for updates:
 
 ```bash
 pop --check-update
 ```
 
-This command:
-1. Determines your current version using multiple methods (version flags, binary inspection, version file)
-2. Checks for the latest available version from the download server
-3. Compares the versions and informs you if an update is available
-
-If you're already running the latest version, you'll see:
-```
-[INFO] ========================================
-[INFO] Your Pipe PoP binary is up to date (vX.Y.Z).
-[INFO] ========================================
-```
-
-If a new version is available, you'll see:
-```
-[WARNING] ========================================
-[WARNING] A new version is available: vX.Y.Z (you have vA.B.C)
-[WARNING] Download URL: https://dl.pipecdn.app/vX.Y.Z/pop
-[WARNING] To update, run: sudo ./update_binary.sh vX.Y.Z
-[WARNING] Or use the pop script: sudo pop --update
-[WARNING] ========================================
-```
-
-### Updating the Binary
-
-To update your Pipe PoP binary to the latest version:
+To update to the latest version:
 
 ```bash
 sudo pop --update
 ```
 
-This command:
-1. Checks for the latest available version
-2. Creates a backup of your current binary
-3. Downloads the new binary
-4. Verifies the new binary is valid
-5. Replaces the old binary with the new one
-6. Restarts the Pipe PoP service
-7. Updates the version.txt file with the new version
+### Creating a Backup
 
-If you want to update to a specific version or reinstall the same version:
-
-```bash
-sudo pop --update vX.Y.Z --force
-```
-
-The `--force` flag allows you to reinstall the same version if needed.
-
-## Monitoring
-
-The `--monitor` command provides detailed information about your node, including:
-
-- Node status (running/not running)
-- System resources (RAM and disk usage)
-- Cache directory size
-- Node information
-- Port availability
-
-Example:
-
-```bash
-pop --monitor
-```
-
-## Backup
-
-The `--backup` command creates a backup of your node's important data, including:
-
-- node_info.json
-- Solana wallet (if available)
-- Configuration files
-
-The backup is stored in the `backups` directory as a compressed archive.
-
-Example:
+To create a backup of your node's important data:
 
 ```bash
 pop --backup
 ```
 
+### Viewing Logs
+
+To view the service logs:
+
+```bash
+pop --logs
+```
+
 ## Troubleshooting
 
-If you encounter any issues with the global `pop` command, try the following:
+If you encounter issues with the global `pop` command, try the following:
 
-1. Make sure the command is installed correctly:
+1. **Command not found**: Ensure the command was installed correctly:
    ```bash
-   which pop
+   ls -la /usr/local/bin/pop
    ```
-   This should return `/usr/local/bin/pop`.
 
-2. Make sure the command is executable:
+2. **Permission denied**: Make sure you're using `sudo` for commands that require it:
    ```bash
-   ls -l $(which pop)
+   sudo pop --update
    ```
-   This should show that the file has execute permissions.
 
-3. If the command is not found, try reinstalling it:
+3. **Binary not found**: Check if the binary exists in the installation directory:
+   ```bash
+   ls -la /opt/pipe-pop/bin/pipe-pop
+   ```
+
+4. **Reinstall the command**: If needed, reinstall the global command:
    ```bash
    sudo ./fixed_install_global_pop.sh
    ```
 
-4. If you see errors related to missing files or directories, make sure the installation directory exists:
-   ```bash
-   ls -l /opt/pipe-pop
-   ```
-
-5. If you see errors related to the binary, make sure it exists and is executable:
-   ```bash
-   ls -l /opt/pipe-pop/bin/pipe-pop
-   ```
-
 ## Uninstallation
 
-To uninstall the global `pop` command, run the following commands:
+If you need to uninstall the global `pop` command:
 
 ```bash
-# Remove the global command
 sudo rm /usr/local/bin/pop
-
-# Remove the installation directory
 sudo rm -rf /opt/pipe-pop
 ```
 
-## Additional Information
-
-The global `pop` command is a wrapper around the `pipe-pop` binary and provides additional functionality such as monitoring and backup. It uses absolute paths to ensure that it works correctly regardless of your current directory.
-
-If you need to modify the scripts or the global command, you can find them in the following locations:
-
-- Global command: `/usr/local/bin/pop`
-- Monitor script: `/opt/pipe-pop/monitor.sh`
-- Backup script: `/opt/pipe-pop/backup.sh`
-- Binary: `/opt/pipe-pop/bin/pipe-pop` 
+Note that this will not uninstall the Pipe PoP node itself, only the global command. 
