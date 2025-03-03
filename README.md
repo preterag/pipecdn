@@ -106,6 +106,13 @@ You can also use the script to check node status and metrics:
 ./pop --points-route # Check points and rewards (when available)
 ```
 
+Check for and install updates easily:
+
+```bash
+./pop --check-update  # Check if a new version is available (no sudo required)
+sudo ./pop --update   # Automatically download and install the latest version
+```
+
 Generate your own referral code:
 
 ```bash
@@ -146,7 +153,21 @@ The Pipe PoP (Points of Presence) node is fully operational with the following c
 
 ## Updating the Binary
 
-When a new version of the Pipe PoP (Points of Presence) binary is available, you can update it using the update_binary.sh script:
+When a new version of the Pipe PoP (Points of Presence) binary is available, you can update it using one of these methods:
+
+### Easy Method (Recommended)
+
+```bash
+# Check if an update is available
+./pop --check-update
+
+# Update to the latest version
+sudo ./pop --update
+```
+
+This will automatically check for updates, download the latest version, and restart the service if needed.
+
+### Manual Method
 
 ```bash
 ./update_binary.sh BINARY_URL
