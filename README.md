@@ -99,7 +99,20 @@ This script will:
 3. Run the node in foreground mode if the service is not installed
 4. Automatically use your configured Solana wallet address
 
-It's the simplest way to get your node up and running with a single command!
+You can also use the script to check node status and metrics:
+
+```bash
+./pop --status       # View node status, reputation, and metrics
+./pop --points-route # Check points and rewards (when available)
+```
+
+Generate your own referral code:
+
+```bash
+./pop --gen-referral-route
+```
+
+The script supports passing any arguments directly to the Pipe PoP binary, making it the simplest way to interact with your node!
 
 ### Using Surrealine Referral Code
 

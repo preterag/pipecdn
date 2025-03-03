@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Quick start script for Pipe PoP node
-# Usage: sudo ./pop
+# Usage: sudo ./pop [options]
+#   Options:
+#     --status         Show node status and metrics
+#     --points-route   Check points and rewards
+#     --gen-referral-route  Generate a referral code
+#     (any other options will be passed to the pipe-pop binary)
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -22,12 +27,6 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    print_error "This script must be run as root (with sudo)"
-    exit 1
-fi
-
 # Check if the binary exists
 if [ ! -f "bin/pipe-pop" ]; then
     print_error "Pipe PoP binary not found. Please run setup.sh first."
@@ -37,48 +36,71 @@ fi
 # Create cache directory if it doesn't exist
 mkdir -p cache
 
-# Check if the service is already running
-if systemctl is-active --quiet pipe-pop.service; then
-    print_message "Pipe PoP node is already running as a service."
-    print_message "To check status: systemctl status pipe-pop.service"
-    print_message "To stop: sudo systemctl stop pipe-pop.service"
-    print_message "To view logs: journalctl -u pipe-pop.service -f"
-    exit 0
+# Handle special commands that don't require root
+if [ "$1" == "--status" ] || [ "$1" == "--points-route" ] || [ "$1" == "--gen-referral-route" ]; then
+    print_message "Running command: $1"
+    ./bin/pipe-pop "$@"
+    exit $?
 fi
 
-# Check if the service is installed but not running
-if [ -f "/etc/systemd/system/pipe-pop.service" ]; then
-    print_message "Pipe PoP service is installed but not running."
-    print_message "Starting the service..."
-    systemctl start pipe-pop.service
-    
+# For all other commands, require root
+if [ "$EUID" -ne 0 ]; then
+    print_error "This script must be run as root (with sudo) for node operation"
+    print_message "For status checks, use: ./pop --status"
+    print_message "For points checks, use: ./pop --points-route"
+    print_message "For generating referral codes, use: ./pop --gen-referral-route"
+    exit 1
+fi
+
+# If no arguments are provided, start the node
+if [ $# -eq 0 ]; then
+    # Check if the service is already running
     if systemctl is-active --quiet pipe-pop.service; then
-        print_message "Service started successfully."
-        print_message "To check status: systemctl status pipe-pop.service"
+        print_message "Pipe PoP node is already running as a service."
+        print_message "To check status: ./pop --status"
+        print_message "To stop: sudo systemctl stop pipe-pop.service"
         print_message "To view logs: journalctl -u pipe-pop.service -f"
-    else
-        print_error "Failed to start the service. Starting in foreground mode instead."
-        # Continue to foreground mode
+        exit 0
     fi
-    exit 0
-fi
 
-# If we get here, the service is not installed or couldn't be started
-print_message "Starting Pipe PoP node in foreground mode..."
-print_message "Press Ctrl+C to stop the node"
-print_message "For production use, consider installing as a service with: sudo ./install_service.sh all"
+    # Check if the service is installed but not running
+    if [ -f "/etc/systemd/system/pipe-pop.service" ]; then
+        print_message "Pipe PoP service is installed but not running."
+        print_message "Starting the service..."
+        systemctl start pipe-pop.service
+        
+        if systemctl is-active --quiet pipe-pop.service; then
+            print_message "Service started successfully."
+            print_message "To check status: ./pop --status"
+            print_message "To view logs: journalctl -u pipe-pop.service -f"
+        else
+            print_error "Failed to start the service. Starting in foreground mode instead."
+            # Continue to foreground mode
+        fi
+        exit 0
+    fi
 
-# Run the node with the Solana wallet address if configured
-if [ -f "config/config.json" ]; then
-    SOLANA_WALLET=$(grep -o '"solana_wallet"[^,}]*' config/config.json | cut -d'"' -f4)
-    if [ -n "$SOLANA_WALLET" ]; then
-        print_message "Using Solana wallet: $SOLANA_WALLET"
-        ./bin/pipe-pop --cache-dir "$(pwd)/cache" --pubKey "$SOLANA_WALLET"
+    # If we get here, the service is not installed or couldn't be started
+    print_message "Starting Pipe PoP node in foreground mode..."
+    print_message "Press Ctrl+C to stop the node"
+    print_message "For production use, consider installing as a service with: sudo ./install_service.sh all"
+
+    # Run the node with the Solana wallet address if configured
+    if [ -f "config/config.json" ]; then
+        SOLANA_WALLET=$(grep -o '"solana_wallet"[^,}]*' config/config.json | cut -d'"' -f4)
+        if [ -n "$SOLANA_WALLET" ]; then
+            print_message "Using Solana wallet: $SOLANA_WALLET"
+            ./bin/pipe-pop --cache-dir "$(pwd)/cache" --pubKey "$SOLANA_WALLET"
+        else
+            print_message "No Solana wallet found in config. Running with default settings."
+            ./bin/pipe-pop --cache-dir "$(pwd)/cache"
+        fi
     else
-        print_message "No Solana wallet found in config. Running with default settings."
+        print_message "No config file found. Running with default settings."
         ./bin/pipe-pop --cache-dir "$(pwd)/cache"
     fi
 else
-    print_message "No config file found. Running with default settings."
-    ./bin/pipe-pop --cache-dir "$(pwd)/cache"
+    # Pass all arguments to the pipe-pop binary
+    print_message "Running Pipe PoP with arguments: $@"
+    ./bin/pipe-pop "$@"
 fi 
