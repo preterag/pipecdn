@@ -40,4 +40,4 @@ print_message "Logs will be saved to: ${log_file}"
 print_message "Press Ctrl+C to stop the node"
 
 # Run the node with output to both console and log file
-./bin/pipe-pop --cache-dir "$(pwd)/cache" 2>&1 | tee -a "${log_file}" 
+./bin/pipe-pop --cache-dir "$(pwd)/cache" --enable-80-443 2>&1 | tee -a "${log_file}" 
