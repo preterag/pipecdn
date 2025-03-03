@@ -12,6 +12,7 @@ A complete implementation for setting up and managing a Pipe PoP node for the [P
 - **🔗 Surrealine Integration**: Pre-configured with Surrealine referral code
 - **⚡ Optimized Performance**: Tuned for efficient operation
 - **🔮 Future-Proof Design**: Easy updates and maintenance
+- **📦 Multi-Format Packaging**: Available as AppImage, DEB, and RPM packages for easy installation
 
 ## 🚦 Quick Start
 
@@ -41,6 +42,71 @@ pop --status
 
 # View available commands
 pop --help
+```
+
+## 📦 Installation Packages
+
+We provide multiple installation formats to suit different Linux distributions:
+
+### Universal Linux Package (AppImage)
+
+AppImage runs on virtually any Linux distribution without installation:
+
+```bash
+# Download the AppImage
+wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-x86_64.AppImage
+
+# Make it executable
+chmod +x pipe-pop-node-1.0.0-x86_64.AppImage
+
+# Run it (requires sudo)
+sudo ./pipe-pop-node-1.0.0-x86_64.AppImage
+```
+
+### Debian/Ubuntu Package (DEB)
+
+For Debian-based distributions (Ubuntu, Mint, etc.):
+
+```bash
+# Download the DEB package
+wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node_1.0.0_amd64.deb
+
+# Install it
+sudo apt install ./pipe-pop-node_1.0.0_amd64.deb
+
+# Run the setup
+sudo pop --setup
+```
+
+### Red Hat/Fedora/CentOS Package (RPM)
+
+For Red Hat-based distributions (Fedora, CentOS, RHEL, etc.):
+
+```bash
+# Download the RPM package
+wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-1.x86_64.rpm
+
+# Install it
+sudo dnf install ./pipe-pop-node-1.0.0-1.x86_64.rpm
+
+# Run the setup
+sudo pop --setup
+```
+
+### Source Package
+
+For manual installation from source:
+
+```bash
+# Download the source package
+wget https://github.com/preterag/pipecdn/releases/download/v1.0.0/pipe-pop-node-1.0.0-source.tar.gz
+
+# Extract it
+tar -xzf pipe-pop-node-1.0.0-source.tar.gz
+cd pipe-pop-node-1.0.0
+
+# Run the setup script
+sudo ./easy_setup.sh
 ```
 
 ## 📋 Manual Setup Instructions
@@ -210,12 +276,13 @@ The Pipe PoP node comes with several scripts to help you set up and manage your 
 |--------|---------|-------------|
 | `easy_setup.sh` | v1.1.0 | Interactive setup script with guided installation |
 | `setup.sh` | v1.0.0 | Non-interactive setup script for automated deployments |
-| `fix_ports.sh` | v1.1.0 | Comprehensive port configuration and troubleshooting |
+| `fix_ports.sh` | v1.2.0 | Comprehensive port configuration and troubleshooting |
 | `backup.sh` | v1.0.0 | Creates backups of important node data |
 | `install_global_pop.sh` | v1.0.0 | Installs the global `pop` command for easy management |
 | `monitor.sh` | v1.0.0 | Monitors the node's performance and status |
 | `check_updates.sh` | v1.0.0 | Checks for updates to the Pipe PoP node |
 | `update_binary.sh` | v1.0.0 | Updates the Pipe PoP binary to the latest version |
+| `create_packages.sh` | v1.0.0 | Creates multi-format installation packages (AppImage, DEB, RPM) |
 
 > Note: Some scripts may be deprecated in favor of more comprehensive alternatives. Always use the recommended script for each task.
 

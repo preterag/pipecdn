@@ -32,6 +32,7 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Port enabling option implementation
 - [x] Node ID consolidation implementation
 - [x] Installation package creation
+- [x] Multi-format packaging (AppImage, DEB, RPM)
 
 ## Upcoming Milestones
 
@@ -80,9 +81,10 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Update documentation for new features
 
 ### Milestone 8: Packaging and Distribution (In Progress)
-- [x] Create installation package
+- [x] Create basic installation package
 - [x] Develop installer with quick and manual setup options
-- [ ] Test installation package
+- [x] Create multi-format packages (AppImage, DEB, RPM)
+- [ ] Test installation packages across different distributions
 - [ ] Create distribution channels
 - [ ] Rename repository for public release
 
@@ -123,6 +125,10 @@ This document outlines the development plan for setting up and maintaining a Pip
 - Updated documentation for new features
 - Created create_package.sh script for packaging the installation
 - Developed self-extracting installer with multiple installation options
+- Created create_packages.sh script for multi-format packaging (AppImage, DEB, RPM)
+- Implemented universal AppImage format for distribution-agnostic installation
+- Created DEB packages for Debian/Ubuntu-based systems
+- Created RPM packages for Red Hat/Fedora/CentOS-based systems
 
 ## Known Issues and Challenges
 
@@ -142,13 +148,17 @@ This document outlines the development plan for setting up and maintaining a Pip
 10. ~~Add port enabling option~~ (Completed)
 11. ~~Implement node ID consolidation~~ (Completed)
 12. ~~Create installation package with quick and manual setup options~~ (Completed)
-13. Test installation package
-14. Create distribution channels
-15. Rename repository for public release
-16. Monitor for future binary updates
+13. ~~Create multi-format packages (AppImage, DEB, RPM)~~ (Completed)
+14. Test installation packages across different distributions
+15. Create distribution channels
+16. Rename repository for public release
+17. Monitor for future binary updates
 
 ## Resources
 
 - [Pipe Network Website](https://pipe.network)
 - [Solana Documentation](https://docs.solana.com)
-- [Linux Systemd Documentation](https://www.freedesktop.org/software/systemd/man/systemd.service.html) 
+- [Linux Systemd Documentation](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
+- [AppImage Documentation](https://docs.appimage.org/)
+- [Debian Packaging Guide](https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf)
+- [RPM Packaging Guide](https://rpm-packaging-guide.github.io/) 
