@@ -31,5 +31,16 @@ Thumbs.db
 *.swp
 *.swo 
 
-# GitHub authentication script
-github_push.sh 
+# Security and authentication files
+github_push.sh
+*_token*
+*_key*
+*_secret*
+*_password*
+*_credential*
+.git-credentials
+.netrc
+
+# Keep the secure scripts that don't contain tokens
+!git_setup.sh
+!secure_push.sh 
