@@ -29,6 +29,22 @@ This directory contains comprehensive documentation for setting up, configuring,
 
 If you're new to Pipe PoP nodes, we recommend starting with the [SETUP_GUIDE.md](./SETUP_GUIDE.md) document, which provides a comprehensive guide to setting up your node.
 
+## Port Configuration
+
+The Pipe PoP node requires the following ports to be open:
+
+- **Port 80**: HTTP traffic
+- **Port 443**: HTTPS traffic
+- **Port 8003**: Pipe PoP node communication
+
+These ports are automatically configured during installation, but you may need to ensure they are properly forwarded in your router if you want your node to be accessible from the internet. The node may not actively listen on all ports until it receives traffic, which is normal behavior.
+
+To check if the ports are properly configured, run:
+
+```bash
+pop --monitor
+```
+
 ## Global Pop Command
 
 The global `pop` command is automatically installed during setup and allows you to manage your node from anywhere on your system without having to navigate to the installation directory.
@@ -70,6 +86,28 @@ pop --backup
 ```
 
 For more details, see the [GLOBAL_COMMAND.md](./GLOBAL_COMMAND.md) document.
+
+## Checking for Updates and Updating
+
+The Pipe PoP node includes functionality to check for updates and update the binary when new versions are available:
+
+```bash
+# Check for updates
+pop --check-update
+
+# Update to the latest version
+pop --update
+```
+
+When you check for updates:
+- If your node is already running the latest version, you'll be informed that no update is needed.
+- If a new version is available, you'll be provided with information about the new version and instructions on how to update.
+
+When updating:
+- The system automatically creates a backup of your current binary before updating.
+- The new binary is verified before replacing the old one.
+- The Pipe PoP service is automatically restarted after updating.
+- You can force a reinstall of the same version using the `--force` flag if needed.
 
 ## Support
 
