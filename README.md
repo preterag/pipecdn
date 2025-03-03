@@ -221,6 +221,8 @@ The Pipe PoP node comes with several scripts to help you set up and manage your 
 
 ## Contributing
 
+👋 **Welcome Contributors!** We're excited that you're interested in improving the Pipe PoP node implementation. Your contributions help make this project better for everyone in the community. Whether you're fixing bugs, adding features, or improving documentation, your help is greatly appreciated!
+
 We welcome contributions from the community! If you'd like to contribute to the Pipe PoP node implementation, please follow these guidelines:
 
 ### How to Contribute
