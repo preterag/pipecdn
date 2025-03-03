@@ -31,7 +31,7 @@ This script will:
 4. Set up a systemd service for reliable operation
 5. Configure automatic backups
 6. Apply the Surrealine referral code (optional)
-7. **Install the global `pop` command for easy management from anywhere**
+7. Install the global `pop` command for easy management from anywhere
 
 After installation, you can immediately use the global `pop` command from anywhere on your system:
 
@@ -63,7 +63,7 @@ If you prefer to set up your node manually, follow these steps:
 
 4. Install the global `pop` command:
    ```bash
-   sudo ./fixed_install_global_pop.sh
+   sudo ./install_global_pop.sh
    ```
 
 ## 🌐 About Pipe Network
@@ -77,6 +77,11 @@ The Pipe Network is a decentralized content delivery network (CDN) with several 
 - **⚖️ Equitable Access**: Fair compensation for node operators
 - **💳 Flexible Payment Structure**: Pay-as-you-go model
 - **🔒 Enhanced Security**: Distributed architecture reduces single points of failure
+- **⭐ Reputation System**: Rewards reliable nodes
+- **👥 Referral System**: Earn rewards for referring new nodes
+- **🔄 Automatic Updates**: Easy to keep your node up-to-date
+- **🌎 Geographic Distribution**: Global network of nodes
+- **🔓 Permissionless Participation**: Anyone can run a node
 
 ## 🔌 Port Configuration
 
@@ -139,7 +144,6 @@ pop --points
 
 - **Minimum**: 2GB RAM, 20GB free disk space, stable internet connection
 - **Recommended**: 4GB+ RAM, 100GB+ free disk space, 100Mbps+ internet connection
-- **Required Ports**: 80, 443, and 8003 must be open and accessible
 
 ## 📁 Directory Structure
 
@@ -165,19 +169,6 @@ For more detailed information, please refer to the following documentation:
 - [🌐 Global Command Guide](docs/GLOBAL_COMMAND.md): Guide to using the global `pop` command
 - [📝 Articles](docs/articles/): Detailed articles about our implementation journey
 
-## 🔑 Key Features of Pipe Network
-
-- **📍 Hyperlocal Content Delivery**: Content delivered from geographically close nodes
-- **⛓️ Blockchain Integration**: Built on Solana for transparent operations
-- **💰 Economic Model**: Fair compensation for node operators
-- **🔓 Permissionless Participation**: Anyone can run a node
-- **💸 Cost Efficiency**: Lower costs compared to traditional CDNs
-- **🔒 Advanced Security**: Distributed architecture reduces single points of failure
-- **⭐ Reputation System**: Rewards reliable nodes
-- **👥 Referral System**: Earn rewards for referring new nodes
-- **🔄 Automatic Updates**: Easy to keep your node up-to-date
-- **🌎 Geographic Distribution**: Global network of nodes
-
 ## 🛠️ Maintenance
 
 Regular maintenance tasks:
@@ -188,19 +179,17 @@ Regular maintenance tasks:
 
 ## ⚠️ Important Notes
 
-- Ports 80, 443, and 8003 must be open and accessible
 - A Solana wallet is required to receive rewards
 - Sufficient disk space is needed for cache data
 - Regular backups of node_info.json are essential
 
 ## 🌟 Why Decentralized CDNs Matter
 
-Traditional CDNs face challenges with centralization, high costs, and limited geographic coverage. Pipe Network addresses these challenges through its decentralized model, offering:
+Traditional CDNs face challenges with centralization, high costs, and limited geographic coverage. The Pipe Network's decentralized approach addresses these challenges by:
 
-- Better geographic coverage through distributed nodes
-- Lower costs through efficient resource utilization
-- Fair compensation for infrastructure providers
-- Enhanced security through decentralization
+- Democratizing content delivery infrastructure
+- Enabling anyone to participate in the network
+- Creating a more resilient and distributed system
 
 ## 🔜 Future Directions
 
