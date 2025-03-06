@@ -1,0 +1,26 @@
+name: Pipe PoP Test Suite
+
+on:
+  push:
+    branches:
+      - fix_master   # Runs the tests on push to fix_master branch, adjust as needed
+  pull_request:
+    branches:
+      - master   # Runs the tests on PR to master branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3  # This checks out the code from the repository
+
+    - name: Set Permissions for Scripts
+      run: chmod +x test_suite/*.sh  # Make sure all test scripts are executable
+
+    - name: Run Test Suite
+      run: |
+        for script in test_suite/*.sh; do
+          ./test_suite/$script  # Run each test script in the test_suite directory
+        done
