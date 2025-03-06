@@ -6,6 +6,10 @@
 # This script helps set up a Pipe PoP node with improved error handling, logging,
 # checksum verification, and user confirmation for critical actions.
 
+# Enable error handling
+set -e
+
+set -x  # Enable debug mode
 # Constants
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
