@@ -22,5 +22,5 @@ jobs:
     - name: Run Test Suite
       run: |
         for script in test_suite/*.sh; do
-          test_suite/$script  # Run each test script in the test_suite directory
+          ./$script  # Run each test script in the test_suite directory
         done
