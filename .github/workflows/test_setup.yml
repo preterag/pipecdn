@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v3  # This checks out the code from the repository
 
     - name: Set Permissions for Scripts
-      run: chmod +x test_suite/*.sh  # Make sure all test scripts are executable
+      run: chmod +x test_suite/*.sh "${GITHUB_WORKSPACE}/setup.sh"  # Make sure all test scripts are executable
 
     - name: Run Test Suite
       run: |
