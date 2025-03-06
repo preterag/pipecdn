@@ -22,6 +22,24 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Check if Git is installed
+if ! command -v git > /dev/null 2>&1; then
+    print_error "Git is not installed. Please install Git before running this script."
+    exit 1
+fi
+
+# Check current credential helper configuration
+current_helper=$(git config --global credential.helper)
+if [ -n "$current_helper" ]; then
+    print_warning "Git is already configured with a credential helper: $current_helper"
+    read -p "Do you want to overwrite this configuration? (y/n): " choice
+    case "$choice" in
+        y|Y ) print_message "Proceeding with configuration overwrite...";;
+        n|N ) print_message "Keeping the current Git configuration."; exit 0;;
+        * ) print_warning "Invalid choice. Keeping the current Git configuration."; exit 0;;
+    esac
+fi
+
 # Configure Git to store credentials securely
 print_message "Configuring Git to store credentials securely..."
 
@@ -45,14 +63,17 @@ else
 fi
 
 # Set up useful Git aliases
-print_message "Setting up useful Git aliases..."
-git config --global alias.st status
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.unstage 'reset HEAD --'
-git config --global alias.last 'log -1 HEAD'
-git config --global alias.visual '!gitk'
+read -p "Would you like to set up useful Git aliases? (y/n): " alias_choice
+if [[ "$alias_choice" =~ ^[yY]$ ]]; then
+    print_message "Setting up useful Git aliases..."
+    git config --global alias.st status
+    git config --global alias.co checkout
+    git config --global alias.br branch
+    git config --global alias.ci commit
+    git config --global alias.unstage 'reset HEAD --'
+    git config --global alias.last 'log -1 HEAD'
+    git config --global alias.visual '!gitk'
+fi
 
 print_message "Git configuration complete!"
 print_message ""
@@ -62,4 +83,4 @@ print_message "2. After that, Git will remember your credentials securely"
 print_message "3. Your token is NOT stored in any files that will be committed to the repository"
 print_message "4. To test, try running: git push"
 print_message ""
-print_warning "NEVER commit files containing tokens or passwords to your repository!" 
+print_warning "NEVER commit files containing tokens or passwords to your repository!"
