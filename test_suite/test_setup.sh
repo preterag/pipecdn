@@ -3,9 +3,11 @@
 # Pipe PoP Setup Test Suite
 # This script tests the functionality of setup.sh
 
-
 TEST_LOGFILE="/tmp/pipe-pop-test.log"
-SETUP_SCRIPT="${GITHUB_WORKSPACE}/setup.sh" 
+SETUP_SCRIPT="${GITHUB_WORKSPACE}/setup.sh"  # Set path to setup.sh
+
+# Ensure the setup.sh script is executable
+chmod +x "$SETUP_SCRIPT"
 
 # Colors
 GREEN='\033[0;32m'
