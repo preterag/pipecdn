@@ -3,24 +3,33 @@ name: Pipe PoP Test Suite
 on:
   push:
     branches:
-      - fix_master   # Runs the tests on push to fix_master branch, adjust as needed
+      - fix_master   # Runs on push to fix_master
   pull_request:
     branches:
-      - master   # Runs the tests on PR to master branch
+      - master       # Runs on PR to master
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    runs-on: ubuntu-latest  # Use latest Ubuntu environment
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # This checks out the code from the repository
+      uses: actions/checkout@v3  # Checkout code
 
     - name: Set Permissions for Scripts
-      run: chmod +x test_suite/*.sh "${GITHUB_WORKSPACE}/setup.sh"  # Make sure all test scripts are executable
+      run: |
+        chmod +x setup.sh
+        chmod +x test_suite/*.sh
+
+    - name: Run Setup Script
+      run: |
+        echo "Running setup.sh..."
+        ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat /var/log/pipe-pop-setup.log && exit 1)
 
     - name: Run Test Suite
       run: |
+        set -x  # Enable debugging
         for script in test_suite/*.sh; do
-          ./$script  # Run each test script in the test_suite directory
+          echo "Running $script..."
+          ./$script || (echo "$script failed. Exiting." && exit 1)
         done
