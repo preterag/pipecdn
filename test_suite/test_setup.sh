@@ -60,7 +60,7 @@ test_pipe_pop_download() {
 
 # Test 6: Verify checksum validation
 test_checksum_verification() {
-    EXPECTED_CHECKSUM="abc123xyz456"  # Replace with actual checksum
+    EXPECTED_CHECKSUM="0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"  # Replace with actual checksum
     ACTUAL_CHECKSUM=$(sha256sum /usr/local/bin/pipe-pop | awk '{print $1}')
     
     [ "$ACTUAL_CHECKSUM" == "$EXPECTED_CHECKSUM" ] && pass "Checksum matches." || fail "Checksum mismatch!"
