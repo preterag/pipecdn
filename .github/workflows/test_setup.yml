@@ -3,18 +3,18 @@ name: Pipe PoP Test Suite
 on:
   push:
     branches:
-      - fix_master   # Runs on push to fix_master
+      - fix_master
   pull_request:
     branches:
-      - master       # Runs on PR to master
+      - master
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Use latest Ubuntu environment
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # Checkout code
+      uses: actions/checkout@v3
 
     - name: Set Permissions for Scripts
       run: |
@@ -24,7 +24,7 @@ jobs:
     - name: Run Setup Script
       run: |
         echo "Running setup.sh..."
-        ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat /var/log/pipe-pop-setup.log && exit 1)
+        ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat "${GITHUB_WORKSPACE}/pipe-pop-setup.log" && exit 1)
 
     - name: Run Test Suite
       run: |

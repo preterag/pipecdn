@@ -8,24 +8,25 @@
 
 # Enable error handling
 set -e
-
 set -x  # Enable debug mode
+
 # Constants
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
-LOGFILE="/var/log/pipe-pop-setup.log"
+LOGFILE="$HOME/pipe-pop-setup.log"  # Use home directory to avoid GitHub workspace dependency
 LOCKFILE="/tmp/pipe-pop-setup.lock"
 EXPECTED_CHECKSUM="abc123xyz456"  # Replace with actual checksum from release
 INSTALL_DIR="/usr/local/bin"
 SOLANA_BIN="$HOME/.local/share/solana/install/active_release/bin"
-SOLANA_CLI_URL="https://release.solana.com/stable/install"
+SOLANA_VERSION="1.18.7"  # Update to latest stable version
 
 # Functions
 log_setup() {
-    sudo mkdir -p /var/log/
-    exec > >(tee -a "$LOGFILE") 2>&1
+    mkdir -p "$(dirname "$LOGFILE")"
+    touch "$LOGFILE"
+    exec >> "$LOGFILE" 2>&1
 }
 
 lock_script() {
@@ -54,21 +55,12 @@ print_error() {
     exit 1
 }
 
-confirm_action() {
-    read -p "Do you want to proceed? (y/n): " choice
-    case "$choice" in
-        y|Y ) print_message "Proceeding...";;
-        n|N ) print_warning "Action canceled by user."; exit 0;;
-        * ) print_warning "Invalid choice."; confirm_action;;
-    esac
-}
-
 check_dependencies() {
     print_message "Checking dependencies..."
     for cmd in curl awk df free sha256sum; do
         if ! command -v $cmd &> /dev/null; then
-            print_warning "$cmd is not installed. Attempting to install..."
-            sudo apt-get update && sudo apt-get install -y $cmd || print_error "Could not install $cmd. Please install it manually."
+            print_warning "$cmd is not installed. Installing..."
+            sudo apt-get update && sudo apt-get install -y $cmd || print_error "Could not install $cmd."
         fi
     done
     print_message "Dependencies check passed."
@@ -82,42 +74,30 @@ check_system_requirements() {
     total_ram_mb=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1024 ))
 
     if [ "$available_ram_mb" -lt 2048 ]; then
-        print_warning "Available RAM is less than 2GB ($available_ram_mb MB). This might affect performance."
+        print_warning "Available RAM is low ($available_ram_mb MB)."
     else
-        print_message "RAM check passed: $available_ram_mb MB available out of $total_ram_mb MB total."
+        print_message "RAM check passed: $available_ram_mb MB available."
     fi
 
     # Disk space check
     disk_space=$(df -m / | awk 'NR==2 {print $4}')
     if [ "$disk_space" -lt 10240 ]; then
-        print_warning "Available disk space is less than 10GB ($disk_space MB)."
+        print_warning "Available disk space is low ($disk_space MB)."
     else
-        print_message "Disk space check passed: $disk_space MB available."
+        print_message "Disk space check passed."
     fi
 }
 
 install_solana_cli() {
     if ! command -v solana &> /dev/null; then
         print_message "Installing Solana CLI..."
-        curl -sSfL "$SOLANA_CLI_URL" | sh
+        curl -sSfL "https://release.solana.com/v${SOLANA_VERSION}/install" | sh
         export PATH="$SOLANA_BIN:$PATH"
         echo "export PATH=\"$SOLANA_BIN:\$PATH\"" | tee -a ~/.bashrc ~/.profile ~/.zshrc
         source ~/.bashrc
         print_message "Solana CLI installed successfully."
     else
         print_message "Solana CLI is already installed."
-    fi
-}
-
-setup_solana_wallet() {
-    print_message "Setting up Solana wallet..."
-    if [ -f "$HOME/.config/solana/id.json" ]; then
-        print_message "Solana wallet already exists."
-        solana address
-    else
-        print_message "Creating new Solana wallet..."
-        solana-keygen new --no-passphrase
-        solana address
     fi
 }
 
@@ -131,10 +111,11 @@ install_pipe_pop() {
     # Verify checksum
     ACTUAL_CHECKSUM=$(sha256sum "$INSTALL_DIR/pipe-pop" | awk '{print $1}')
     if [ "$ACTUAL_CHECKSUM" != "$EXPECTED_CHECKSUM" ]; then
-        print_error "Checksum verification failed! Expected: $EXPECTED_CHECKSUM, Got: $ACTUAL_CHECKSUM"
+        print_error "Checksum verification failed!"
     fi
 
     sudo chmod +x "$INSTALL_DIR/pipe-pop"
+    sudo chown $(whoami) "$INSTALL_DIR/pipe-pop"  # Ensure user ownership
     print_message "Pipe PoP binary installed successfully."
 }
 
@@ -151,7 +132,7 @@ After=network.target
 User=$(whoami)
 ExecStart=/usr/local/bin/pipe-pop --cache-dir /var/lib/pipe-pop --enable-80-443
 Restart=always
-RestartSec=5
+RestartSec=3
 LimitNOFILE=65535
 StandardOutput=append:/var/log/pipe-pop.log
 StandardError=append:/var/log/pipe-pop.log
@@ -174,7 +155,6 @@ main() {
     check_dependencies
     check_system_requirements
     install_solana_cli
-    setup_solana_wallet
     install_pipe_pop
     create_systemd_service
 
