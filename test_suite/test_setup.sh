@@ -68,7 +68,8 @@ test_checksum_verification() {
 
 # Test 7: Check systemd service
 test_systemd_service() {
-    systemctl is-active --quiet pipe-pop.service && pass "Pipe PoP service is running." || fail "Pipe PoP service is not running!"
+    sleep 5
+    systemctl is-active --quiet pipe-pop.service && pass "Pipe PoP service is running." || fail "Pipe PoP service is not running!" exit 1
 }
 
 # Run all tests
