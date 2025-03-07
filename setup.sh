@@ -15,7 +15,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
-LOGFILE="$HOME/pipe-pop-setup.log"  # Use home directory to avoid GitHub workspace dependency
+LOGFILE="$GITHUB_WORKSPACE/pipe-pop-setup.log"
 LOCKFILE="/tmp/pipe-pop-setup.lock"
 EXPECTED_CHECKSUM="abc123xyz456"  # Replace with actual checksum from release
 INSTALL_DIR="/usr/local/bin"
@@ -25,9 +25,11 @@ SOLANA_VERSION="1.18.7"  # Update to latest stable version
 # Functions
 log_setup() {
     mkdir -p "$(dirname "$LOGFILE")"
-    touch "$LOGFILE"
+    touch "$LOGFILE" || { echo "[ERROR] Failed to create log file at $LOGFILE"; exit 1; }
+    echo "[DEBUG] Log file created at $LOGFILE"
     exec >> "$LOGFILE" 2>&1
 }
+
 
 lock_script() {
     if [ -f "$LOCKFILE" ]; then
