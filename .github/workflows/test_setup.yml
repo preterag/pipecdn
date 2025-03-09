@@ -11,25 +11,65 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set Permissions for Scripts
-      run: |
-        chmod +x setup.sh
-        chmod +x test_suite/*.sh
+      - name: Set Permissions for Scripts
+        run: |
+          chmod +x setup.sh easy_setup.sh test_suite/*.sh
 
-    - name: Run Setup Script
-      run: |
-        echo "Running setup.sh..."
-        ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat "${GITHUB_WORKSPACE}/pipe-pop-setup.log" && exit 1)
+      - name: Run Setup Script
+        run: |
+          echo "Running setup.sh..."
+          sudo ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat /var/log/pipe-pop-setup_*.log && exit 1)
 
-    - name: Run Test Suite
-      run: |
-        set -x  # Enable debugging
-        for script in test_suite/*.sh; do
-          echo "Running $script..."
-          ./$script || (echo "$script failed. Exiting." && exit 1)
-        done
+      - name: Validate easy_setup
+        run: |
+          echo "Running easy_setup.sh..."
+          sudo ./easy_setup.sh || (echo "easy_setup.sh failed. Printing logs..." && cat /var/log/pipe-pop-setup_*.log && exit 1)
+
+      - name: Run Test Suite
+        run: |
+          set -x  # Enable debugging
+          for script in test_suite/*.sh; do
+            echo "Running $script..."
+            sudo ./$script || (echo "$script failed. Exiting." && exit 1)
+          done
+
+      - name: Verify Pipe PoP Service Status
+        run: |
+          systemctl is-active pipe-pop || (echo "Pipe PoP service failed to start" && exit 1)
+          systemctl status pipe-pop --no-pager
+
+      - name: Check Installed Commands
+        run: |
+          if ! command -v pop &> /dev/null; then
+            echo "❌ Global 'pop' command not found!" && exit 1
+          fi
+          if ! command -v pop-update &> /dev/null; then
+            echo "❌ Global 'pop-update' command not found!" && exit 1
+          fi
+          echo "✅ 'pop' and 'pop-update' commands are installed."
+
+      - name: Verify Installed Versions
+        run: |
+          echo "Checking installed versions..."
+          pop --version || echo "⚠️ 'pop' version check failed"
+          solana --version || echo "⚠️ Solana CLI is not installed"
+          jq --version || echo "⚠️ jq not installed"
+          curl --version || echo "⚠️ curl not installed"
+
+      - name: Print Logs on Failure
+        if: failure()
+        run: |
+          echo "⚠️ Setup failed. Printing last 50 lines of log:"
+          tail -n 50 /var/log/pipe-pop-setup_*.log || echo "No log file found."
+
+      - name: Cleanup After Tests
+        run: |
+          echo "Cleaning up test environment..."
+          sudo systemctl stop pipe-pop || true
+          sudo systemctl disable pipe-pop || true
+          sudo rm -rf /opt/pipe-pop /usr/local/bin/pop /usr/local/bin/pop-update
+          echo "Cleanup complete."
