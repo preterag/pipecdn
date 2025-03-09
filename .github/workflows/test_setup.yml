@@ -1,0 +1,35 @@
+name: Pipe PoP Test Suite
+
+on:
+  push:
+    branches:
+      - fix_master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set Permissions for Scripts
+      run: |
+        chmod +x setup.sh
+        chmod +x test_suite/*.sh
+
+    - name: Run Setup Script
+      run: |
+        echo "Running setup.sh..."
+        ./setup.sh || (echo "setup.sh failed. Printing logs..." && cat "${GITHUB_WORKSPACE}/pipe-pop-setup.log" && exit 1)
+
+    - name: Run Test Suite
+      run: |
+        set -x  # Enable debugging
+        for script in test_suite/*.sh; do
+          echo "Running $script..."
+          ./$script || (echo "$script failed. Exiting." && exit 1)
+        done
