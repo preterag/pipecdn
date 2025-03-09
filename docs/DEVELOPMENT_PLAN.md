@@ -18,6 +18,9 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Comprehensive documentation
 - [x] Multi-format packaging (AppImage, DEB, RPM)
 - [x] Repository renamed from 'pipe-pop-node' to 'ppn'
+- [x] Distribution channels created
+- [x] Comprehensive dashboard for unified monitoring
+- [x] Detailed uptime tracking and visualization
 
 ## Upcoming Milestones
 
@@ -56,21 +59,28 @@ This document outlines the development plan for setting up and maintaining a Pip
 - [x] Add detailed documentation for all features
 - [x] Refine and optimize scripts
 
-### Milestone 8: Packaging and Distribution (In Progress)
+### Milestone 8: Packaging and Distribution (Completed)
 - [x] Create installation package
 - [x] Create multi-format packages (AppImage, DEB, RPM)
 - [x] Test installation packages across different distributions
-- [ ] Create distribution channels
+- [x] Create distribution channels
 - [x] Rename repository for public release
 
-### Milestone 9: Web Dashboard (Planned)
+### Milestone 9: Enhanced Monitoring (Completed)
+- [x] Implement comprehensive dashboard
+- [x] Add detailed uptime tracking
+- [x] Create HTML export functionality
+- [x] Implement historical trend visualization
+- [x] Add global command for easier access
+
+### Milestone 10: Web Dashboard (Planned)
 - [ ] Design web-based dashboard
 - [ ] Implement dashboard backend
 - [ ] Create dashboard frontend
 - [ ] Add user authentication
 - [ ] Implement dashboard deployment
 
-### Milestone 10: Enhanced Analytics (Planned)
+### Milestone 11: Enhanced Analytics (Planned)
 - [ ] Design analytics system
 - [ ] Implement data collection
 - [ ] Create visualization tools
@@ -79,12 +89,21 @@ This document outlines the development plan for setting up and maintaining a Pip
 
 ## Recently Completed Items
 
+- Created comprehensive dashboard for unified node monitoring
+- Implemented detailed uptime tracking with days, hours, minutes, seconds
+- Added start time tracking to show when the node was started
+- Created HTML export functionality for sharing dashboard data
+- Updated documentation to reflect new features
+- Simplified global command installation with symbolic link method
+- Enhanced pulse monitoring with improved uptime display
 - Created scripts for packaging the installation
 - Implemented universal AppImage format for Linux distributions
 - Created DEB packages for Debian/Ubuntu systems
 - Created RPM packages for Red Hat/Fedora/CentOS systems
 - Updated documentation to reflect new packaging options
 - Renamed repository from 'pipe-pop-node' to 'ppn' for public release
+- Created distribution channels (GitHub Releases, APT/YUM repositories, website downloads)
+- Added documentation for distribution channels
 
 ## Known Issues
 
@@ -92,9 +111,9 @@ This document outlines the development plan for setting up and maintaining a Pip
 
 ## Next Steps
 
-1. Test installation packages across different Linux distributions
-2. Create distribution channels for the packages
-3. Begin work on web dashboard design
+1. Begin work on web dashboard design
+2. Implement dashboard backend
+3. Create dashboard frontend
 
 ## Resources
 

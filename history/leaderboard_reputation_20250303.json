@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-03-03T08:00:00Z",
+  "sort_by": "reputation",
+  "nodes": [
+    {
+      "rank": 1,
+      "node_id": "abc123def456ghi789jkl012mno345pqr678stu901",
+      "reputation": 0.98,
+      "points": 5300,
+      "egress": "3.0 TB"
+    },
+    {
+      "rank": 2,
+      "node_id": "def456ghi789jkl012mno345pqr678stu901vwx234",
+      "reputation": 0.97,
+      "points": 4850,
+      "egress": "2.8 TB"
+    },
+    {
+      "rank": 3,
+      "node_id": "ghi789jkl012mno345pqr678stu901vwx234yz5678",
+      "reputation": 0.96,
+      "points": 4400,
+      "egress": "2.6 TB"
+    },
+    {
+      "rank": 4,
+      "node_id": "jkl012mno345pqr678stu901vwx234yz5678abc90",
+      "reputation": 0.95,
+      "points": 4200,
+      "egress": "2.4 TB"
+    },
+    {
+      "rank": 5,
+      "node_id": "mno345pqr678stu901vwx234yz5678abc90def123",
+      "reputation": 0.94,
+      "points": 4000,
+      "egress": "2.2 TB"
+    },
+    {
+      "rank": 6,
+      "node_id": "pqr678stu901vwx234yz5678abc90def123ghi456",
+      "reputation": 0.93,
+      "points": 3800,
+      "egress": "2.0 TB"
+    },
+    {
+      "rank": 7,
+      "node_id": "stu901vwx234yz5678abc90def123ghi456jkl789",
+      "reputation": 0.92,
+      "points": 3650,
+      "egress": "1.8 TB"
+    },
+    {
+      "rank": 8,
+      "node_id": "vwx234yz5678abc90def123ghi456jkl789mno012",
+      "reputation": 0.91,
+      "points": 3500,
+      "egress": "1.6 TB"
+    },
+    {
+      "rank": 9,
+      "node_id": "yz5678abc90def123ghi456jkl789mno012pqr345",
+      "reputation": 0.90,
+      "points": 3350,
+      "egress": "1.4 TB"
+    },
+    {
+      "rank": 10,
+      "node_id": "abc90def123ghi456jkl789mno012pqr345stu678",
+      "reputation": 0.89,
+      "points": 3200,
+      "egress": "1.2 TB"
+    },
+    {
+      "rank": 11,
+      "node_id": "def123ghi456jkl789mno012pqr345stu678vwx901",
+      "reputation": 0.88,
+      "points": 3050,
+      "egress": "1.0 TB"
+    },
+    {
+      "rank": 12,
+      "node_id": "ghi456jkl789mno012pqr345stu678vwx901yz234",
+      "reputation": 0.87,
+      "points": 2900,
+      "egress": "0.8 TB"
+    }
+  ],
+  "your_node": {
+    "rank": 35,
+    "node_id": "node_id_from_cache_file_would_be_here_normally",
+    "reputation": 0.83,
+    "points": 950,
+    "egress": "0.55 TB"
+  }
+} 
