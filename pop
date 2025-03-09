@@ -7,11 +7,14 @@
 INSTALL_DIR="/opt/pipe-pop"
 # Main PipeNetwork directory
 PIPE_DIR="/home/karo/Workspace/PipeNetwork"
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Function to print colored messages
@@ -25,6 +28,15 @@ print_warning() {
 
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to get version from VERSION file
+get_version() {
+    if [ -f "${SCRIPT_DIR}/VERSION" ]; then
+        cat "${SCRIPT_DIR}/VERSION"
+    else
+        echo "Unknown"
+    fi
 }
 
 # Function to get node pulse (used by interactive and continuous modes)
@@ -241,8 +253,12 @@ case "$1" in
         ${PIPE_DIR}/bin/pipe-pop --status
         ;;
     --version|-V)
-        print_message "Checking version..."
-        ${PIPE_DIR}/bin/pipe-pop --version
+        VERSION=$(get_version)
+        echo -e "${BLUE}🌐 Pipe Network PoP Node Management Tools${NC}"
+        echo -e "${BLUE}Version:${NC} v${VERSION}"
+        echo -e "${BLUE}Branch:${NC} $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Unknown")"
+        echo -e "${BLUE}Commit:${NC} $(git rev-parse --short HEAD 2>/dev/null || echo "Unknown")"
+        echo -e "${BLUE}Date:${NC} $(git log -1 --format=%cd --date=short 2>/dev/null || echo "Unknown")"
         ;;
     --refresh)
         print_message "Checking for upgrades and refreshing token..."

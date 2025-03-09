@@ -1,21 +1,21 @@
-# Pipe Network PoP Node Management Tools
+# 🌐 Pipe Network PoP Node Management Tools
 
 A comprehensive set of tools for managing and monitoring Pipe Network PoP (Point of Presence) nodes.
 
-## Overview
+## 📋 Overview
 
 This repository contains scripts and tools to help you manage your Pipe Network PoP node, including:
 
-- Node status monitoring with detailed metrics
-- Comprehensive dashboard for unified monitoring
-- Network leaderboard visualization
-- Historical data tracking and visualization
-- Automated data collection
-- Backup and recovery tools
+- 📊 Node status monitoring with detailed metrics
+- 🖥️ Comprehensive dashboard for unified monitoring
+- 🏆 Network leaderboard visualization
+- 📈 Historical data tracking and visualization
+- ⏱️ Automated data collection
+- 💾 Backup and recovery tools
 
-## Quick Start
+## 🚀 Quick Start
 
-### Global Command Setup
+### 🔗 Global Command Setup
 
 Make the `pop` command available from anywhere in your system:
 
@@ -24,7 +24,7 @@ Make the `pop` command available from anywhere in your system:
 sudo ln -sf "$(pwd)/pop" /usr/local/bin/pop
 ```
 
-### Monitoring Your Node
+### 📊 Monitoring Your Node
 
 Check your node's status with detailed metrics:
 
@@ -44,7 +44,7 @@ View the network leaderboard:
 pop --leaderboard
 ```
 
-### Historical Data Visualization
+### 📈 Historical Data Visualization
 
 Track your node's performance over time:
 
@@ -59,7 +59,7 @@ pop --history --rank
 pop --history --points
 ```
 
-### Backup and Recovery
+### 💾 Backup and Recovery
 
 Create a backup of your node data:
 
@@ -67,17 +67,17 @@ Create a backup of your node data:
 pop --backup
 ```
 
-## Features
+## ✨ Features
 
-- **Easy Setup**: Simple installation and configuration process
-- **Global Command**: Manage your node from anywhere in your system
-- **Monitoring Tools**: Real-time monitoring of node status and performance
-- **Comprehensive Dashboard**: Unified interface for monitoring all aspects of your node
-- **Historical Data Visualization**: Track your node's performance over time
-- **Automated Data Collection**: Schedule regular data collection for historical analysis
-- **Detailed Uptime Tracking**: Monitor exact node uptime and start time
+- 🔧 **Easy Setup**: Simple installation and configuration process
+- 🌐 **Global Command**: Manage your node from anywhere in your system
+- 📊 **Monitoring Tools**: Real-time monitoring of node status and performance
+- 🖥️ **Comprehensive Dashboard**: Unified interface for monitoring all aspects of your node
+- 📈 **Historical Data Visualization**: Track your node's performance over time
+- ⏱️ **Automated Data Collection**: Schedule regular data collection for historical analysis
+- ⏰ **Detailed Uptime Tracking**: Monitor exact node uptime and start time
 
-### Comprehensive Dashboard
+### 🖥️ Comprehensive Dashboard
 
 The dashboard provides a unified interface for monitoring all aspects of your node:
 
@@ -93,13 +93,13 @@ pop --dashboard --export HTML
 ```
 
 The dashboard includes:
-- Node status and detailed uptime information
-- System resource usage (CPU, RAM, disk)
-- Performance metrics (rank, reputation, points, egress)
-- Historical trends with change indicators
-- Quick access to common management tasks
+- 🔄 Node status and detailed uptime information
+- 💻 System resource usage (CPU, RAM, disk)
+- 📊 Performance metrics (rank, reputation, points, egress)
+- 📈 Historical trends with change indicators
+- 🔗 Quick access to common management tasks
 
-### Pulse Monitoring
+### 📊 Pulse Monitoring
 
 The pulse monitoring feature provides real-time information about your node's status:
 
@@ -115,14 +115,14 @@ pop --pulse -c
 ```
 
 Features include:
-- Current status with PID and uptime
-- Exact uptime with days, hours, minutes, seconds
-- Precise node start time
-- CPU and memory usage
-- Detailed reputation breakdown
-- Port status (80, 443, 8003)
+- 🔄 Current status with PID and uptime
+- ⏰ Exact uptime with days, hours, minutes, seconds
+- 📅 Precise node start time
+- 💻 CPU and memory usage
+- 📊 Detailed reputation breakdown
+- 🔌 Port status (80, 443, 8003)
 
-### Historical Data Visualization
+### 📈 Historical Data Visualization
 
 Track your node's performance over time with historical data visualization:
 
@@ -140,7 +140,7 @@ pop --history --points
 pop --history --egress
 ```
 
-### Automated Data Collection
+### ⏱️ Automated Data Collection
 
 Set up automated data collection to build a comprehensive history:
 
@@ -155,24 +155,24 @@ Set up automated data collection to build a comprehensive history:
 ./setup_cron.sh --custom "0 */2 * * *"  # Every 2 hours
 ```
 
-## Documentation
+## 📚 Documentation
 
 Detailed documentation is available in the `docs` directory:
 
-- [Global Command Guide](docs/GLOBAL_COMMAND.md)
-- [Pulse Monitoring Guide](docs/PULSE_MONITORING.md)
-- [Referral System Guide](docs/REFERRAL_GUIDE.md)
-- [Authentication Guide](docs/AUTHENTICATION.md)
+- [🌐 Global Command Guide](docs/GLOBAL_COMMAND.md)
+- [📊 Pulse Monitoring Guide](docs/PULSE_MONITORING.md)
+- [🔄 Referral System Guide](docs/REFERRAL_GUIDE.md)
+- [🔐 Authentication Guide](docs/AUTHENTICATION.md)
 
-## Requirements
+## 🔧 Requirements
 
-- Linux operating system
-- Bash shell
-- `jq` for JSON processing
-- `curl` for API requests
-- `gnuplot` (optional) for enhanced visualization
+- 🐧 Linux operating system
+- 🐚 Bash shell
+- 🔍 `jq` for JSON processing
+- 🌐 `curl` for API requests
+- 📊 `gnuplot` (optional) for enhanced visualization
 
-## Installation
+## 📥 Installation
 
 1. Clone this repository:
    ```bash
@@ -200,15 +200,31 @@ Detailed documentation is available in the `docs` directory:
    sudo apt-get install gnuplot
    ```
 
-## Contributing
+## 🔄 Versioning
+
+This project follows [Semantic Versioning](https://semver.org/):
+
+- **Major version (X.0.0)**: Incompatible API changes
+- **Minor version (0.X.0)**: New functionality in a backward compatible manner
+- **Patch version (0.0.X)**: Backward compatible bug fixes
+
+Current version: **v1.0.0**
+
+## 👥 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - Pipe Network team for creating the pipe-pop node software
 - Contributors to the project

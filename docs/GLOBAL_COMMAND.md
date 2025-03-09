@@ -1,296 +1,201 @@
-# 🌐 Global Command Documentation
+# 🌐 Global Command
 
-This document provides information about the global `pop` command, which allows you to manage your Pipe Network PoP node from anywhere on your system.
+## 📋 Overview
 
-## 🔧 Installation
+The Global Command feature allows you to manage your Pipe PoP node from anywhere in your system using the `pop` command. This document explains how to set up and use the global command.
 
-The global `pop` command can be installed in two ways:
+## 🚀 Quick Setup
 
-### Method 1: Using the Installation Script
-
-```bash
-# Make the script executable
-chmod +x install_global_pop.sh
-
-# Run the script with sudo
-sudo ./install_global_pop.sh
-```
-
-The script will:
-1. Create the installation directory at `/opt/pipe-pop`
-2. Copy the `pipe-pop` binary to the installation directory
-3. Create the necessary scripts (monitor.sh, backup.sh)
-4. Create the global `pop` command at `/usr/local/bin/pop`
-5. Set the appropriate permissions
-
-### Method 2: Manual Symbolic Link
-
-If you prefer a simpler approach that doesn't copy files to system directories:
+To make the `pop` command available globally, run:
 
 ```bash
 # Create a symbolic link to the pop script in /usr/local/bin
 sudo ln -sf "$(pwd)/pop" /usr/local/bin/pop
 ```
 
-This creates a symbolic link that points to your current pop script, making it accessible globally while keeping all files in your project directory.
+This creates a symbolic link to the `pop` script in `/usr/local/bin`, which is typically in your system's PATH.
 
-## 🚀 Usage
+## ✨ Features
 
-Once installed, you can use the `pop` command from anywhere on your system:
+- 🔧 **Simplified Management**: Manage your node from any directory
+- 🔄 **Automatic Updates**: The symbolic link always points to the latest version of the script
+- 🛠️ **Full Functionality**: Access all features of the Pipe PoP node management tools
+- 📊 **Monitoring Tools**: Quick access to monitoring features
+- 🔌 **Service Management**: Start, stop, and restart your node
+- 💾 **Backup and Recovery**: Create and restore backups
+- 📈 **Historical Data**: Track your node's performance over time
+
+## 🔧 Usage
+
+Once set up, you can use the `pop` command from any directory:
 
 ```bash
-# Check node status
+# Check your node's status
 pop --status
 
-# View available commands
-pop --help
-```
+# View detailed metrics
+pop --pulse
 
-## 📋 Available Commands
+# View the dashboard
+pop --dashboard
 
-The global `pop` command provides the following functionality:
+# View the network leaderboard
+pop --leaderboard
 
-### Status and Information
+# Start your node
+pop --start
 
-```bash
-# Check node status and reputation
-pop --status
+# Stop your node
+pop --stop
 
-# Show the version of the pipe-pop binary
-pop --version
+# Restart your node
+pop --restart
 
-# Fetch node's uptime stats
-pop --stats
-
-# Perform a quick egress test
-pop --egress-test
-
-# Display the current wallet address connected to the node
-pop --wallet-info
-```
-
-### Monitoring and Visualization
-
-```bash
-# Monitor node status
-pop --monitor
-
-# Show pulse monitoring (node status)
-pop --pulse                   # Standard mode (exit with 'q')
-pop --pulse -i                # Interactive mode (exit with any key)
-pop --pulse -c                # Continuous mode (exit with Ctrl+C)
-
-# Show comprehensive dashboard
-pop --dashboard               # Full dashboard with auto-refresh
-pop --dashboard --refresh 10  # Refresh every 10 seconds
-pop --dashboard --compact     # Compact view with less details
-pop --dashboard --export HTML # Export dashboard to HTML file
-
-# Show network leaderboard
-pop --leaderboard             # Sort by reputation (default)
-pop --leaderboard --points    # Sort by points
-pop --leaderboard --egress    # Sort by egress data
-
-# Run the history visualization tool
-pop --history
-pop --history --rank          # Show rank history
-pop --history --reputation    # Show reputation history
-pop --history --points        # Show points history
-pop --history --egress        # Show egress history
-```
-
-### Updates and Maintenance
-
-```bash
-# Check for updates to the pipe-pop binary
-pop --check-update
-
-# Update the pipe-pop binary to the latest version (requires sudo)
-sudo pop --update
-
-# Update to a specific version with force option (requires sudo)
-sudo pop --update vX.Y.Z --force
-
-# Check for upgrades and refresh token (requires sudo)
-sudo pop --refresh
-```
-
-### Configuration
-
-```bash
-# Enable ports 80 and 443 (requires sudo)
-sudo pop --enable-80-443
-
-# Set a new wallet address for the node (requires sudo)
-sudo pop --set-wallet <address>
-```
-
-### Service Management
-
-```bash
-# Restart the node service (requires sudo)
-sudo pop --restart
-
-# View service logs
-pop --logs
-```
-
-### Backup and Recovery
-
-```bash
 # Create a backup
 pop --backup
-```
 
-### Referrals and Rewards
-
-```bash
-# Generate a referral code
-pop --gen-referral-route
-
-# Check points and rewards
-pop --points
-```
-
-### Help
-
-```bash
-# Show help message
-pop --help
-```
-
-## 💡 Examples
-
-Here are some common usage examples:
-
-### Checking Node Status
-
-To check the status of your node, including reputation score and other metrics:
-
-```bash
-pop --status
-```
-
-### Using the Dashboard
-
-To view the comprehensive dashboard:
-
-```bash
-pop --dashboard
-```
-
-To export the dashboard to an HTML file for sharing:
-
-```bash
-pop --dashboard --export HTML
-```
-
-### Monitoring Node Performance
-
-To monitor your node's performance with real-time updates:
-
-```bash
-pop --pulse
-```
-
-For continuous monitoring with detailed metrics:
-
-```bash
-pop --pulse -c
-```
-
-### Viewing Historical Data
-
-To visualize your node's rank history:
-
-```bash
+# View historical data
 pop --history --rank
 ```
 
-To visualize your node's points history:
+## 📚 Available Commands
+
+### 📊 Monitoring Commands
+
+- 🔍 **--status**: Check if your node is running
+- 📊 **--pulse**: View detailed metrics about your node
+- 🖥️ **--dashboard**: View the comprehensive dashboard
+- 🏆 **--leaderboard**: View the network leaderboard
+- 📈 **--history**: View historical data
+
+### 🔌 Service Management Commands
+
+- ▶️ **--start**: Start your node
+- ⏹️ **--stop**: Stop your node
+- 🔄 **--restart**: Restart your node
+- 🔍 **--check**: Check if your node is properly configured
+
+### 💾 Backup and Recovery Commands
+
+- 💾 **--backup**: Create a backup of your node data
+- 🔄 **--restore**: Restore a backup
+- 📋 **--list-backups**: List available backups
+
+### 🔧 Configuration Commands
+
+- ⚙️ **--configure**: Configure your node
+- 🔑 **--auth**: Manage authentication
+- 🔌 **--ports**: Configure port settings
+
+### 📚 Help and Information Commands
+
+- ❓ **--help**: Show help message
+- ℹ️ **--version**: Show version information
+- 📋 **--list-commands**: List all available commands
+
+## 🔧 Advanced Usage
+
+### 📊 Pulse Monitoring Options
 
 ```bash
+# Standard mode (exit with 'q')
+pop --pulse
+
+# Interactive mode (exit with any key)
+pop --pulse -i
+
+# Continuous mode (exit with Ctrl+C)
+pop --pulse -c
+```
+
+### 🖥️ Dashboard Options
+
+```bash
+# Set refresh interval
+pop --dashboard --refresh 10
+
+# Show compact view
+pop --dashboard --compact
+
+# Don't show historical data
+pop --dashboard --no-history
+
+# Export dashboard to HTML
+pop --dashboard --export HTML
+```
+
+### 🏆 Leaderboard Options
+
+```bash
+# Sort by reputation (default)
+pop --leaderboard --reputation
+
+# Sort by points
+pop --leaderboard --points
+
+# Sort by egress
+pop --leaderboard --egress
+```
+
+### 📈 Historical Data Options
+
+```bash
+# View rank history
+pop --history --rank
+
+# View reputation history
+pop --history --reputation
+
+# View points history
 pop --history --points
+
+# View egress history
+pop --history --egress
 ```
 
-### Updating Your Node
+## 🔧 Troubleshooting
 
-To check for updates:
+### 🔴 Command Not Found
 
-```bash
-pop --check-update
-```
+If you get a "command not found" error:
 
-To update to the latest version:
-
-```bash
-sudo pop --update
-```
-
-### Managing Wallet Configuration
-
-To check your current wallet address:
-
-```bash
-pop --wallet-info
-```
-
-To set a new wallet address:
-
-```bash
-sudo pop --set-wallet H6sA2GwmppUTWHW7NAhw66NBDi9Bh7LvmGTJ6CUQU5e8
-```
-
-## ❓ Troubleshooting
-
-If you encounter issues with the global `pop` command, try the following:
-
-1. **Command not found**: Ensure the command was installed correctly:
+1. 🔍 Check if the symbolic link was created correctly:
    ```bash
-   which pop
+   ls -la /usr/local/bin/pop
    ```
 
-2. **Permission denied**: Make sure you're using `sudo` for commands that require it:
+2. 🔍 Check if `/usr/local/bin` is in your PATH:
    ```bash
-   sudo pop --update
+   echo $PATH | grep "/usr/local/bin"
    ```
 
-3. **Binary not found**: Check if the binary exists in the installation directory:
+3. 🔄 If needed, recreate the symbolic link:
    ```bash
-   ls -la /opt/pipe-pop/bin/pipe-pop
-   ```
-   
-   Or if using the symbolic link method:
-   ```bash
-   ls -la $(which pop)
-   ```
-
-4. **Broken symbolic link**: If you used the symbolic link method and moved your project directory:
-   ```bash
-   # Update the symbolic link
    sudo ln -sf "$(pwd)/pop" /usr/local/bin/pop
    ```
 
-5. **Dashboard or pulse monitoring not working**: Ensure you have the required dependencies:
+### 🔴 Permission Denied
+
+If you get a "permission denied" error:
+
+1. 🔍 Check if the script is executable:
    ```bash
-   sudo apt-get install jq procps
+   ls -la pop
    ```
 
-## 🗑️ Uninstallation
+2. 🔧 Make the script executable:
+   ```bash
+   chmod +x pop
+   ```
 
-If you need to uninstall the global `pop` command:
+3. 🔄 Recreate the symbolic link:
+   ```bash
+   sudo ln -sf "$(pwd)/pop" /usr/local/bin/pop
+   ```
 
-### For Method 1 (Installation Script):
+## 📚 Additional Resources
 
-```bash
-sudo rm /usr/local/bin/pop
-sudo rm -rf /opt/pipe-pop
-```
-
-### For Method 2 (Symbolic Link):
-
-```bash
-sudo rm /usr/local/bin/pop
-```
-
-Note that this will not uninstall the Pipe Network PoP node itself, only the global command. 
+- [📊 Pulse Monitoring Guide](PULSE_MONITORING.md)
+- [🖥️ Dashboard Guide](DASHBOARD.md)
+- [🔄 Referral System Guide](REFERRAL_GUIDE.md)
+- [🔐 Authentication Guide](AUTHENTICATION.md) 

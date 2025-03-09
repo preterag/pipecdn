@@ -1,89 +1,137 @@
-# 📊 Pipe Network PoP Node Dashboard
+# 🖥️ Dashboard
 
-The Pipe Network PoP Node Dashboard provides a comprehensive, unified interface for monitoring all aspects of your node. This document explains how to use the dashboard and its features.
+## 📋 Overview
 
-## Overview
+The Dashboard feature provides a unified interface for monitoring all aspects of your Pipe PoP node, including status information, performance metrics, and historical trends.
 
-The dashboard combines real-time status information, performance metrics, and historical trends in a single view, making it easy to monitor your node's health and performance at a glance.
+## 🚀 Quick Start
 
-Key features include:
-- Real-time node status with detailed uptime information
-- System resource usage monitoring (CPU, RAM, disk)
-- Port status checking
-- Performance metrics display
-- Historical trend visualization
-- HTML export for sharing
-
-## Usage
-
-The dashboard can be accessed using the global `pop` command:
+To use the Dashboard feature, run:
 
 ```bash
 pop --dashboard
 ```
 
-### Available Options
-
-The dashboard offers several options to customize the display:
+Or, if you haven't set up the global command:
 
 ```bash
-# Set refresh interval in seconds (default: 5)
+./dashboard.sh
+```
+
+## ✨ Features
+
+- 🔄 **Real-time Status**: View your node's current status, including PID and uptime
+- ⏱️ **Detailed Uptime**: See exact uptime with days, hours, minutes, and seconds
+- 📅 **Start Time**: View the precise date and time when your node was started
+- 💻 **Resource Usage**: Monitor CPU, memory, and disk usage
+- 📊 **Performance Metrics**: View rank, reputation, points, and egress
+- 📈 **Historical Trends**: Track changes in metrics over time
+- 🔌 **Port Status**: Check if required ports (80, 443, 8003) are open and functioning
+- 🔗 **Quick Actions**: Access common management tasks
+
+## 🔧 Usage Options
+
+### 🖥️ Standard Mode
+
+```bash
+pop --dashboard
+```
+
+In standard mode, the dashboard will display your node's status and refresh automatically every 5 seconds.
+
+### ⏱️ Custom Refresh Interval
+
+```bash
 pop --dashboard --refresh 10
+```
 
-# Show compact view with less details
+Set a custom refresh interval (in seconds) for the dashboard.
+
+### 📄 Compact View
+
+```bash
 pop --dashboard --compact
+```
 
-# Show full view with all details (default)
-pop --dashboard --full
+Show a compact view with less details, useful for smaller screens.
 
-# Don't show historical data
+### 📊 No History
+
+```bash
 pop --dashboard --no-history
+```
 
-# Export dashboard to HTML file
+Don't show historical data in the dashboard.
+
+### 📤 HTML Export
+
+```bash
 pop --dashboard --export HTML
 ```
 
-## Dashboard Sections
+Export the dashboard to an HTML file for sharing or offline viewing.
 
-### 1. Status Information
+## 📊 Dashboard Sections
 
-This section provides real-time information about your node's status:
+The dashboard is divided into several sections:
 
-- **Node Running Status**: Whether the node is running or not
-- **Process ID (PID)**: The process ID of the running node
-- **Uptime**: Detailed uptime information in days, hours, minutes, and seconds
-- **Start Time**: The exact date and time when the node was started
-- **System Resources**: CPU, RAM, and disk usage
-- **Port Status**: Status of required ports (80, 443, 8003)
+### 🔄 Status Section
 
-### 2. Performance Metrics
+```
+STATUS
+Status: Running (PID: 12345)
+Uptime: 15 days, 7 hours, 23 minutes, 45 seconds
+Started: 2023-03-01 08:15:30 UTC
+Resources: CPU: 2.5% | RAM: 5.0% (512/8192 MB) | Disk: 25% (25/100 GB)
+Ports: 80: ✓  443: ✓  8003: ✓
+```
 
-This section displays key performance metrics for your node:
+- 🟢 **Status**: Shows if your node is running, along with its Process ID (PID)
+- ⏱️ **Uptime**: Shows how long your node has been running in days, hours, minutes, and seconds
+- 📅 **Started**: Shows the exact date and time when your node was started
+- 💻 **Resources**: Shows CPU, RAM, and disk usage
+- 🔌 **Ports**: Shows if required ports are open and functioning
 
-- **Network Rank**: Your node's current rank in the network
-- **Reputation Score**: Your node's reputation score (0-1)
-- **Points**: Total points earned by your node
-- **Egress**: Total data transferred by your node
+### 📊 Performance Metrics Section
 
-### 3. Historical Trends
+```
+PERFORMANCE METRICS
+Rank: 123 | Reputation: 0.987 | Points: 45,678 | Egress: 123.45 GB
+```
 
-This section shows how your node's metrics have changed over time:
+- 🏆 **Rank**: Shows your node's current rank in the network
+- ⭐ **Reputation**: Shows your node's reputation score
+- 🎯 **Points**: Shows your node's accumulated points
+- 📤 **Egress**: Shows your node's total egress traffic
 
-- **Reputation Trend**: Whether your reputation is increasing, decreasing, or unchanged
-- **Points Trend**: Changes in points with exact values
-- **Egress Trend**: Changes in data transfer with exact values
-- **Rank Trend**: Changes in network rank with exact values
+### 📈 Historical Trends Section
 
-### 4. Quick Actions
+```
+HISTORICAL TRENDS
+Reputation: ↑ (+0.002) | Points: ↑ (+1,234) | Egress: ↑ (+5.67 GB) | Rank: ↑ (+5)
+```
 
-This section provides quick access to common management tasks:
+- ⭐ **Reputation**: Shows the change in reputation since the last check
+- 🎯 **Points**: Shows the change in points since the last check
+- 📤 **Egress**: Shows the change in egress traffic since the last check
+- 🏆 **Rank**: Shows the change in rank since the last check
 
-- View detailed metrics
-- View network leaderboard
-- View historical data
-- Restart node
+### 🔗 Actions Section
 
-## HTML Export
+```
+ACTIONS
+- View detailed metrics: ./pop --pulse
+- View leaderboard: ./pop --leaderboard
+- View historical data: ./pop --history --help
+- Restart node: ./pop --restart
+```
+
+- 📊 **View detailed metrics**: Link to the pulse monitoring feature
+- 🏆 **View leaderboard**: Link to the leaderboard feature
+- 📈 **View historical data**: Link to the historical data visualization feature
+- 🔄 **Restart node**: Link to restart the node
+
+## 📤 HTML Export
 
 The dashboard can be exported to an HTML file for sharing or offline viewing:
 
@@ -91,84 +139,71 @@ The dashboard can be exported to an HTML file for sharing or offline viewing:
 pop --dashboard --export HTML
 ```
 
-This creates a static HTML file with all the current dashboard information, which can be opened in any web browser. The file is named with a timestamp (e.g., `pipe_network_dashboard_20250309_103230.html`).
+This creates a static HTML file with all the current dashboard information, which can be opened in any web browser.
 
-## Requirements
+The HTML export includes:
 
-The dashboard requires the following dependencies:
+- 🎨 **Styled Layout**: Clean, responsive design
+- 📊 **All Dashboard Sections**: Status, performance metrics, historical trends, and actions
+- 📅 **Timestamp**: When the export was created
+- 🔗 **Interactive Elements**: Links to documentation and actions
 
-- **jq**: Required for JSON processing
+## 🔧 Requirements
+
+To use the Dashboard feature, you need:
+
+- 🔍 **jq**: Required for JSON processing
   ```bash
   sudo apt-get install jq
   ```
 
-- **watch**: Required for auto-refresh functionality (optional)
+- 🔄 **watch**: Required for auto-refresh functionality (optional)
   ```bash
   sudo apt-get install procps
   ```
 
-## Troubleshooting
+## 🔄 Integration with Other Features
 
-If you encounter issues with the dashboard:
+The dashboard integrates with other features of the Pipe PoP node management tools:
 
-1. **Missing dependencies**: Ensure you have installed jq and procps
-2. **No data displayed**: Make sure your node is properly configured and running
-3. **Historical trends not showing**: Run `pop --leaderboard` multiple times to collect historical data
-4. **HTML export not working**: Check if you have write permissions in the current directory
+- 📊 **Pulse Monitoring**: Displays data from the pulse monitoring feature
+- 🏆 **Leaderboard**: Shows your node's rank from the leaderboard
+- 📈 **Historical Data**: Displays trends from the historical data
+- 🔌 **Port Checking**: Shows port status from the port checking feature
 
-## Example Output
+## 🔧 Troubleshooting
 
-```
-╔═════════════════════════════════════════════════════════════════════════╗
-║                    PIPE NETWORK POP NODE DASHBOARD                      ║
-╚═════════════════════════════════════════════════════════════════════════╝
-  Time: 2025-03-09 10:32:40
-  Node ID: d058ae47-05c5-44d9-b642-53f11719d474
-╔═════════════════════════════════════════════════════════════════════════╗
-║ STATUS                                                                  ║
-╚═════════════════════════════════════════════════════════════════════════╝
-  Status: Running (PID: 238033)
-  Uptime: 4 days, 23:37:14
-  Started: Tue Mar 4 10:55:24 2025
-  Resources: CPU: 1.2% | RAM: 3.5% (350/8192 MB) | Disk: 15% (10/100 GB)
-  Ports: 80: ✓  443: ✓  8003: ✓  
+### 🔴 Dashboard Not Refreshing
 
-╔═════════════════════════════════════════════════════════════════════════╗
-║ PERFORMANCE METRICS                                                     ║
-╚═════════════════════════════════════════════════════════════════════════╝
-  Rank: 42 | Reputation: 0.82 | Points: 987 | Egress: 0.6 TB
+If the dashboard is not refreshing automatically:
 
-╔═════════════════════════════════════════════════════════════════════════╗
-║ HISTORICAL TRENDS                                                       ║
-╚═════════════════════════════════════════════════════════════════════════╝
-  Reputation: → | Points: ↑ (+37) | Egress: ↑ (+0.05 TB) | Rank: ↓ (-7)
+```bash
+# Check if watch is installed
+which watch
 
-╔═════════════════════════════════════════════════════════════════════════╗
-║ ACTIONS                                                                 ║
-╚═════════════════════════════════════════════════════════════════════════╝
-  - View detailed metrics: pop --pulse
-  - View leaderboard: pop --leaderboard
-  - View historical data: pop --history
-  - Restart node: pop --restart
-
-Press Ctrl+C to exit
+# Install watch if needed
+sudo apt-get install procps
 ```
 
-## Integration with Other Tools
+### 🔴 Missing Data
 
-The dashboard integrates seamlessly with other Pipe Network PoP Node tools:
+If some data is missing from the dashboard:
 
-- **Pulse Monitoring**: For more detailed real-time status information
-- **Leaderboard**: For comparing your node with others in the network
-- **Historical Data Visualization**: For detailed historical trends
-- **Service Management**: For restarting or managing your node
+1. 🔍 Check if jq is installed: `which jq`
+2. 🔌 Ensure your node is running: `pop --status`
+3. 📊 Check if the pulse monitoring feature works: `pop --pulse -i`
 
-## Future Enhancements
+### 🔴 HTML Export Fails
 
-Planned enhancements for the dashboard include:
+If the HTML export fails:
 
-- Web-based interface with interactive charts
-- Alert notifications for critical metrics
-- Custom dashboard layouts
-- Mobile-friendly design
-- Multi-node dashboard for managing multiple nodes 
+1. 🔍 Check if you have write permissions in the current directory
+2. 💾 Ensure you have enough disk space
+3. 🔌 Try specifying a different output path: `pop --dashboard --export HTML --output /path/to/file.html`
+
+## 📚 Additional Resources
+
+- [🌐 Global Command Guide](GLOBAL_COMMAND.md)
+- [📊 Pulse Monitoring Guide](PULSE_MONITORING.md)
+- [🔄 Referral System Guide](REFERRAL_GUIDE.md)
+- [🔐 Authentication Guide](AUTHENTICATION.md) 
