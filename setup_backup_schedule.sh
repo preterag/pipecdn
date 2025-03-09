@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to set up a regular backup schedule for the Pipe PoP node
+# Script to set up a regular backup schedule for the pipe-pop
 # This script will create a cron job to run the backup.sh script at regular intervals
 
 # Colors for output
@@ -121,7 +121,7 @@ setup_monthly_backups() {
 # Function to show help
 show_help() {
     echo "Usage: $0 [OPTION]"
-    echo "Set up a regular backup schedule for the Pipe PoP node."
+    echo "Set up a regular backup schedule for the pipe-pop."
     echo ""
     echo "Options:"
     echo "  daily     Set up daily backups (at 2:00 AM)"

@@ -1,6 +1,6 @@
-# Pipe PoP Backups Directory
+# PPN Backups Directory
 
-This directory contains backups of essential Pipe PoP node data.
+This directory contains backups of essential PPN (Pipe Network PoP) node data.
 
 ## Contents
 

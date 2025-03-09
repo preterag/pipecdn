@@ -1,8 +1,8 @@
-# Pipe PoP Node Development Documentation
+# pipe-pop Development Documentation
 
 ## Overview
 
-This document provides comprehensive information about the development and implementation of the Pipe PoP node. It combines the development plan and implementation summary to give a complete picture of the project.
+This document provides comprehensive information about the development and implementation of the pipe-pop. It combines the development plan and implementation summary to give a complete picture of the project.
 
 ## System Information
 
@@ -23,7 +23,7 @@ This document provides comprehensive information about the development and imple
 ### Components Implemented
 
 1. **Directory Structure**
-   - `bin/`: Contains the Pipe PoP binary
+   - `bin/`: Contains the pipe-pop binary
    - `cache/`: Stores cache data
    - `config/`: Holds configuration files
    - `logs/`: Contains log files
@@ -31,20 +31,20 @@ This document provides comprehensive information about the development and imple
    - `docs/`: Contains documentation files
 
 2. **Scripts**
-   - `setup.sh`: Main setup script for installing the Pipe PoP node
+   - `setup.sh`: Main setup script for installing the pipe-pop
    - `easy_setup.sh`: One-command setup script for easy deployment
    - `run_node.sh`: Script for manually running the node
    - `backup.sh`: Script for backing up important node data
    - `monitor.sh`: Script for monitoring node status
    - `install_service.sh`: Script for managing the systemd service
-   - `update_binary.sh`: Script for updating the Pipe PoP binary
+   - `update_binary.sh`: Script for updating the pipe-pop binary
    - `setup_backup_schedule.sh`: Script for setting up regular backups
    - `pop`: Quick start script for easy node management
 
 3. **Configuration**
    - `pipe-pop.service`: Systemd service file
    - `config/config.json`: Configuration file with Solana wallet information
-   - Pipe PoP binary v0.2.8 installed and running
+   - pipe-pop binary v0.2.8 installed and running
    - Cron job for weekly backups
 
 4. **Documentation**
@@ -64,12 +64,12 @@ This document provides comprehensive information about the development and imple
 - [x] Develop setup scripts
 - [x] Create documentation
 - [x] Verify system requirements
-- [x] Create placeholder for Pipe PoP binary
+- [x] Create placeholder for pipe-pop binary
 
 ### Milestone 2: Wallet and Binary Installation (Completed)
 - [x] Install Solana CLI
 - [x] Create or import Solana wallet
-- [x] Download actual Pipe PoP binary (v0.2.8)
+- [x] Download actual pipe-pop binary (v0.2.8)
 - [x] Set executable permissions
 - [x] Create binary update script
 
@@ -112,7 +112,7 @@ The implementation is complete and fully operational:
 - ✅ Solana CLI installation completed
 - ✅ Solana wallet configuration completed
 - ✅ Configuration with Solana wallet completed
-- ✅ Actual Pipe PoP binary installation (v0.2.8) completed
+- ✅ Actual pipe-pop binary installation (v0.2.8) completed
 - ✅ Improved port usage monitoring
 - ✅ Regular backup schedule set up (weekly)
 - ✅ Easy update mechanism implemented
@@ -158,4 +158,4 @@ While the current implementation is complete and fully functional, there are sev
 
 ## Conclusion
 
-The Pipe PoP node implementation is complete and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with the wallet configured for use with the node. The actual Pipe PoP binary (v0.2.8) has been installed and is running correctly as a systemd service. The node is fully operational and ready for production use. Regular maintenance tasks have been automated with a weekly backup schedule, and the monitoring system has been improved to provide clear information about port usage. The addition of the `pop` script and `easy_setup.sh` has significantly improved the user experience, making it easy for users of all technical levels to set up and manage their Pipe PoP nodes. 
+The pipe-pop implementation is complete and follows best practices for Linux service deployment. The Solana integration has been completed successfully, with the wallet configured for use with the node. The actual pipe-pop binary (v0.2.8) has been installed and is running correctly as a systemd service. The node is fully operational and ready for production use. Regular maintenance tasks have been automated with a weekly backup schedule, and the monitoring system has been improved to provide clear information about port usage. The addition of the `pop` script and `easy_setup.sh` has significantly improved the user experience, making it easy for users of all technical levels to set up and manage their pipe-pop nodes. 

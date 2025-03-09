@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Pipe Network includes a referral system that allows Pipe PoP (Points of Presence) node operators to earn additional rewards by referring new nodes to the network. This guide explains how to generate and use referral codes, as well as how to track your referrals.
+The Pipe Network includes a referral system that allows pipe-pop (Pipe PoP Node) operators to earn additional rewards by referring new nodes to the network. This guide explains how to generate and use referral codes, as well as how to track your referrals.
 
 ## How Referrals Work
 
@@ -20,7 +20,7 @@ According to the [official Pipe Network documentation](https://docs.pipe.network
 
 To generate your own referral code:
 
-1. Make sure your Pipe PoP node is running and has a good reputation score
+1. Make sure your pipe-pop is running and has a good reputation score
 2. Run the following command:
    ```bash
    ./bin/pipe-pop --gen-referral-route
@@ -29,9 +29,9 @@ To generate your own referral code:
 
 ## Using a Referral Code
 
-When setting up a new Pipe PoP node, you can use a referral code to help both yourself and the referrer:
+When setting up a new pipe-pop, you can use a referral code to help both yourself and the referrer:
 
-1. After downloading the Pipe PoP binary, run:
+1. After downloading the pipe-pop binary, run:
    ```bash
    sudo ./bin/pipe-pop --signup-by-referral-route <REFERRAL_CODE>
    ```
@@ -40,9 +40,9 @@ When setting up a new Pipe PoP node, you can use a referral code to help both yo
 
 ## Using the Surrealine Referral Code
 
-As a Surrealine user or customer, you can use our referral code when setting up your Pipe PoP node:
+As a Surrealine user or customer, you can use our referral code when setting up your pipe-pop:
 
-1. After downloading the Pipe PoP binary, run:
+1. After downloading the pipe-pop binary, run:
    ```bash
    sudo ./bin/pipe-pop --signup-by-referral-route 3a069772281d9b1b
    ```

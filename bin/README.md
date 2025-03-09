@@ -1,10 +1,10 @@
-# Pipe PoP Binary Directory
+# PPN Binary Directory
 
-This directory contains the Pipe PoP binary executable file.
+This directory contains the PPN (Pipe Network PoP) binary executable file.
 
 ## Contents
 
-- `pipe-pop`: The main Pipe PoP node executable
+- `pipe-pop`: The main PPN executable
 
 ## Notes
 

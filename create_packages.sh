@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Pipe PoP Node Multi-Format Packaging Script
+# pipe-pop (Pipe PoP Node) Multi-Format Packaging Script
 # Version: 1.0.0
 #
-# This script creates distributable packages for the Pipe PoP node in multiple formats:
+# This script creates distributable packages for the pipe-pop in multiple formats:
 # - AppImage (universal Linux format)
 # - DEB package (Debian/Ubuntu)
 # - RPM package (Red Hat/Fedora/CentOS)
@@ -43,7 +43,7 @@ print_highlight() {
 }
 
 # Display version information
-print_message "Pipe PoP Multi-Format Packaging Tool v1.0.0"
+print_message "pipe-pop Multi-Format Packaging Tool v1.0.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -105,7 +105,7 @@ BUILD_DIR="${WORKSPACE_DIR}/build"
 PACKAGE_DIR="${BUILD_DIR}/package"
 RELEASE_DIR="${WORKSPACE_DIR}/installers/v1.0.0"
 VERSION="1.0.0"
-PACKAGE_NAME="ppn"
+PACKAGE_NAME="pipe-pop"
 FULL_PACKAGE_NAME="${PACKAGE_NAME}-${VERSION}"
 
 # Create directories
@@ -174,17 +174,17 @@ mkdir -p "${PACKAGE_DIR}/logs"
 mkdir -p "${PACKAGE_DIR}/backups"
 
 # Create README files for empty directories
-echo "# Pipe PoP Binary Directory" > "${PACKAGE_DIR}/bin/README.md"
-echo "This directory will contain the Pipe PoP binary after installation." >> "${PACKAGE_DIR}/bin/README.md"
+echo "# pipe-pop Binary Directory" > "${PACKAGE_DIR}/bin/README.md"
+echo "This directory will contain the pipe-pop binary after installation." >> "${PACKAGE_DIR}/bin/README.md"
 
-echo "# Pipe PoP Cache Directory" > "${PACKAGE_DIR}/cache/README.md"
-echo "This directory will store cache data for the Pipe PoP node." >> "${PACKAGE_DIR}/cache/README.md"
+echo "# pipe-pop Cache Directory" > "${PACKAGE_DIR}/cache/README.md"
+echo "This directory will store cache data for the pipe-pop." >> "${PACKAGE_DIR}/cache/README.md"
 
-echo "# Pipe PoP Logs Directory" > "${PACKAGE_DIR}/logs/README.md"
-echo "This directory will store log files for the Pipe PoP node." >> "${PACKAGE_DIR}/logs/README.md"
+echo "# pipe-pop Logs Directory" > "${PACKAGE_DIR}/logs/README.md"
+echo "This directory will store log files for the pipe-pop." >> "${PACKAGE_DIR}/logs/README.md"
 
-echo "# Pipe PoP Backups Directory" > "${PACKAGE_DIR}/backups/README.md"
-echo "This directory will store backups of essential Pipe PoP node data." >> "${PACKAGE_DIR}/backups/README.md"
+echo "# pipe-pop Backups Directory" > "${PACKAGE_DIR}/backups/README.md"
+echo "This directory will store backups of essential pipe-pop data." >> "${PACKAGE_DIR}/backups/README.md"
 
 # Create source package
 print_header "Creating Source Package"
@@ -237,7 +237,7 @@ EOF
     # Create desktop file
     cat > "${APPDIR}/usr/share/applications/pipe-pop.desktop" << EOF
 [Desktop Entry]
-Name=Pipe PoP Node
+Name=pipe-pop
 Comment=Pipe Network Point of Presence Node
 Exec=pipe-pop
 Icon=pipe-pop
@@ -275,15 +275,15 @@ if [ "$DEB_AVAILABLE" = true ]; then
     DEB_DIR="${BUILD_DIR}/deb"
     DEB_PACKAGE_DIR="${DEB_DIR}/${PACKAGE_NAME}_${VERSION}_amd64"
     mkdir -p "${DEB_PACKAGE_DIR}/DEBIAN"
-    mkdir -p "${DEB_PACKAGE_DIR}/opt/ppn"
+    mkdir -p "${DEB_PACKAGE_DIR}/opt/pipe-pop"
     mkdir -p "${DEB_PACKAGE_DIR}/usr/bin"
     
     # Copy files to package directory
-    cp -r "${PACKAGE_DIR}/"* "${DEB_PACKAGE_DIR}/opt/ppn/"
+    cp -r "${PACKAGE_DIR}/"* "${DEB_PACKAGE_DIR}/opt/pipe-pop/"
     
     # Create control file
     cat > "${DEB_PACKAGE_DIR}/DEBIAN/control" << EOF
-Package: ppn
+Package: pipe-pop
 Version: ${VERSION}
 Section: net
 Priority: optional
@@ -303,11 +303,11 @@ EOF
 set -e
 
 # Create symlink for global pop command
-ln -sf /opt/ppn/pop /usr/bin/pop
+ln -sf /opt/pipe-pop/pop /usr/bin/pop
 
 # Set permissions
-chmod +x /opt/ppn/*.sh
-chmod +x /opt/ppn/pop
+chmod +x /opt/pipe-pop/*.sh
+chmod +x /opt/pipe-pop/pop
 
 echo "Pipe PoP Node has been installed."
 echo "To set up your node, run: sudo pop --setup"
@@ -328,7 +328,7 @@ fi
 
 # If purge, remove configuration
 if [ "$1" = "purge" ]; then
-    rm -rf /opt/ppn/config
+    rm -rf /opt/pipe-pop/config
 fi
 
 exit 0
@@ -362,13 +362,13 @@ if [ "$RPM_AVAILABLE" = true ]; then
     
     # Create spec file
     cat > "${RPM_DIR}/SPECS/${PACKAGE_NAME}.spec" << EOF
-Name:           ppn
+Name:           pipe-pop
 Version:        ${VERSION}
 Release:        1%{?dist}
 Summary:        Pipe PoP Node for the Pipe Network decentralized CDN
 
 License:        MIT
-URL:            https://github.com/preterag/ppn
+URL:            https://github.com/preterag/pipe-pop
 Source0:        %{name}-%{version}.tar.gz
 
 Requires:       bash curl jq
@@ -383,21 +383,21 @@ PoP node.
 %setup -q -n ${FULL_PACKAGE_NAME}
 
 %install
-mkdir -p %{buildroot}/opt/ppn
+mkdir -p %{buildroot}/opt/pipe-pop
 mkdir -p %{buildroot}/usr/bin
-cp -r * %{buildroot}/opt/ppn/
-ln -sf /opt/ppn/pop %{buildroot}/usr/bin/pop
+cp -r * %{buildroot}/opt/pipe-pop/
+ln -sf /opt/pipe-pop/pop %{buildroot}/usr/bin/pop
 
 %files
-/opt/ppn
+/opt/pipe-pop
 /usr/bin/pop
 
 %post
-chmod +x /opt/ppn/*.sh
-chmod +x /opt/ppn/pop
+chmod +x /opt/pipe-pop/*.sh
+chmod +x /opt/pipe-pop/pop
 echo "Pipe PoP Node has been installed."
 echo "To complete the setup, run: sudo pop --setup"
-echo "For more information, see the documentation in /opt/ppn/docs"
+echo "For more information, see the documentation in /opt/pipe-pop/docs"
 
 %postun
 if [ \$1 -eq 0 ]; then
@@ -472,7 +472,7 @@ After installation, you can use the \`pop\` command to manage your Pipe PoP node
 - Update node: \`sudo pop --update\`
 - View logs: \`pop --logs\`
 
-For more information, refer to the documentation in \`/opt/ppn/docs\` or run \`pop --help\`.
+For more information, refer to the documentation in \`/opt/pipe-pop/docs\` or run \`pop --help\`.
 
 ## System Requirements
 
@@ -486,7 +486,7 @@ For more information, refer to the documentation in \`/opt/ppn/docs\` or run \`p
 
 If you need help with your Pipe PoP node:
 
-1. Check the documentation in \`/opt/ppn/docs\`
+1. Check the documentation in \`/opt/pipe-pop/docs\`
 2. Visit the [Pipe Network Documentation](https://docs.pipe.network)
 3. Contact Preterag support at [hello@preterag.com](mailto:hello@preterag.com)
 EOF

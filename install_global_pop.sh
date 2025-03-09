@@ -3,7 +3,7 @@
 # Script to install the global 'pop' command
 # Version: 1.0.0
 #
-# This script installs the 'pop' command globally for easy management of the Pipe PoP node
+# This script installs the 'pop' command globally for easy management of the pipe-pop node
 #
 # Contributors:
 # - Preterag Team (original implementation)
@@ -63,7 +63,7 @@ print_message "Creating monitor script with absolute paths..."
 cat > "${INSTALL_DIR}/monitor.sh" << 'EOF'
 #!/bin/bash
 
-# Monitoring script for Pipe PoP node
+# Monitoring script for pipe-pop
 # This script checks the status of the node and provides basic monitoring
 
 # Installation directory
@@ -93,10 +93,10 @@ print_error() {
 # Check if the node is running
 check_node_status() {
     if pgrep -f "pipe-pop" > /dev/null; then
-        print_message "Pipe PoP node is running."
+        print_message "pipe-pop is running."
         return 0
     else
-        print_error "Pipe PoP node is not running."
+        print_error "pipe-pop is not running."
         return 1
     fi
 }
@@ -181,7 +181,7 @@ check_ports() {
         fi
     done
     
-    # Check if the Pipe PoP service is configured to use these ports
+    # Check if the pipe-pop service is configured to use these ports
     if [ -f "${PIPE_DIR}/config/config.json" ]; then
         if grep -q "\"ports\".*\[.*80.*443.*8003" "${PIPE_DIR}/config/config.json"; then
             print_message "Ports are correctly configured in config.json."
@@ -192,13 +192,13 @@ check_ports() {
         print_warning "config.json not found. Cannot verify port configuration."
     fi
     
-    print_message "Note: The Pipe PoP node may not actively listen on these ports until it receives traffic."
+    print_message "Note: The pipe-pop may not actively listen on these ports until it receives traffic."
     print_message "      This is normal behavior and doesn't indicate a problem with the node."
 }
 
 # Main function
 main() {
-    print_message "=== Pipe PoP Node Monitoring ==="
+    print_message "=== pipe-pop Monitoring ==="
     print_message "Time: $(date)"
     print_message "================================="
     
@@ -221,7 +221,7 @@ print_message "Creating backup script with absolute paths..."
 cat > "${INSTALL_DIR}/backup.sh" << 'EOF'
 #!/bin/bash
 
-# Backup script for Pipe PoP node
+# Backup script for pipe-pop
 # This script creates backups of important node data
 
 # Installation directory
@@ -299,7 +299,7 @@ print_message "Creating global pop command..."
 cat > "${GLOBAL_CMD}" << 'EOF'
 #!/bin/bash
 
-# Pipe PoP Node Management Script
+# pipe-pop Management Script
 # This script provides a convenient wrapper around the pipe-pop binary
 
 # Installation directory
@@ -328,13 +328,13 @@ print_error() {
 
 # Check if the binary exists
 if [ ! -f "${INSTALL_DIR}/bin/pipe-pop" ]; then
-    print_error "Pipe PoP binary not found. Please check your installation."
+    print_error "pipe-pop binary not found. Please check your installation."
     exit 1
 fi
 
 # Function to show help
 show_help() {
-    echo "Pipe PoP Node Management Script"
+    echo "pipe-pop Management Script"
     echo "Usage: pop [OPTION]"
     echo ""
     echo "Options:"

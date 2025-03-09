@@ -1,10 +1,10 @@
-# Pipe PoP Configuration Directory
+# Pipe Network PoP Configuration Directory
 
-This directory contains configuration files for the Pipe PoP node.
+This directory contains configuration files for the Pipe Network PoP node.
 
 ## Contents
 
-- `config.json`: Main configuration file for the Pipe PoP node
+- `config.json`: Main configuration file for the Pipe Network PoP node
 
 ## Configuration Options
 

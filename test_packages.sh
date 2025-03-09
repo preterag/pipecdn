@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Pipe PoP Node Package Testing Script
+# Pipe Network PoP Package Testing Script
 # Version: 1.0.0
 #
-# This script helps test the installation packages for the Pipe PoP node
+# This script helps test the installation packages for the pipe-pop
 # across different Linux distributions using Docker containers.
 #
 # Contributors:
@@ -39,7 +39,7 @@ print_highlight() {
 }
 
 # Display version information
-print_header "Pipe PoP Package Testing Tool v1.0.0"
+print_header "pipe-pop Package Testing Tool v1.0.0"
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then

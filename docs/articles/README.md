@@ -6,7 +6,7 @@ This directory contains articles and documentation about our Pipe Network PoP no
 
 | Title | Version | Date | Description |
 |-------|---------|------|-------------|
-| [Building a User-Friendly Pipe Network PoP Node](./pipe_pop_implementation_v1.0.md) | 1.0.0 | 2024-03-03 | Our journey to simplify decentralized content delivery through the Pipe Network PoP node implementation |
+| [Building a User-Friendly Pipe Network PoP Node](./pipe-pop_implementation_v1.0.md) | 1.0.0 | 2024-03-03 | Our journey to simplify decentralized content delivery through the pipe-pop implementation |
 
 ## Version Tracking
 

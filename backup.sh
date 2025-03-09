@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Backup script for Pipe PoP node
+# Backup script for Pipe Network PoP node
 # Version: 1.0.0
 #
 # This script creates backups of important node data
@@ -32,7 +32,7 @@ print_error() {
 }
 
 # Display version information
-print_message "Pipe PoP Backup Tool v1.0.0"
+print_message "Pipe Network PoP Backup Tool v1.0.0"
 
 # Check if the global backup script exists
 if [ -f "/opt/pipe-pop/backup.sh" ]; then

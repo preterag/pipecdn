@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to open the required ports for Pipe PoP node
+# Script to open the required ports for pipe-pop
 # Version: 1.0.0 (Deprecated)
 #
 # DEPRECATION NOTICE: This script is deprecated and will be removed in a future update.

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to install and manage the Pipe Network PoP (PPN) systemd service
+# Script to install and manage the Pipe Network PoP (pipe-pop) systemd service
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -29,10 +29,10 @@ fi
 
 # Function to install the service
 install_service() {
-    print_message "Installing PPN service..."
+    print_message "Installing pipe-pop service..."
     
     # Copy the service file
-    cp ppn.service /etc/systemd/system/
+    cp pipe-pop.service /etc/systemd/system/
     
     # Reload systemd
     systemctl daemon-reload
@@ -42,57 +42,57 @@ install_service() {
 
 # Function to enable the service
 enable_service() {
-    print_message "Enabling PPN service to start on boot..."
+    print_message "Enabling pipe-pop service to start on boot..."
     
-    systemctl enable ppn.service
+    systemctl enable pipe-pop.service
     
     print_message "Service enabled successfully."
 }
 
 # Function to start the service
 start_service() {
-    print_message "Starting PPN service..."
+    print_message "Starting pipe-pop service..."
     
-    systemctl start ppn.service
+    systemctl start pipe-pop.service
     
     print_message "Service started successfully."
 }
 
 # Function to check service status
 check_status() {
-    print_message "Checking PPN service status..."
+    print_message "Checking pipe-pop service status..."
     
-    systemctl status ppn.service
+    systemctl status pipe-pop.service
 }
 
 # Function to stop the service
 stop_service() {
-    print_message "Stopping PPN service..."
+    print_message "Stopping pipe-pop service..."
     
-    systemctl stop ppn.service
+    systemctl stop pipe-pop.service
     
     print_message "Service stopped successfully."
 }
 
 # Function to disable the service
 disable_service() {
-    print_message "Disabling PPN service..."
+    print_message "Disabling pipe-pop service..."
     
-    systemctl disable ppn.service
+    systemctl disable pipe-pop.service
     
     print_message "Service disabled successfully."
 }
 
 # Function to uninstall the service
 uninstall_service() {
-    print_message "Uninstalling PPN service..."
+    print_message "Uninstalling pipe-pop service..."
     
     # Stop and disable the service
-    systemctl stop ppn.service
-    systemctl disable ppn.service
+    systemctl stop pipe-pop.service
+    systemctl disable pipe-pop.service
     
     # Remove the service file
-    rm /etc/systemd/system/ppn.service
+    rm /etc/systemd/system/pipe-pop.service
     
     # Reload systemd
     systemctl daemon-reload
@@ -103,7 +103,7 @@ uninstall_service() {
 # Function to show help
 show_help() {
     echo "Usage: $0 [OPTION]"
-    echo "Install and manage the Pipe Network PoP (PPN) systemd service."
+    echo "Install and manage the Pipe Network PoP (pipe-pop) systemd service."
     echo ""
     echo "Options:"
     echo "  install    Install the service"

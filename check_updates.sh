@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Script to check for updates to the Pipe PoP node
+# Script to check for updates to the pipe-pop binary and scripts
 # Version: 1.0.0
 #
-# This script checks for updates to the Pipe PoP node binary and scripts
+# This script checks for updates to the pipe-pop node binary and scripts
 #
 # Contributors:
 # - Preterag Team (original implementation)
@@ -29,13 +29,13 @@ print_error() {
 }
 
 print_message "========================================"
-print_message "   Pipe PoP Update Checker"
+print_message "   pipe-pop Update Checker"
 print_message "========================================"
-print_message "Checking for updates to your Pipe PoP node..."
+print_message "Checking for updates to your pipe-pop..."
 
 # Check if the binary exists
 if [ ! -f "bin/pipe-pop" ]; then
-    print_error "Pipe PoP binary not found. Please run setup.sh first."
+    print_error "pipe-pop binary not found. Please run setup.sh first."
     exit 1
 fi
 
@@ -139,7 +139,7 @@ latest_version_num=${latest_version#v}
 # Compare versions (simple string comparison - can be improved with version comparison logic)
 if [ "$current_version_num" == "$latest_version_num" ]; then
     print_message "========================================"
-    print_message "Your Pipe PoP binary is up to date (${current_version})."
+    print_message "Your pipe-pop binary is up to date (${current_version})."
     print_message "========================================"
 elif [ "$current_version" == "unknown" ]; then
     print_warning "========================================"

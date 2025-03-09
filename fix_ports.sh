@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to fix port issues for Pipe PoP node
+# Script to fix port issues for pipe-pop
 # Version: 1.2.0
 #
 # This script will open ports in the firewall and update the configuration
@@ -33,7 +33,7 @@ print_error() {
 }
 
 # Display version information
-print_message "Pipe PoP Port Configuration Tool v1.2.0"
+print_message "pipe-pop Port Configuration Tool v1.2.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -41,7 +41,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-print_message "Fixing port issues for Pipe PoP node..."
+print_message "Fixing port issues for pipe-pop..."
 
 # Step 1: Open ports in the firewall
 print_message "Step 1: Opening ports in the firewall..."
@@ -66,7 +66,7 @@ ufw allow 80/tcp
 print_message "Opening port 443 (HTTPS)..."
 ufw allow 443/tcp
 
-print_message "Opening port 8003 (Pipe PoP)..."
+print_message "Opening port 8003 (pipe-pop)..."
 ufw allow 8003/tcp
 
 # Reload the firewall
@@ -87,19 +87,19 @@ PORT_8003_IN_USE=$(netstat -tuln | grep ":8003 " | grep -v "pipe-pop")
 if [ -n "$PORT_80_IN_USE" ]; then
     print_warning "Port 80 is already in use by another service:"
     echo "$PORT_80_IN_USE"
-    print_warning "You may need to stop this service or configure Pipe PoP to use a different port."
+    print_warning "You may need to stop this service or configure pipe-pop to use a different port."
 fi
 
 if [ -n "$PORT_443_IN_USE" ]; then
     print_warning "Port 443 is already in use by another service:"
     echo "$PORT_443_IN_USE"
-    print_warning "You may need to stop this service or configure Pipe PoP to use a different port."
+    print_warning "You may need to stop this service or configure pipe-pop to use a different port."
 fi
 
 if [ -n "$PORT_8003_IN_USE" ]; then
     print_warning "Port 8003 is already in use by another service:"
     echo "$PORT_8003_IN_USE"
-    print_warning "You may need to stop this service or configure Pipe PoP to use a different port."
+    print_warning "You may need to stop this service or configure pipe-pop to use a different port."
 fi
 
 # Step 3: Verify the configuration file
@@ -161,7 +161,7 @@ print_message "Reloading systemd daemon..."
 systemctl daemon-reload
 
 # Step 5: Restart the service
-print_message "Step 5: Restarting the Pipe PoP service..."
+print_message "Step 5: Restarting the pipe-pop service..."
 
 systemctl restart pipe-pop.service
 
@@ -180,27 +180,27 @@ PORT_443_IN_USE_BY_PIPE=$(netstat -tuln | grep ":443 " | grep "pipe-pop" || echo
 PORT_8003_IN_USE_BY_PIPE=$(netstat -tuln | grep ":8003 " | grep "pipe-pop" || echo "")
 
 if [ -n "$PORT_80_IN_USE_BY_PIPE" ]; then
-    print_message "Port 80 is now in use by Pipe PoP."
+    print_message "Port 80 is now in use by pipe-pop."
 else
-    print_warning "Port 80 is not in use by Pipe PoP. This may be normal if the node hasn't received traffic yet."
+    print_warning "Port 80 is not in use by pipe-pop. This may be normal if the node hasn't received traffic yet."
 fi
 
 if [ -n "$PORT_443_IN_USE_BY_PIPE" ]; then
-    print_message "Port 443 is now in use by Pipe PoP."
+    print_message "Port 443 is now in use by pipe-pop."
 else
-    print_warning "Port 443 is not in use by Pipe PoP. This may be normal if the node hasn't received traffic yet."
+    print_warning "Port 443 is not in use by pipe-pop. This may be normal if the node hasn't received traffic yet."
 fi
 
 if [ -n "$PORT_8003_IN_USE_BY_PIPE" ]; then
-    print_message "Port 8003 is now in use by Pipe PoP."
+    print_message "Port 8003 is now in use by pipe-pop."
 else
-    print_warning "Port 8003 is not in use by Pipe PoP. This may be normal if the node hasn't received traffic yet."
+    print_warning "Port 8003 is not in use by pipe-pop. This may be normal if the node hasn't received traffic yet."
 fi
 
 # Step 7: Provide additional information
 print_message "Step 7: Additional information..."
 
-print_message "The Pipe PoP node may not actively listen on these ports until it receives traffic."
+print_message "The pipe-pop may not actively listen on these ports until it receives traffic."
 print_message "This is normal behavior and doesn't indicate a problem with the node."
 print_message "You can check the node status with: pop --status"
 print_message "You can monitor the node with: pop --monitor"

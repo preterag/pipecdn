@@ -29,7 +29,7 @@ fi
 PIPE_DIR="/home/karo/Workspace/PipeNetwork"
 NODE_INFO="${PIPE_DIR}/node_info.json"
 CACHE_DIR="${PIPE_DIR}/cache"
-BINARY="${PIPE_DIR}/bin/ppn"
+BINARY="${PIPE_DIR}/bin/pipe-pop"
 PUBKEY="H6sA2GwmppUTWHW7NAhw66NBDi9Bh7LvmGTJ6CUQU5e8"
 
 # Ensure UFW is installed and ports are open
@@ -71,6 +71,6 @@ cat > "$NODE_INFO" << EOF
 EOF
 print_message "Created node_info.json with temporary registration"
 
-# Start the Pipe PoP node
+# Start the pipe-pop node
 print_message "Starting Pipe Network PoP node with ports 80 and 443 enabled..."
 exec "$BINARY" --cache-dir "$CACHE_DIR" --pubKey "$PUBKEY" --enable-80-443 

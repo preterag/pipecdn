@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to manually run the Pipe PoP node
+# Script to manually run the Pipe Network PoP node
 # This is an alternative to using the systemd service
 
 # Colors for output
@@ -24,7 +24,7 @@ print_error() {
 
 # Check if the binary exists
 if [ ! -f "bin/pipe-pop" ]; then
-    print_error "Pipe PoP binary not found. Please run setup.sh first."
+    print_error "pipe-pop binary not found. Please run setup.sh first."
     exit 1
 fi
 
@@ -33,9 +33,9 @@ mkdir -p logs
 
 # Get current timestamp for log file
 timestamp=$(date +"%Y%m%d_%H%M%S")
-log_file="logs/pipe-pop_${timestamp}.log"
+log_file="logs/pipe_pop_${timestamp}.log"
 
-print_message "Starting Pipe PoP node..."
+print_message "Starting Pipe Network PoP node..."
 print_message "Logs will be saved to: ${log_file}"
 print_message "Press Ctrl+C to stop the node"
 

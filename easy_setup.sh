@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Pipe PoP Node Easy Setup Script
+# pipe-pop Easy Setup Script
 # Version: 1.1.0
 #
-# This script provides a one-command setup for the Pipe PoP node
+# This script provides a one-command setup for the pipe-pop
 #
 # NOTE: This is a more user-friendly version of setup.sh that provides
 # a guided installation process with interactive prompts. If you prefer
@@ -45,7 +45,7 @@ print_highlight() {
 }
 
 # Display version information
-print_message "Pipe PoP Easy Setup Tool v1.1.0"
+print_message "pipe-pop Easy Setup Tool v1.1.0"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -55,15 +55,15 @@ fi
 
 # Welcome message
 clear
-print_header "Pipe PoP Node Easy Setup"
+print_header "pipe-pop Easy Setup"
 echo ""
-print_message "Welcome to the Pipe PoP Node Easy Setup!"
-print_message "This script will guide you through setting up a Pipe PoP node for the Pipe Network decentralized CDN."
+print_message "Welcome to the pipe-pop Easy Setup!"
+print_message "This script will guide you through setting up a pipe-pop for the Pipe Network decentralized CDN."
 echo ""
 print_message "The setup will:"
 echo "  - Install all necessary dependencies"
 echo "  - Set up your Solana wallet (or use your existing one)"
-echo "  - Download and configure the Pipe PoP binary"
+echo "  - Download and configure the pipe-pop binary"
 echo "  - Set up a systemd service for reliable operation"
 echo "  - Configure automatic backups"
 echo "  - Apply the Surrealine referral code (optional)"
@@ -115,13 +115,13 @@ print_message "Installing required packages..."
 apt-get install -y curl net-tools jq
 
 # Step 3: Clone the repository
-print_header "Setting Up Pipe PoP Node"
+print_header "Setting Up pipe-pop"
 
 print_message "Creating installation directory..."
 INSTALL_DIR="/opt/pipe-pop"
 mkdir -p "$INSTALL_DIR"
 
-print_message "Downloading Pipe PoP node files..."
+print_message "Downloading pipe-pop files..."
 git clone https://github.com/preterag/pipecdn.git "$INSTALL_DIR" || {
     print_message "Repository already exists, updating instead..."
     cd "$INSTALL_DIR"
@@ -158,13 +158,13 @@ else
     print_message "Using wallet address: $SOLANA_WALLET"
 fi
 
-# Step 5: Download and configure the Pipe PoP binary
-print_header "Setting Up Pipe PoP Binary"
+# Step 5: Download and configure the pipe-pop binary
+print_header "Setting Up pipe-pop Binary"
 
 print_message "Creating directories..."
 mkdir -p bin cache config logs backups
 
-print_message "Downloading Pipe PoP binary..."
+print_message "Downloading pipe-pop binary..."
 curl -L -o bin/pipe-pop https://dl.pipecdn.app/v0.2.8/pop
 chmod +x bin/pipe-pop
 
@@ -204,7 +204,7 @@ print_header "Setting Up Systemd Service"
 print_message "Creating systemd service file..."
 cat > /etc/systemd/system/pipe-pop.service << EOF
 [Unit]
-Description=Pipe PoP Node
+Description=pipe-pop Node
 After=network.target
 
 [Service]
@@ -238,7 +238,7 @@ print_message "Creating global pop command for system-wide access..."
 cat > /usr/local/bin/pop << 'EOF'
 #!/bin/bash
 
-# Pipe PoP Node Management Script
+# pipe-pop Management Script
 # This script provides a convenient wrapper around the pipe-pop binary
 
 # Installation directory
@@ -265,13 +265,13 @@ print_error() {
 
 # Check if the binary exists
 if [ ! -f "${INSTALL_DIR}/bin/pipe-pop" ]; then
-    print_error "Pipe PoP binary not found. Please check your installation."
+    print_error "pipe-pop binary not found. Please check your installation."
     exit 1
 fi
 
 # Function to show help
 show_help() {
-    echo "Pipe PoP Node Management Script"
+    echo "pipe-pop Node Management Script"
     echo "Usage: pop [OPTION]"
     echo ""
     echo "Options:"
@@ -400,7 +400,7 @@ print_highlight "You can now use the 'pop' command from anywhere on your system!
 # Step 10: Final steps
 print_header "Setup Complete"
 
-print_message "Pipe PoP node has been successfully set up!"
+print_message "pipe-pop has been successfully set up!"
 print_highlight "You can manage your node using the global 'pop' command from anywhere on your system:"
 echo ""
 echo "  Check node status:    pop --status"

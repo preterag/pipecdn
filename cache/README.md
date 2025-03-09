@@ -1,11 +1,11 @@
-# Pipe PoP Cache Directory
+# PPN Cache Directory
 
-This directory contains cache data for the Pipe PoP node.
+This directory contains cache data for the PPN (Pipe Network PoP) node.
 
 ## Contents
 
 - `node_info.json`: Contains essential node information including the node ID
-- Various cache files created by the Pipe PoP node during operation
+- Various cache files created by the PPN node during operation
 
 ## Important Notes
 

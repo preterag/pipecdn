@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Script to update the Pipe PoP binary
+# Script to update the PPN binary
 # Version: 1.0.0
 #
-# This script downloads and installs the latest version of the Pipe PoP binary
+# This script downloads and installs the latest version of the PPN binary
 #
 # Contributors:
 # - Preterag Team (original implementation)
@@ -38,7 +38,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 print_message "========================================"
-print_message "   Pipe PoP Binary Updater"
+print_message "   PPN Binary Updater"
 print_message "========================================"
 
 # Get the current version if the binary exists
@@ -233,14 +233,14 @@ print_message "Replacing old binary with new one..."
 mv bin/pipe-pop.new bin/pipe-pop
 
 # Restart the service
-print_message "Restarting Pipe PoP service..."
+print_message "Restarting PPN service..."
 systemctl restart pipe-pop.service
 
 # Check service status
 print_message "Checking service status..."
 if systemctl is-active --quiet pipe-pop.service; then
     print_message "========================================"
-    print_message "Update successful! Pipe PoP service is running."
+    print_message "Update successful! PPN service is running."
     print_message "New version: ${version}"
     print_message "========================================"
 else
