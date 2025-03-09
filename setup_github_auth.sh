@@ -22,6 +22,15 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Function to check if a git remote URL is valid
+check_git_remote_url() {
+    git ls-remote "$1" &>/dev/null
+    if [ $? -ne 0 ]; then
+        print_error "Failed to connect to the repository URL. Please check your username and repository name."
+        exit 1
+    fi
+}
+
 print_message "GitHub Authentication Setup"
 print_message "============================"
 print_message ""
@@ -84,6 +93,9 @@ fi
 print_message "Setting remote URL..."
 git remote set-url origin "https://github.com/${github_username}/${repo_name}.git"
 
+# Check if the repository URL is valid
+check_git_remote_url "https://github.com/${github_username}/${repo_name}.git"
+
 print_message ""
 print_message "Setup complete! The next time you push, you'll be asked for your"
 print_message "GitHub username and the Personal Access Token (instead of password)."
@@ -91,4 +103,4 @@ print_message "After that, Git will remember your credentials."
 print_message ""
 print_message "To test, try running: ./secure_push.sh"
 print_message ""
-print_warning "REMEMBER: Never commit files containing tokens or passwords to your repository!" 
+print_warning "REMEMBER: Never commit files containing tokens or passwords to your repository!"

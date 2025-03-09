@@ -22,6 +22,12 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Check if Git is installed
+if ! command -v git &> /dev/null; then
+    print_error "Git is not installed. Please install Git to continue."
+    exit 1
+fi
+
 # Check if we have any changes to commit
 if [ -n "$(git status --porcelain)" ]; then
     # We have changes
@@ -54,6 +60,14 @@ else
     print_message "No changes detected in the repository."
 fi
 
+# Check if remote origin is set
+REMOTE=$(git remote get-url origin 2>/dev/null)
+
+if [ -z "$REMOTE" ]; then
+    print_error "No remote repository found. Please set up a remote repository."
+    exit 1
+fi
+
 # Push changes
 print_message "Pushing changes to remote repository..."
 git push
@@ -67,4 +81,4 @@ else
     exit 1
 fi
 
-exit 0 
+exit 0
