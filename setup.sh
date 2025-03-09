@@ -15,19 +15,20 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
-LOGFILE="$GITHUB_WORKSPACE/pipe-pop-setup.log"
+LOGFILE="$GITHUB_WORKSPACE/var/log/pipe-pop-setup_$(date +%Y%m%d_%H%M%S).log"
 LOCKFILE="/tmp/pipe-pop-setup.lock"
 EXPECTED_CHECKSUM="0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"  # Replace with actual checksum from release
 INSTALL_DIR="/usr/local/bin"
 SOLANA_BIN="$HOME/.local/share/solana/install/active_release/bin"
 SOLANA_VERSION="1.18.7"  # Update to latest stable version
 
-# Functions
+
+# Define log file with timestamp
 log_setup() {
-    mkdir -p "$(dirname "$LOGFILE")"
-    touch "$LOGFILE" || { echo "[ERROR] Failed to create log file at $LOGFILE"; exit 1; }
+    sudo mkdir -p /var/log/
+    sudo touch "$LOG_FILE" || { echo "[ERROR] Failed to create log file at $LOGFILE"; exit 1; }
     echo "[DEBUG] Log file created at $LOGFILE"
-    exec >> "$LOGFILE" 2>&1
+    exec > >(tee -a "$LOG_FILE") 2>&1
 }
 
 
