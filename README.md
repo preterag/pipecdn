@@ -12,6 +12,9 @@ This repository contains scripts and tools to help you manage your Pipe Network 
 - 📈 Historical data tracking and visualization
 - ⏱️ Automated data collection
 - 💾 Backup and recovery tools
+- 🔄 Service management and configuration
+- 🔐 Authentication and security features
+- 🚀 Release management and versioning
 
 ## 🚀 Quick Start
 
@@ -76,6 +79,10 @@ pop --backup
 - 📈 **Historical Data Visualization**: Track your node's performance over time
 - ⏱️ **Automated Data Collection**: Schedule regular data collection for historical analysis
 - ⏰ **Detailed Uptime Tracking**: Monitor exact node uptime and start time
+- 🔄 **Service Management**: Start, stop, and restart your node as a system service
+- 💾 **Backup System**: Create and restore backups of essential node data
+- 🔐 **Security Features**: Secure authentication and token management
+- 🚀 **Release Management**: Tools for creating and publishing releases
 
 ### 🖥️ Comprehensive Dashboard
 
@@ -155,14 +162,77 @@ Set up automated data collection to build a comprehensive history:
 ./setup_cron.sh --custom "0 */2 * * *"  # Every 2 hours
 ```
 
+### 🔄 Service Management
+
+Manage your node as a system service:
+
+```bash
+# Start your node
+pop --start
+
+# Stop your node
+pop --stop
+
+# Restart your node
+pop --restart
+
+# Check service status
+pop --status
+
+# View service logs
+pop --logs
+```
+
+### 💾 Backup and Recovery
+
+Create and restore backups of essential node data:
+
+```bash
+# Create a backup
+pop --backup
+
+# List available backups
+pop --list-backups
+
+# Restore from a backup
+pop --restore <backup_file>
+```
+
+### 🔌 Port Management
+
+Configure and verify required ports:
+
+```bash
+# Enable ports 80 and 443
+pop --enable-80-443
+
+# Check port status
+pop --pulse  # Port status is shown in the pulse output
+```
+
+### 🔗 Referral System
+
+Manage referrals to earn additional rewards:
+
+```bash
+# Generate a referral code
+pop --gen-referral-route
+
+# Check referral points
+pop --points
+```
+
 ## 📚 Documentation
 
 Detailed documentation is available in the `docs` directory:
 
 - [🌐 Global Command Guide](docs/GLOBAL_COMMAND.md)
 - [📊 Pulse Monitoring Guide](docs/PULSE_MONITORING.md)
+- [🖥️ Dashboard Guide](docs/DASHBOARD.md)
 - [🔄 Referral System Guide](docs/REFERRAL_GUIDE.md)
 - [🔐 Authentication Guide](docs/AUTHENTICATION.md)
+- [📊 Reputation System Guide](docs/REPUTATION_SYSTEM.md)
+- [🔄 Versioning Strategy](docs/VERSION.md)
 
 ## 🔧 Requirements
 
@@ -171,6 +241,8 @@ Detailed documentation is available in the `docs` directory:
 - 🔍 `jq` for JSON processing
 - 🌐 `curl` for API requests
 - 📊 `gnuplot` (optional) for enhanced visualization
+- 🔌 Open ports: 80, 443, 8003
+- 💾 100GB+ recommended disk space for cache directory
 
 ## 📥 Installation
 
@@ -200,6 +272,15 @@ Detailed documentation is available in the `docs` directory:
    sudo apt-get install gnuplot
    ```
 
+6. Configure your node:
+   ```bash
+   # Edit the configuration file
+   nano config/config.json
+   
+   # Set your Solana wallet address
+   pop --set-wallet <your_wallet_address>
+   ```
+
 ## 🔄 Versioning
 
 This project follows [Semantic Versioning](https://semver.org/):
@@ -209,6 +290,37 @@ This project follows [Semantic Versioning](https://semver.org/):
 - **Patch version (0.0.X)**: Backward compatible bug fixes
 
 Current version: **v1.0.0**
+
+### 🌿 Branch Strategy
+
+- 🚀 **master**: Production-ready code, stable releases only
+- 🔧 **development**: Active development branch, features and fixes
+- 🧩 **feature/xxx**: Feature-specific branches that merge into development
+- 🐛 **bugfix/xxx**: Bug fix branches that merge into development
+
+## 📋 Available Commands
+
+| Category | Command | Description |
+|----------|---------|-------------|
+| **Monitoring** | `pop --status` | Check if your node is running |
+| | `pop --pulse` | View detailed metrics about your node |
+| | `pop --dashboard` | View the comprehensive dashboard |
+| | `pop --leaderboard` | View the network leaderboard |
+| | `pop --history` | View historical data |
+| **Service** | `pop --start` | Start your node |
+| | `pop --stop` | Stop your node |
+| | `pop --restart` | Restart your node |
+| | `pop --logs` | View service logs |
+| **Backup** | `pop --backup` | Create a backup of your node data |
+| | `pop --restore` | Restore a backup |
+| | `pop --list-backups` | List available backups |
+| **Configuration** | `pop --configure` | Configure your node |
+| | `pop --set-wallet` | Set a new wallet address |
+| | `pop --enable-80-443` | Enable ports 80 and 443 |
+| **Referrals** | `pop --gen-referral-route` | Generate a referral code |
+| | `pop --points` | Check points and rewards |
+| **Information** | `pop --help` | Show help message |
+| | `pop --version` | Show version information |
 
 ## 👥 Contributing
 
