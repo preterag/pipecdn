@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pipe-pop - Pipe Network PoP Node | Preterag</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: var(--secondary-color);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 0.5rem 0.25rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .feature {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .feature h3 {
+            color: var(--primary-color);
+        }
+        
+        .installation {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        code {
+            display: block;
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .download-option {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        footer {
+            background-color: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer a {
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>pipe-pop - Pipe Network PoP Node</h1>
+            <p>A complete implementation for the Pipe Network decentralized CDN</p>
+            <a href="#installation" class="btn btn-primary">Quick Install</a>
+            <a href="https://github.com/preterag/pipe-pop/releases/latest" class="btn btn-accent">Latest Release</a>
+            <a href="https://github.com/preterag/pipe-pop" class="btn">View on GitHub</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section>
+            <h2>What is pipe-pop?</h2>
+            <p>pipe-pop (Pipe Network PoP Node) is a complete implementation for setting up and managing a node on the Pipe Network decentralized content delivery network. It provides a user-friendly interface, automated setup, and comprehensive management tools.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>🚀 Easy Setup</h3>
+                    <p>Get up and running with a single command. Our installer handles all the complex configuration automatically.</p>
+                </div>
+                <div class="feature">
+                    <h3>⚙️ Complete Framework</h3>
+                    <p>Includes everything you need: setup scripts, monitoring tools, backup utilities, and service management.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔄 Multiple Formats</h3>
+                    <p>Available as AppImage, DEB, and RPM packages to support all major Linux distributions.</p>
+                </div>
+                <div class="feature">
+                    <h3>📊 Monitoring Tools</h3>
+                    <p>Built-in tools to monitor your node's performance, reputation, and earnings.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔐 Secure Design</h3>
+                    <p>Security-focused implementation with proper permission handling and secure defaults.</p>
+                </div>
+                <div class="feature">
+                    <h3>📚 Comprehensive Docs</h3>
+                    <p>Detailed documentation covering setup, maintenance, troubleshooting, and advanced features.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="installation" class="installation">
+            <h2>Quick Installation</h2>
+            <p>Install pipe-pop with a single command:</p>
+            <code>curl -fsSL https://raw.githubusercontent.com/preterag/pipe-pop/main/installers/install.sh | sudo bash</code>
+            <p>This script automatically detects your operating system and installs the appropriate package.</p>
+        </section>
+        
+        <section>
+            <h2>Download Options</h2>
+            <p>Choose the package format that best suits your system:</p>
+            
+            <div class="download-options">
+                <div class="download-option">
+                    <h3>AppImage</h3>
+                    <p>Universal Linux package that works on most distributions</p>
+                    <a href="https://github.com/preterag/pipe-pop/releases/latest/download/pipe-pop-latest-amd64.AppImage" class="btn btn-primary">Download AppImage</a>
+                </div>
+                <div class="download-option">
+                    <h3>DEB Package</h3>
+                    <p>For Debian, Ubuntu, and related distributions</p>
+                    <a href="https://github.com/preterag/pipe-pop/releases/latest/download/pipe-pop_latest_amd64.deb" class="btn btn-primary">Download DEB</a>
+                </div>
+                <div class="download-option">
+                    <h3>RPM Package</h3>
+                    <p>For Fedora, CentOS, RHEL, and related distributions</p>
+                    <a href="https://github.com/preterag/pipe-pop/releases/latest/download/pipe-pop-latest-1.x86_64.rpm" class="btn btn-primary">Download RPM</a>
+                </div>
+                <div class="download-option">
+                    <h3>Source Tarball</h3>
+                    <p>For manual installation on any Linux system</p>
+                    <a href="https://github.com/preterag/pipe-pop/releases/latest/download/pipe-pop-latest.tar.gz" class="btn btn-primary">Download Source</a>
+                </div>
+            </div>
+            
+            <p>All packages are also available on our <a href="https://github.com/preterag/pipe-pop/releases">GitHub Releases page</a>, including older versions and release notes.</p>
+        </section>
+        
+        <section>
+            <h2>Documentation</h2>
+            <p>Comprehensive documentation is available in the GitHub repository:</p>
+            <ul>
+                <li><a href="https://github.com/preterag/pipe-pop/blob/main/docs/SETUP_GUIDE.md">Setup Guide</a></li>
+                <li><a href="https://github.com/preterag/pipe-pop/blob/main/docs/MAINTENANCE.md">Maintenance Guide</a></li>
+                <li><a href="https://github.com/preterag/pipe-pop/blob/main/docs/TROUBLESHOOTING.md">Troubleshooting</a></li>
+                <li><a href="https://github.com/preterag/pipe-pop/blob/main/docs/DISTRIBUTION.md">Distribution Channels</a></li>
+                <li><a href="https://github.com/preterag/pipe-pop/blob/main/docs/REPUTATION_SYSTEM.md">Reputation System</a></li>
+            </ul>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>pipe-pop is developed and maintained by <a href="https://preterag.com">Preterag</a>.</p>
+            <p>For support, please <a href="https://github.com/preterag/pipe-pop/issues">open an issue</a> on GitHub.</p>
+            <p>&copy; 2024 Preterag. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Fetch the latest version from GitHub API and update download links
+        fetch('https://api.github.com/repos/preterag/pipe-pop/releases/latest')
+            .then(response => response.json())
+            .then(data => {
+                const version = data.tag_name.replace('v', '');
+                
+                // Update download links with the correct version
+                document.querySelectorAll('.download-option a').forEach(link => {
+                    const href = link.getAttribute('href');
+                    const newHref = href.replace('latest', version);
+                    link.setAttribute('href', newHref);
+                });
+                
+                // Add version info to the page
+                const header = document.querySelector('header p');
+                header.textContent += ` (Latest: v${version})`;
+            })
+            .catch(error => console.error('Error fetching latest release:', error));
+    </script>
+</body>
+</html> 

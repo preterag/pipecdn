@@ -43,5 +43,11 @@ github_push.sh
 
 # Keep the secure scripts that don't contain tokens
 !git_setup.sh
-!secure_push.sh *.bak
+!secure_push.sh 
 *.bak
+
+# Generated dashboard files
+pipe_network_dashboard_*.html
+
+# Service files with system-specific paths
+pipe-pop.service*
