@@ -37,7 +37,7 @@ Through the use of Pipe Credits and Data Credits, Pipe Network offers flexible, 
 
 ## Architecture
 
-![Network Architecture](./assets/pipecdn_image_1.png)
+![Network Architecture](./assets/network_architecture.png)
 
 ### Node Structure and Hyperlocal PoP Strategy
 
@@ -47,7 +47,7 @@ At the heart of Pipe Network's architecture are its hyperlocal PoP nodes, strate
 
 Pipe Network employs a distributed caching mechanism, where content is cached at the hyperlocal PoP nodes. The Cache Management System (CMS) manages the coordination of content, while individual nodes handle the local caching.
 
-![CDN Advantages](./assets/pipecdn_image_2.png)
+![CDN Advantages](./assets/cdn_advantages.png)
 
 ### Solana Blockchain Integration
 
