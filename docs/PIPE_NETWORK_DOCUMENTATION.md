@@ -179,82 +179,18 @@ Ultimately, achieving reduce travel distance, enhanced speed, and optimal effici
 
 ## Operating a DevNet CDN PoP Node
 
-### System Requirements
-- Linux OS
-- Minimum 4GB RAM
-- 100GB+ free disk space
-- 24/7 internet connectivity
-- Ports 80, 443, and 8003 accessible
+The binary of the CDN PoP node For DevNet2 is publicly available.
 
-### Installation and Setup
-```bash
-# Download the compiled pop binary
-curl -L -o pop "https://dl.pipecdn.app/v0.2.8/pop"
-chmod +x pop
-mkdir download_cache
-```
+Fill out this form to be notified of new releases and to be entered for a chance to win on-chain prizes:
+https://docs.google.com/forms/d/e/1FAIpQLScbxN1qlstpbyU55K5I1UPufzfwshcv7uRJG6aLZQDk52ma0w/viewform
 
-### Basic Configuration
-```bash
-sudo ./pop \
-  --ram 8 \
-  --max-disk 500 \
-  --cache-dir /data \
-  --pubKey <KEY>
-```
+💡 Prepare for Testnet: Run a DevNet2 node, and keeping it running 24/7 will increase your node score, this will directly translate into a high node score for Testnet. The higher the node score the more traffic the protocol will direct to the node and increase the rewards. 
 
-### Monitoring and Management
-```bash
-# View metrics
-./pop --status
+### Key Features
 
-# Check points
-./pop --points-route
-```
+**Location-Based Rewards**: Operators in underrepresented or high-demand regions earn additional incentives.
 
-### Reputation System
-
-The node's reputation score (0-1) is calculated based on the last 7 days of node operation:
-
-1. **Uptime Score (40%)**
-   - Reports grouped by hour
-   - Good coverage: 75%+ hours reported per day
-   - Weighted by coverage completeness
-
-2. **Historical Score (30%)**
-   - Based on days with good coverage
-   - Rewards consistent reporting
-
-3. **Egress Score (30%)**
-   - Based on total data transferred
-   - Normalized against 1TB/day target
-   - Capped at 100%
-
-### Troubleshooting
-
-#### Common Issues and Solutions
-
-1. **Service Activation Issues**
-   ```bash
-   # Verify service configuration
-   sudo systemd-analyze verify pop.service
-   
-   # Check service config
-   cat /etc/systemd/system/pop.service
-   ```
-
-2. **Download Issues**
-   ```bash
-   # Test download URL
-   curl -I -s https://downloadurl.com | head -n 1
-   ```
-
-3. **Port Conflicts**
-   ```bash
-   # Check port usage
-   sudo lsof -i :8003
-   sudo netstat -tulpn | grep 8003
-   ```
+**PoP Node Rewards**: Rewards are based on metrics such as data served, latency, and uptime. Consistent uptime and performance standards yield higher rewards, while downtime and churn result in rejoin penalties to deter disruption.
 
 ## CDN API Reference
 
