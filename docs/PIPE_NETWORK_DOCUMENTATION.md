@@ -237,6 +237,154 @@ As we get ready for testnet launch we are introducing a new node architecture.
 
 DevNet 2 is basically alpha testnet. Once this has proven stable for 40 days, testnet will be released.
 
+### Troubleshooting
+Help for troubleshooting common mistakes
+
+#### Issue: systemd service stuck in activating status, continuously restarting, won't start
+1) Test for detectable issues in your pop systemd config file: `sudo systemd-analyze verify pop.service`
+If there is no output then that means no errors were found by this tool, however your .service could still be misconfigured.
+
+2) Review contents of your service config: `cat /etc/systemd/system/pop.service`
+
+3) Compare with the example systemd service in the documentation
+
+#### Issue: curl or wget issue when downloading PoP binary
+If you received unexpected text on-screen during your download or unexpected errors at runtime, it's quite possible your download was not fully successful and your pop binary is not fully intact.  
+
+To test your download URL pasting and curl'ing, attempt to get the following tests to pass. These test your pasted download URL (substitute the URL shown for your download URL)
+
+1) `curl -I -s https://downloadurl.com | head -n 1`
+
+2) `curl -Is https://downloadurl.com >/dev/null && echo "URL is accessible! ✅" || echo "URL is not accessible ❌"`
+
+Once you believe you have a good download of the pop binary, attempt a simple `./pop --version`
+
+#### Issue: another service on your system has taken the egress port
+Potential error message: 'Error: Os { code: 98, kind: AddrInUse, message: "Address already in use" }'
+
+Explanation: Another program has bound to port 8003, 443 or 80 on your server.
+
+Solutions:
+1) Make sure you've disabled and shutdown any old DevNet1 instances.
+
+2) You could try rebooting the server as a quick way to clear out other port 8003, 443 or 80 usage.
+
+3) Attempt to determine existing process, PID, user consuming port 8003, 443 or 80. Example uses '8003' but you can replace with '443' or '80' as needed to test.
+
+```bash
+sudo lsof -i :8003
+```
+
+OR:
+
+```bash
+sudo netstat -tulpn | grep 8003
+```
+
+If you find that nothing is displayed, it means no process is currently using that port.
+
+#### Issue: Multiple config files, resulting in: 'Node Already Registered' / 'IP Already Associated'
+**Common Error Messages**
+- IP-xxx.xx.xxx.xxx is already associated with node_id=...
+- "Node already registered"
+- "Failed to register node"
+
+**Root Cause**
+These errors may occur when pop is ran subsequent times outside of the folder it was originally executed. This may result in the following:
+- a new configuration file being created
+- an additional registration attempt being made
+- multiple node_info.json files
+
+This leads to duplicative registration attempts, which system safeguards will block.  
+
+In cases like this, your system already registered the first time pop was executed but when you run pop subsequent times from different locations pop may not see your existing node_info.json.  
+
+An example scenario: you initially run pop from your home folder and pop registers and creates a node_info.json in your home folder. You then choose to setup pop as a systemd service such that the .service config references a different working directory which does not contain the node_info.json. In this case, duplicative node_info.json's need to be removed, and the original registered node_info.json needs to be moved to the servers working directory.
+
+**Diagnostic Script**
+Save this script as find-nodeinfo.sh:
+
+```bash
+#!/bin/bash
+echo "Searching for node_info.json files..."
+echo "----------------------------------------"
+
+# Find all node_info.json files and store details in a temporary file
+sudo find / -name node_info.json -type f -exec stat --format="%Z %n" {} \; 2>/dev/null | sort -n > /tmp/node_files.txt
+
+if [ ! -s /tmp/node_files.txt ]; then
+    echo "No node_info.json files found on the system."
+    rm /tmp/node_files.txt
+    exit 0
+fi
+
+echo "Found node_info.json files (sorted by change time):"
+echo "----------------------------------------"
+
+# Read and format the output
+while read timestamp filepath; do
+    # Convert timestamp to human readable date
+    date_str=$(date -d @"$timestamp" "+%Y-%m-%d %H:%M:%S")
+    # Get file size
+    size=$(sudo du -h "$filepath" | cut -f1)
+    # Check if file is being used by a running process
+    if sudo lsof "$filepath" >/dev/null 2>&1; then
+        status="ACTIVE - Currently in use by running process"
+    else
+        status="inactive"
+    fi
+    
+    echo "File: $filepath"
+    echo "Created: $date_str"
+    echo "Size: $size"
+    echo "Status: $status"
+    echo "----------------------------------------"
+done < /tmp/node_files.txt
+
+# Clean up
+rm /tmp/node_files.txt
+
+echo "The OLDEST node_info.json file is likely the original registered one."
+echo "If you're experiencing registration issues:"
+echo "1. Stop any running pop processes"
+echo "2. Ensure your pop service or command uses the oldest node_info.json"
+echo "3. Consider removing newer duplicate files after backing them up"
+echo ""
+echo "To prevent future duplicates:"
+echo "- Always run pop commands from the directory containing your original node_info.json"
+echo "- Or use the 'pop' alias if you've set up the service using the installation script"
+```
+
+**Resolution Steps**
+Stop your pop service:
+
+```bash
+sudo systemctl stop pop   # if running as a service
+# or
+killall pop              # if running directly
+```
+
+Run the diagnostic script to identify your original node_info.json file (usually the oldest one)
+
+Make sure your pop service or command uses the original node_info.json location:
+
+If running as a service: Check WorkingDirectory in pop.service:
+```bash
+cat /etc/systemd/system/pop.service
+```
+
+If running directly: Always cd to the correct directory first
+
+Backup and remove any newer duplicate node_info.json files
+
+**Prevention**
+- Always run pop commands from the directory containing your original node_info.json
+- If using the service setup, use the provided 'pop' alias for all commands
+- Never run pop commands from random directories
+- Consider setting up the systemd service which manages this automatically
+
+The earliest created node_info.json file is typically your original registered node configuration. This is the one you want to keep and use.
+
 ### Pipe PoP Cache Node Documentation
 
 #### Overview
