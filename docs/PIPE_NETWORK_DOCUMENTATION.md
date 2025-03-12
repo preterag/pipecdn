@@ -533,14 +533,14 @@ You can download the backup file off your machine using SCP or other means.
 
 #### Upgrade your Node
 
-1. The nodes logs our --status output will show the URL of a newly released version
-2. Download new version: `curl -L -o pop "<DOWNLOAD-URL>"`
-3. `chmod +x ./pop`
-4. Move pop binary to permanent location as needed, for example `mv ./pop /opt/pop/pop`
-5. Change directory 'cd' into the WorkingDirectory containing the node_info.json, for example `cd /var/lib/pop`
-6. `pop --refresh` or `/opt/pop/pop --refresh`
+The nodes logs our --status output will show the URL of a newly released version
+1. Download new version: `curl -L -o pop "<DOWNLOAD-URL>"`
+2. `chmod +x ./pop`
+3. Move pop binary to permanent location as needed, for example `mv ./pop /opt/pop/pop`
+4. Change directory 'cd' into the WorkingDirectory containing the node_info.json, for example `cd /var/lib/pop`
+5. `pop --refresh` or `/opt/pop/pop --refresh`
 
-You may need to add these to the [SERVICE] section of your .service if you are using systemd:
+6. You may need to add these to the [SERVICE] section of your .service if you are using systemd:
 ```
 [Service]
 AmbientCapabilities=CAP_NET_BIND_SERVICE
@@ -553,7 +553,7 @@ sudo setcap 'cap_net_bind_service=+ep' /path/to/pop
 ```
 This lets a non-root user bind to ports 80/443.
 
-Open necessary ports:
+7. Open necessary ports:
 ```bash
 sudo ufw allow 8003/tcp
 sudo ufw allow 80/tcp
