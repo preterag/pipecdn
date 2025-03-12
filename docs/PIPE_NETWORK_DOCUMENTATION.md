@@ -356,7 +356,7 @@ echo "- Or use the 'pop' alias if you've set up the service using the installati
 ```
 
 **Resolution Steps**
-Stop your pop service:
+1. Stop your pop service:
 
 ```bash
 sudo systemctl stop pop   # if running as a service
@@ -364,9 +364,9 @@ sudo systemctl stop pop   # if running as a service
 killall pop              # if running directly
 ```
 
-Run the diagnostic script to identify your original node_info.json file (usually the oldest one)
+2. Run the diagnostic script to identify your original node_info.json file (usually the oldest one)
 
-Make sure your pop service or command uses the original node_info.json location:
+3. Make sure your pop service or command uses the original node_info.json location:
 
 If running as a service: Check WorkingDirectory in pop.service:
 ```bash
@@ -375,7 +375,7 @@ cat /etc/systemd/system/pop.service
 
 If running directly: Always cd to the correct directory first
 
-Backup and remove any newer duplicate node_info.json files
+4. Backup and remove any newer duplicate node_info.json files
 
 **Prevention**
 - Always run pop commands from the directory containing your original node_info.json
