@@ -229,6 +229,346 @@ To prevent nodes from spoofing their location using VPNs or proxies, Pipe Networ
 
 Combining multiple verification methods creates a robust system that is harder to game. For example, using IP address checks combined with latency verification and periodic challenge-response tasks can ensure a high degree of accuracy in determining a node's location.
 
+## Nodes
+
+### DevNet 2
+
+As we get ready for testnet launch we are introducing a new node architecture. 
+
+DevNet 2 is basically alpha testnet. Once this has proven stable for 40 days, testnet will be released.
+
+### Pipe PoP Cache Node Documentation
+
+#### Overview
+Cache Node is a high-performance caching service that helps distribute and serve files efficiently across a network.
+
+#### System Requirements
+- Linux
+- Minimum 4GB RAM (configurable), more the better for higher rewards
+- At least 100GB free disk space (configurable). 200-500GB is a sweet spot
+- Internet connectivity available 24/7
+- v0.2.6 specifically introduces support for ports 80 and 443, requiring elevated privileges.
+
+**A small note**:
+"Port 80 and 443 require root privileges or a systemd capability fix (see 'Systemd Service' section). If you run the binary manually, you should use sudo or run as root."
+
+#### Basic Installation
+
+**Install**
+```bash
+# download the compiled pop binary
+curl -L -o pop "https://dl.pipecdn.app/v0.2.8/pop"
+# assign executable permission to pop binary
+chmod +x pop
+# create folder to be used for download cache
+mkdir download_cache
+```
+⚠️ IMPORTANT: to avoid formatting issues, compose your single-line curl command in a plain text editor (notepad), and then paste the single-line command into your server cli
+
+**Quick Start**
+```bash
+sudo ./pop
+```
+Runs on port 8003, 443 and 80 with 4GB RAM and 100GB disk space.
+
+Egress data will be on port 8003, 443 and 80. Make sure 8003, 443 and 80 are open on any firewalls/NAT's such as UFW.
+
+If you choose not to use systemd, you must run Pipe PoP with sudo or as root to bind to ports 80 and 443.
+
+**Configuration Example**
+```bash
+sudo ./pop \
+  --ram 8 \              # RAM in GB
+  --max-disk 500 \       # Max disk usage in GB  
+  --cache-dir /data \    # Cache location
+  --pubKey <KEY>         # Solana public key
+```
+Retrieve the public key from your Solana wallet (e.g., Phantom, Backpack) and paste it here for --pubKey
+
+**Monitor**
+```bash
+# View metrics
+./pop --status
+
+# Check points (note: Points are not active yet)
+./pop --points-route
+```
+
+**Refer / Signup by referral**
+```bash
+# Generate referral
+./pop --gen-referral-route
+
+# Use referral
+sudo ./pop --signup-by-referral-route <CODE>
+```
+
+#### Files
+- `node_info.json`: Node configuration
+- `download_cache/`: Cached content
+
+Recommened to backup node_info.json. It is linked to the IP address that registered the PoP node. It is no recoverable if lost.
+
+#### Logs
+- Output streams to stdout
+- Auto-reports errors
+- Health updates every 5 minutes
+- The node tracks uptime, bandwidth, cache hits, and historical metrics.
+
+#### Referral System
+
+**How Referrals Work**
+- Nodes can generate referral codes: `./pop --gen-referral-route`
+- New nodes can sign up with referral: `./pop --signup-by-referral-route <CODE>`
+- Referrer earns 10 points when referred node:
+  - Stays active for 7+ days
+  - Maintains reputation score > 0.5
+
+The node that generated the referral needs to also maintain a good reputation score for the referrals to be counted as valid and productively adding value to the network.
+
+This program will expand over time to include rewards sharing.
+
+**Checking Referral Status**
+1. Browse to https://dashboard.pipenetwork.com/node-lookup
+2. Enter the referrer's node ID in the Node Lookup
+3. Scroll down to "Referral Stats" to review referred nodes
+
+#### Reputation System
+
+The node's reputation score (0-1) is calculated based on the last 7 days of node operation, using three main components:
+
+**1. Uptime Score (40% of total)**
+- Reports are first grouped by hour to prevent over-weighting from frequent reporting
+- A day is considered to have "good coverage" if it has at least 75% of hours reported (18+ hours)
+- For days with good coverage, the average uptime is weighted by how complete the day's coverage was
+- The final uptime score is the weighted average daily uptime divided by seconds in a day (capped at 100%)
+
+**2. Historical Score (30% of total)**
+- Based on how many days out of the last 7 had good coverage
+- Example: If 6 out of 7 days had good coverage, the historical score would be 0.857 (86%)
+- This rewards consistent reporting over time
+
+**3. Egress Score (30% of total)**
+- Based on total data transferred over the 7-day period
+- Normalized against a target of 1TB per day
+- Capped at 100%
+
+**Example Calculation**
+If a node has:
+```
+Day 1: 24 hours reported (100% coverage)
+Day 2: 22 hours reported (92% coverage)
+Day 3: 23 hours reported (96% coverage)
+Day 4: 24 hours reported (100% coverage)
+Day 5: 20 hours reported (83% coverage)
+Day 6: 12 hours reported (50% coverage - not counted)
+Day 7: 24 hours reported (100% coverage)
+```
+Then:
+- 6 days have good coverage (>75% of hours)
+- Historical score would be 6/7 = 0.857
+- Uptime score would be based on the weighted average of those 6 days
+- The day with only 50% coverage is not counted in the uptime calculation
+
+**Important Notes**
+
+*Maintenance Windows:*
+- Short gaps (< 4 hours) don't significantly impact the score
+- A day needs only 75% coverage to count, allowing for maintenance
+- Restarts don't reset your progress
+
+*Score Recovery:*
+- Scores are calculated over a rolling 7-day window
+- Poor performance drops out of the calculation after 7 days
+- New nodes can build up their score within a week of good operation
+
+*Best Practices:*
+- Regular reporting (at least hourly)
+- Plan maintenance during the same 6-hour window each day
+- Keep total downtime under 6 hours per day when possible
+
+*Score Interpretation:*
+- 90%+ : Excellent reliability
+- 80-90%: Good reliability
+- 70-80%: Fair reliability
+- <70%: Needs improvement
+
+**Benefits of High Reputation**
+- Priority for P2P transfers (score > 0.7)
+- Eligibility for referral rewards (score > 0.5)
+- Future: Higher earnings potential
+
+**View Reputation**
+```bash
+./pop --status
+```
+Displays detailed breakdown of reputation metrics and overall score.
+
+#### FAQ
+
+**File Size Limits & Performance**
+- Default RAM usage: 4GB
+- Default disk cache: 100GB
+- Chunk size: 64MB per transfer
+- Max concurrent downloads controlled by RAM allocation
+
+**Network Requirements**
+- Stable internet connection required
+- Ports 8003, 443 and 80 must be accessible
+- Supports IPv4 and IPv6
+- Auto-fallback on network errors
+
+**Monitoring & Diagnostics**
+- Auto-reports errors to central servers
+- Logs in stdout
+- Health checks every 5 minutes
+- Built-in metrics for CPU, RAM, disk, network usage
+
+**Automatic Updates**
+- Checks for updates on startup
+- Auto-notifies when new version available
+- Shows download URL for latest version
+
+**Cache Behavior**
+- Files expire after 4 hours if unused
+- Auto-cleanup of expired files
+- Automatic peer discovery
+- Geographic-based peer selection
+
+**Security Notes**
+- IP-based rate limiting
+- Node ID verification
+- Geographic distribution tracking
+- IP address validation on registration
+
+#### Systemd Service
+
+Here is an example systemd config setup submitted by the community. Please customize based on your preferences:
+
+```bash
+# Create service user and directories
+sudo useradd -r -m -s /sbin/nologin pop-svc-user -d /home/pop-svc-user 2>/dev/null || true
+
+# Create required directories
+sudo mkdir -p /opt/pop
+sudo mkdir -p /var/lib/pop
+sudo mkdir -p /var/cache/pop/download_cache
+
+# Move pop binary from home directory to installation directory
+sudo mv -f ~/pop /opt/pop/
+sudo chmod +x /opt/pop/pop 2>/dev/null || true
+
+# Handle any existing node_info.json from quick-start
+sudo mv -f ~/node_info.json /var/lib/pop/ 2>/dev/null || true
+
+# Set ownership
+sudo chown -R pop-svc-user:pop-svc-user /var/lib/pop
+sudo chown -R pop-svc-user:pop-svc-user /var/cache/pop
+sudo chown -R pop-svc-user:pop-svc-user /opt/pop
+
+# Create systemd service file
+sudo tee /etc/systemd/system/pop.service << 'EOF'
+[Unit]
+Description=Pipe POP Node Service
+After=network.target
+Wants=network-online.target
+
+[Service]
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+User=pop-svc-user
+Group=pop-svc-user
+ExecStart=/opt/pop/pop \
+    --ram=12 \
+    --pubKey 7ugorwsqWvT6fwHoZhejAUPGWxK4fJtE9W8f8vebVh2S \
+    --max-disk 175 \
+    --cache-dir /var/cache/pop/download_cache \
+    --no-prompt
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+LimitNPROC=4096
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pop-node
+WorkingDirectory=/var/lib/pop
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Set config file symlink and pop alias: prevent dup configs/registrations, convenient pop commands.
+ln -sf /var/lib/pop/node_info.json ~/node_info.json
+grep -q "alias pop='cd /var/lib/pop && /opt/pop/pop'" ~/.bashrc || echo "alias pop='cd /var/lib/pop && /opt/pop/pop'" >> ~/.bashrc && source ~/.bashrc
+
+# Reload systemd, check and enable service
+sudo systemctl daemon-reload
+sudo systemd-analyze verify pop.service && sudo systemctl enable pop.service && sudo systemctl start pop.service
+
+echo "Example pop.service setup is complete"
+echo "1. Update values in pop.service based on your preferences"
+echo "2. Use the 'pop' command (the alias) to run any pop commands"
+echo "3. Check service status with: sudo systemctl status pop"
+```
+
+⚠️ IMPORTANT: When running pop commands while using the systemd service configuration, you must either:
+- Change to the working directory first: `cd /var/lib/pop && /opt/pop/pop [command]`
+- OR use the provided alias: `pop [command]` (recommended) This ensures node_info.json is found and prevents duplicate node registration.
+
+#### Backup your node
+
+Take a backup copy of the node_info.json and store it offline. Example of taking a backup copy:
+
+If running as a service:
+```bash
+cp /var/lib/pop/node_info.json ~/node_info.backup2-4-25
+```
+
+If running quickstart:
+```bash
+cp ~/node_info.json ~/node_info.backup2-4-25
+```
+
+You can download the backup file off your machine using SCP or other means.
+
+#### Upgrade your Node
+
+1. The nodes logs our --status output will show the URL of a newly released version
+2. Download new version: `curl -L -o pop "<DOWNLOAD-URL>"`
+3. `chmod +x ./pop`
+4. Move pop binary to permanent location as needed, for example `mv ./pop /opt/pop/pop`
+5. Change directory 'cd' into the WorkingDirectory containing the node_info.json, for example `cd /var/lib/pop`
+6. `pop --refresh` or `/opt/pop/pop --refresh`
+
+You may need to add these to the [SERVICE] section of your .service if you are using systemd:
+```
+[Service]
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+```
+
+If you prefer not to modify your systemd unit, you can also run:
+```bash
+sudo setcap 'cap_net_bind_service=+ep' /path/to/pop
+```
+This lets a non-root user bind to ports 80/443.
+
+Open necessary ports:
+```bash
+sudo ufw allow 8003/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw reload
+```
+
+#### Decommission old DevNet 1 Node
+
+If using same computer, this is best done before activating DevNet 2 Node:
+```bash
+sudo systemctl disable dcdnd.service
+sudo systemctl stop dcdnd.service
+```
+
 ## CDN API Reference
 
 This section provides a comprehensive overview of the Pipe CDN API. All endpoints are currently based on the Pipe Network CDN Devnet deployment on Solana Devnet.
