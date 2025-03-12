@@ -9,6 +9,7 @@
 - [Scalability and Network Growth](#scalability-and-network-growth)
 - [Opportunities and Use Cases](#opportunities-and-use-cases)
 - [Operating a DevNet CDN PoP Node](#operating-a-devnet-cdn-pop-node)
+- [Performance and Fraud Detection](#performance-and-fraud-detection)
 - [CDN API Reference](#cdn-api-reference)
 
 ## Welcome
@@ -191,6 +192,42 @@ https://docs.google.com/forms/d/e/1FAIpQLScbxN1qlstpbyU55K5I1UPufzfwshcv7uRJG6aL
 **Location-Based Rewards**: Operators in underrepresented or high-demand regions earn additional incentives.
 
 **PoP Node Rewards**: Rewards are based on metrics such as data served, latency, and uptime. Consistent uptime and performance standards yield higher rewards, while downtime and churn result in rejoin penalties to deter disruption.
+
+## Performance and Fraud Detection
+
+Ensuring that node operators are physically located in the regions they claim, rather than using VPNs or proxies to spoof their location, is a critical challenge for decentralized networks like Pipe Network. Relying solely on self-reported geographic information can lead to exploitation of the scarcity-based incentive model.
+
+To prevent nodes from spoofing their location using VPNs or proxies, Pipe Network will implement a multi-faceted verification approach.
+
+### 1. Multi-Layered IP Address Verification
+
+**Objective**:
+
+**GeoIP Databases**: The most straightforward method is using commercial GeoIP databases (e.g., MaxMind, IP2Location) to verify the location of the IP address associated with the node. These databases can identify the geographic location of IP addresses down to the city or region level.
+
+**IP Address History**: If a node's IP address changes frequently (as it might if someone is using a VPN), the system can flag this as suspicious. Consistency in IP address history can help verify that a node has a stable location.
+
+**VPN and Proxy Detection**: There are specialized services and algorithms designed to detect VPNs, proxies, and other anonymization methods. Integrating these into the verification system helps filter out nodes using these techniques.
+
+### 2. Latency-Based Location Verification
+
+**Ping Tests to Local PoP nodes**: By running latency tests from a node to a network of strategically placed servers in different regions, the system can estimate the node's geographic location. For example, if a node claims to be in New York, but its latency to a New York server is much higher than expected, it may indicate the node is spoofing its location.
+
+**Traceroute Analysis**: Performing traceroutes to various known locations can give insights into the node's actual geographic path and location. Nodes that use VPNs often show signs of rerouting through faraway servers, which can be detected through inconsistencies in network hops.
+
+### 4. Crowdsourced or Peer Verification
+
+**Node-to-Node Verification**: Peer nodes can be used to verify the geographic location of a new node. For example, a node joining the network in a certain geographic area could be required to interact with a few nearby nodes. If the latency and network paths are consistent, the location can be verified.
+
+**Challenge-Response Mechanisms**: Nodes in specific geographic regions could be asked to perform tasks that only make sense for that area (e.g., interacting with local data sources or completing tasks with geographically localized content). If a node cannot complete these tasks with the expected performance, its location claim could be challenged.
+
+### 5. Economic Disincentives for Faking Locations
+
+**Penalties for False Reporting**: Introducing strict penalties for nodes caught faking their location could discourage this behavior. For example, if a node is flagged for potentially using a VPN and is found to be faking its location, the network could slash its rewards or remove it from the scarcity-based incentive model.
+
+**Periodic Re-verification**: Nodes could be periodically required to prove their location, and failing re-verification could result in a loss of rewards or node deactivation.
+
+Combining multiple verification methods creates a robust system that is harder to game. For example, using IP address checks combined with latency verification and periodic challenge-response tasks can ensure a high degree of accuracy in determining a node's location.
 
 ## CDN API Reference
 
