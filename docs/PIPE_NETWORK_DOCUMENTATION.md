@@ -719,10 +719,11 @@ sudo systemctl stop dcdnd.service
 
 ## CDN API Reference
 
-This section provides a comprehensive overview of the Pipe CDN API. All endpoints are currently based on the Pipe Network CDN Devnet deployment on Solana Devnet.
+Pipe CDN API Documentation
+This document provides a comprehensive overview of the Pipe CDN API. All is this is currently based on the Pipe Network CDN Devnet deployment on Solana Devnet.
 
 ### Base URL
-All API endpoints are relative to the base URL.
+All API endpoints are relative to the base URL
 
 ### Authentication
 Most endpoints require authentication using two parameters:
@@ -737,10 +738,13 @@ These parameters are typically included as query parameters for GET requests or 
 #### Create User
 Creates a new user account.
 
-```http
-POST /createUser
-Content-Type: application/json
+**Endpoint**: `/createUser`
 
+**Method**: POST
+
+**Authentication**: None (public endpoint)
+
+```http
 Request Body:
 {
   "username": "string"
@@ -757,10 +761,13 @@ Response:
 #### Rotate App Key
 Rotates (changes) the application key for a user.
 
-```http
-POST /rotateAppKey
-Content-Type: application/json
+**Endpoint**: `/rotateAppKey`
 
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -779,72 +786,83 @@ Response:
 #### Upload File
 Uploads a file to Pipe CDN.
 
-```http
-POST /upload
-Content-Type: multipart/form-data
+**Endpoint**: `/upload`
 
-Query Parameters:
+**Method**: POST
+
+**Authentication**: Required
+
+**Query Parameters**:
 - user_id: User ID
 - user_app_key: User application key
 - file_name: Name to store the file as
 - epochs (optional): Storage duration in epochs
 
-Body: File content as multipart/form-data
-Response: The uploaded filename as a string
-```
+**Body**: File content as multipart/form-data
+
+**Response**: The uploaded filename as a string
 
 #### Priority Upload
 Uploads a file with higher priority.
 
-```http
-POST /priorityUpload
-Content-Type: multipart/form-data
+**Endpoint**: `/priorityUpload`
 
-Query Parameters:
+**Method**: POST
+
+**Authentication**: Required
+
+**Query Parameters**:
 - user_id: User ID
 - user_app_key: User application key
 - file_name: Name to store the file as
 - epochs (optional): Storage duration in epochs
 
-Body: File content as multipart/form-data
-Response: The uploaded filename as a string
-```
+**Body**: File content as multipart/form-data
+
+**Response**: The uploaded filename as a string
 
 #### Download File
 Downloads a file from Pipe CDN.
 
-```http
-GET /download
+**Endpoint**: `/download`
 
-Query Parameters:
+**Method**: GET
+
+**Authentication**: Required
+
+**Query Parameters**:
 - user_id: User ID
 - user_app_key: User application key
 - file_name: Name of the file to download
 
-Response: File content with appropriate Content-Type and Content-Length headers
-```
+**Response**: The file content with appropriate Content-Type and Content-Length headers
 
 #### Priority Download
 Downloads a file with higher priority.
 
-```http
-GET /priorityDownload
+**Endpoint**: `/priorityDownload`
 
-Query Parameters:
+**Method**: GET
+
+**Authentication**: Required
+
+**Query Parameters**:
 - user_id: User ID
 - user_app_key: User application key
 - file_name: Name of the file to download
 
-Response: File content as Base64-encoded string
-```
+**Response**: The file content as Base64-encoded string
 
 #### Delete File
 Deletes a file from storage.
 
-```http
-POST /deleteFile
-Content-Type: application/json
+**Endpoint**: `/deleteFile`
 
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -861,10 +879,13 @@ Response:
 #### Create Public Link
 Creates a public link for a file.
 
-```http
-POST /createPublicLink
-Content-Type: application/json
+**Endpoint**: `/createPublicLink`
 
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -881,22 +902,27 @@ Response:
 #### Public Download
 Downloads a file using a public link.
 
-```http
-GET /publicDownload
+**Endpoint**: `/publicDownload`
 
-Query Parameters:
+**Method**: GET
+
+**Authentication**: None (public endpoint)
+
+**Query Parameters**:
 - hash: The public link hash
 
-Response: File content with appropriate headers
-```
+**Response**: The file content with appropriate headers
 
 #### Extend Storage
 Extends the storage duration for a file.
 
-```http
-POST /extendStorage
-Content-Type: application/json
+**Endpoint**: `/extendStorage`
 
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -915,10 +941,15 @@ Response:
 ### Wallet and Payments APIs
 
 #### Check SOL Balance
-```http
-POST /checkWallet
-Content-Type: application/json
+Checks the SOL (Solana) balance of the user's wallet.
 
+**Endpoint**: `/checkWallet`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -935,10 +966,15 @@ Response:
 ```
 
 #### Check PIPE Token Balance
-```http
-POST /getCustomTokenBalance
-Content-Type: application/json
+Checks the PIPE token balance of the user's wallet.
 
+**Endpoint**: `/getCustomTokenBalance`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -956,10 +992,15 @@ Response:
 ```
 
 #### Check DC Balance
-```http
-POST /getDcBalance
-Content-Type: application/json
+Checks the DC (Data Credit) balance of the user's wallet.
 
+**Endpoint**: `/getDcBalance`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -974,10 +1015,15 @@ Response:
 ```
 
 #### Swap SOL for PIPE
-```http
-POST /swapSolForPipe
-Content-Type: application/json
+Swaps SOL for PIPE tokens.
 
+**Endpoint**: `/swapSolForPipe`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -994,10 +1040,15 @@ Response:
 ```
 
 #### Swap PIPE for DC
-```http
-POST /swapPipeForDc
-Content-Type: application/json
+Swaps PIPE tokens for DC (Data Credits).
 
+**Endpoint**: `/swapPipeForDc`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -1014,10 +1065,15 @@ Response:
 ```
 
 #### Withdraw SOL
-```http
-POST /withdrawSol
-Content-Type: application/json
+Withdraws SOL to an external address.
 
+**Endpoint**: `/withdrawSol`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -1036,10 +1092,15 @@ Response:
 ```
 
 #### Withdraw Custom Token
-```http
-POST /withdrawToken
-Content-Type: application/json
+Withdraws PIPE tokens to an external address.
 
+**Endpoint**: `/withdrawToken`
+
+**Method**: POST
+
+**Authentication**: Required
+
+```http
 Request Body:
 {
   "user_id": "string",
@@ -1060,9 +1121,15 @@ Response:
 ### Utility APIs
 
 #### Get Priority Fee
-```http
-GET /getPriorityFee
+Gets the current priority fee for priority uploads.
 
+**Endpoint**: `/getPriorityFee`
+
+**Method**: GET
+
+**Authentication**: None (public endpoint)
+
+```http
 Response:
 {
   "priority_fee_per_gb": number
@@ -1070,10 +1137,15 @@ Response:
 ```
 
 #### Check Version
-```http
-POST /versionCheck
-Content-Type: application/json
+Checks if the client is using the latest version.
 
+**Endpoint**: `/versionCheck`
+
+**Method**: POST
+
+**Authentication**: None (public endpoint)
+
+```http
 Request Body:
 {
   "current_version": "string"
@@ -1111,16 +1183,19 @@ The Pipe CLI implements client-side encryption, which is not part of the API. If
 - Encrypt the file before uploading and decrypt after downloading
 - Store encryption parameters (salt, nonce) securely, but never store the password
 
-#### Best Practices
-1. **Retries and Backoff**
-   - Initial delay: 1000ms
-   - Max delay: 10000ms
-   - Limit retries: 3
+#### Retries and Backoff
+For robust applications, implement retry logic with exponential backoff:
 
-2. **Upload Considerations**
-   - Use chunked uploads or streaming for large files
-   - Implement progress tracking
-   - Limit concurrent requests to avoid overwhelming the server
+- Start with an initial delay (e.g., 1000ms)
+- Increase the delay for each retry (up to a maximum, e.g., 10000ms)
+- Limit the number of retries (e.g., 3)
+
+#### Upload Considerations
+- For large files, use chunked uploads or streaming to avoid memory issues
+- Consider adding progress tracking for better user experience
+- For batch operations, limit concurrent requests to avoid overwhelming the server
+
+This documentation provides the foundation for building applications that interact with the Pipe CDN API in any programming language.
 
 ## Future Development
 
