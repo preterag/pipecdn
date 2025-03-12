@@ -53,25 +53,27 @@ Pipe Network's unique combination of decentralization, hyperlocal PoP nodes, and
 
 ## Architecture
 
-![Network Architecture](./assets/network_architecture.png)
+Pipe Network's decentralized architecture is designed to meet the evolving demands of content delivery in a more efficient and scalable way than traditional, centralized CDNs. The network leverages a combination of decentralized nodes, blockchain technology, and hyperlocal Points of Presence (PoP) to deliver content quickly and securely across the globe.
 
 ### Node Structure and Hyperlocal PoP Strategy
 
-At the heart of Pipe Network's architecture are its hyperlocal PoP nodes, strategically deployed to ensure that content is delivered with minimal latency. Unlike traditional CDNs that rely on large, centralized server farms in major cities, Pipe Network operates on a decentralized model, where independent operators can deploy nodes in their local regions.
+At the heart of Pipe Network's architecture are its hyperlocal PoP nodes, strategically deployed to ensure that content is delivered with minimal latency. Unlike traditional CDNs that rely on large, centralized server farms in major cities, Pipe Network operates on a decentralized model, where independent operators can deploy nodes in their local regions. This localized approach ensures content delivery is optimized for proximity, dramatically reducing latency for users, especially in underserved or remote areas.
+
+Nodes are permissionless, meaning anyone with the appropriate hardware can contribute to the network. This creates a truly decentralized system where content delivery is not restricted by the centralization of infrastructure. Each node in the network can cache and deliver content to nearby users, providing both redundancy and improved performance.
 
 ### Content Distribution and Caching Mechanism
 
-Pipe Network employs a distributed caching mechanism, where content is cached at the hyperlocal PoP nodes. The Cache Management System (CMS) manages the coordination of content, while individual nodes handle the local caching.
+Pipe Network employs a distributed caching mechanism, where content is cached at the hyperlocal PoP nodes. The Cache Management System (CMS) manages the coordination of content, while individual nodes handle the local caching. In future development phases, Pipe Network will enable peer-to-peer connections between nodes, allowing them to sync and share cached content, further improving content availability and reducing the burden on the CMS.
 
-![CDN Advantages](./assets/cdn_advantages.png)
+This decentralized caching strategy ensures that content is not only served faster to local users but also reduces the need for redundant long-distance data transfers, leading to more efficient bandwidth usage.
 
 ### Solana Blockchain Integration
 
-Pipe Network is built on the Solana blockchain, chosen for its high throughput, low transaction costs, and speed. The Solana integration enables:
-- Decentralized control through smart contracts
-- Secure and efficient payment handling
-- Transparent transaction recording
-- Scalable performance
+Pipe Network is built on the Solana blockchain, chosen for its high throughput, low transaction costs, and speed. The Solana integration enables the decentralized control of the network through smart contracts, ensuring that all transactions—whether it's payments for data bandwidth, or network upgrades—are handled securely and efficiently.
+
+Solana's architecture allows Pipe Network to scale without compromising performance. The use of blockchain also brings transparency to the system, as all transactions are recorded immutably on-chain. This provides users and node operators with confidence in the fairness and integrity of the system.
+
+![Network Architecture](./assets/network_architecture.png)
 
 ## Key Features
 
