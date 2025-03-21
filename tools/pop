@@ -30,10 +30,10 @@ NC='\033[0m' # No Color
 # Print header for various outputs
 print_header() {
   local title="$1"
-  echo -e "${CYAN}╔════════════════════════════════════════════╗${NC}"
-  echo -e "${CYAN}║           PIPE NETWORK NODE ${title}            ║${NC}"
-  echo -e "${CYAN}║           Community Enhancement            ║${NC}"
-  echo -e "${CYAN}╚════════════════════════════════════════════╝${NC}"
+  echo -e "${CYAN}=======================================${NC}"
+  echo -e "${CYAN}     PIPE NETWORK NODE ${title}${NC}"
+  echo -e "${CYAN}     Community Enhancement${NC}"
+  echo -e "${CYAN}=======================================${NC}"
   echo
 }
 
