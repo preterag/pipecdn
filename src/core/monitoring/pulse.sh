@@ -73,7 +73,8 @@ print_header() {
   local title="${1:-PULSE MONITOR}"
   clear
   echo -e "${CYAN}╔════════════════════════════════════════════╗${NC}"
-  echo -e "${CYAN}║        PIPE NETWORK NODE ${title}     ║${NC}"
+  echo -e "${CYAN}║        PIPE NETWORK NODE MONITOR        ║${NC}"
+  echo -e "${CYAN}║        ${title}$(printf '%*s' $((22 - ${#title})) "")        ║${NC}"
   echo -e "${CYAN}║           Community Enhancement            ║${NC}"
   echo -e "${CYAN}╚════════════════════════════════════════════╝${NC}"
   echo
