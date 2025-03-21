@@ -12,6 +12,7 @@ graph TD
     classDef utils fill:#ff9,stroke:#333,stroke-width:2px
     classDef modules fill:#9cf,stroke:#333,stroke-width:2px
     classDef scripts fill:#9f9,stroke:#333,stroke-width:2px
+    classDef ui fill:#9fc,stroke:#333,stroke-width:2px
 
     A[tools/pop] --> B[src/core/command.sh]
     
@@ -33,13 +34,16 @@ graph TD
     
     C --> O[src/maintenance/maintenance.sh]
     
+    C --> U[src/ui/server/app.js]
+    U --> V[src/ui/web/index.html]
+    
     A --> P[External Commands]
     
-    class A scripts
+    class A,P scripts
     class B,D,E,F,G,H core
     class C utils
     class I,J,K,L,M,N,O modules
-    class P scripts
+    class U,V ui
 ```
 
 ## Component Roles and Responsibilities
@@ -94,6 +98,12 @@ graph TD
 
 - **src/maintenance/maintenance.sh**: Backup, restore, and cleanup
 
+#### Web UI
+
+- **src/ui/server/app.js**: Lightweight HTTP server for the Web UI
+- **src/ui/web/index.html**: Main Web UI application and components
+- **src/installer/web_installer.sh**: Auto-launch and installation wizard functionality
+
 ## Import Hierarchy and Dependency Management
 
 The system follows a clear import hierarchy to prevent circular dependencies:
@@ -111,11 +121,11 @@ This structure ensures that:
 
 Commands flow through the system as follows:
 
-1. User enters a command via the CLI (tools/pop)
-2. Command is standardized and parsed by command.sh
+1. User enters a command via the CLI (tools/pop) or Web UI
+2. Command is standardized and parsed by command.sh or transformed by the UI server
 3. Command is routed to the appropriate module
 4. Module executes the command, using utilities from common.sh as needed
-5. Results are displayed to the user through consistent output formatting
+5. Results are displayed to the user through consistent output formatting or returned to the Web UI
 
 ## File Structure
 
@@ -143,8 +153,20 @@ pipe-pop/
 │   ├── community/               # Community features
 │   │   ├── referral.sh          # Referral system
 │   │   └── analytics.sh         # Network analytics
-│   └── maintenance/             # Maintenance tools
-│       └── maintenance.sh       # Backup, restore, cleanup
+│   ├── maintenance/             # Maintenance tools
+│   │   └── maintenance.sh       # Backup, restore, cleanup
+│   ├── ui/                      # Web UI components
+│   │   ├── server/              # Server-side components
+│   │   │   ├── app.js           # Main server application
+│   │   │   ├── routes/          # API routes
+│   │   │   └── services/        # Backend services
+│   │   └── web/                 # Frontend components
+│   │       ├── index.html       # Main application page
+│   │       ├── css/             # Stylesheets
+│   │       ├── js/              # Client-side scripts
+│   │       └── assets/          # Images and other assets
+│   └── installer/               # Installation components
+│       └── web_installer.sh     # Auto-launch functionality
 ├── config/                      # Configuration files
 ├── data/                        # Data storage
 └── docs/                        # Documentation

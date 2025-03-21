@@ -102,6 +102,9 @@ The Pipe Network PoP Web UI is a browser-based graphical interface for the Pipe 
 - **FR-2.4**: Network connectivity testing
 - **FR-2.5**: Installation progress indicators
 - **FR-2.6**: Success confirmation and next steps guidance
+- **FR-2.7**: Auto-launch capability during initial installation
+- **FR-2.8**: Browser detection and automated redirection
+- **FR-2.9**: Seamless continuation from CLI installation
 
 #### 4.1.3 Node Management
 - **FR-3.1**: Node status dashboard with key metrics
@@ -161,6 +164,15 @@ The Pipe Network PoP Web UI is a browser-based graphical interface for the Pipe 
 - **TR-4.3**: Log file integration
 - **TR-4.4**: Update system integration
 - **TR-4.5**: Fleet system compatibility
+
+#### 4.2.6 Auto-Launch Functionality
+
+- **TR-6.1**: Automatic browser detection on supported platforms
+- **TR-6.2**: Fallback mechanism for unsupported browsers or environments
+- **TR-6.3**: Integrated timing system to launch browser after server initialization
+- **TR-6.4**: Session token generation for secure wizard continuation
+- **TR-6.5**: Installation state preservation between CLI and UI portions
+- **TR-6.6**: Exit handling and cleanup if wizard is closed prematurely
 
 ## 5. User Interface Specifications
 
@@ -315,6 +327,8 @@ For real-time updates, a WebSocket connection will be established for:
 - Create API layer for core commands
 - Implement authentication system
 - Build installation wizard framework
+- **Develop auto-launch capability for the installation script**
+- **Implement browser detection and auto-redirect mechanism**
 
 #### Phase 2: Core Functionality (3 weeks)
 - Develop node management interface
@@ -369,7 +383,8 @@ pipe-pop/
 │   │       │   └── components/     # UI components
 │   │       └── assets/             # Images and other assets
 │   └── installer/
-│       └── web_installer.sh        # Web UI auto-launch during install
+│       ├── web_installer.sh        # Web UI auto-launch during install
+│       └── browser_detect.sh       # Browser detection utilities
 └── tools/
     └── pop-ui                      # UI launcher script
 ```
@@ -408,11 +423,12 @@ pipe-pop/
 
 ### 9.2 Documentation Requirements
 
-- Installation guide updated with Web UI instructions
-- Web UI user guide with screenshots
+- Installation guide updated with Web UI and auto-launch instructions
+- Web UI user guide with screenshots and auto-launch scenario details
 - API documentation for developers
 - Updated CLI documentation referencing Web UI alternatives
-- Troubleshooting guide for common Web UI issues
+- Troubleshooting guide for common Web UI issues, including auto-launch problems
+- Browser compatibility matrix for auto-launch support
 
 ### 9.3 Support Plan
 

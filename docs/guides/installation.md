@@ -82,7 +82,15 @@ When using the `--with-ui` option, the installer will:
 3. Install the Web UI components
 4. Configure the UI server
 
-With the `--launch-ui` option, your default browser will automatically open to the Web UI installation wizard once the installation completes.
+With the `--launch-ui` option, your default browser will automatically open to the Web UI installation wizard once the installation completes. This provides a seamless experience where:
+
+1. The installation script detects your system's default browser
+2. Upon completion of the core installation, the Web UI server starts automatically
+3. Your browser opens to http://localhost:8585
+4. You're guided through the remaining setup via the Installation Wizard
+5. All configuration is applied through the visual interface
+
+No additional command-line interaction is required after launching the installer.
 
 ### Adding Web UI to Existing Installation
 

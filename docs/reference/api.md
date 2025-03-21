@@ -50,6 +50,86 @@ Returns the overall status of the system, including node state, version, and key
 }
 ```
 
+### Installation Wizard
+
+#### Get Installation Status
+
+```
+GET /api/wizard/status
+```
+
+Retrieves the current status of the installation wizard, including completed steps and pending configuration.
+
+**Response:**
+
+```json
+{
+  "active": true,
+  "current_step": "system_check",
+  "completed_steps": ["welcome"],
+  "remaining_steps": ["system_check", "configuration", "installation", "network_setup", "complete"],
+  "progress_percent": 20
+}
+```
+
+#### Update Wizard Step
+
+```
+POST /api/wizard/step
+```
+
+Updates the wizard's current step and associated data.
+
+**Request Body:**
+
+```json
+{
+  "step": "configuration",
+  "data": {
+    "node_name": "primary-node",
+    "log_level": "info",
+    "auto_start": true
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "next_step": "installation",
+  "validation_errors": []
+}
+```
+
+#### Complete Installation
+
+```
+POST /api/wizard/complete
+```
+
+Finalizes the installation process after all steps are completed.
+
+**Request Body:**
+
+```json
+{
+  "start_node": true,
+  "create_backup": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "node_status": "running",
+  "message": "Installation completed successfully"
+}
+```
+
 ### Node Management
 
 #### Start Node

@@ -43,7 +43,7 @@ The documentation is organized into the following sections:
 
 If you're new to the Pipe Network, we recommend reading the documentation in this order:
 
-1. [Installation Guide](guides/installation.md)
+1. [Installation Guide](guides/installation.md) (with auto-launching Web UI option)
 2. [Quick Start Guide](guides/quick_start.md)
 3. [Node Registration](guides/node_registration.md)
 4. [Port Forwarding](guides/port_forwarding.md)
@@ -59,7 +59,7 @@ If you're new to the Pipe Network, we recommend reading the documentation in thi
 - **Installation Options**: System-wide and user-level installation choices
 - **Privilege Management**: Intelligent falling back to user privileges when needed
 - **Fleet Management**: Tools for managing multiple nodes from a single location
-- **Web User Interface**: Browser-based management with installation wizard
+- **Web User Interface**: Browser-based management with auto-launching installation wizard
 - **Comprehensive Documentation**: Detailed guides and references for various user roles
 
 ## Reading Order for Developers

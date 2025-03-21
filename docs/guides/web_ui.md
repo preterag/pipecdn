@@ -18,17 +18,34 @@ The Pipe Network PoP Web UI provides a browser-based graphical interface for man
 
 The Web UI can be installed in two ways:
 
-1. **Automatic Installation** (recommended):
+1. **Automatic Installation with Auto-Launch** (recommended):
    
-   When running the standard installation script, the Web UI will be automatically installed:
+   When running the standard installation script, you can enable automatic launch of the Web UI:
 
    ```bash
-   curl -s https://setup.pipe-network.example/install.sh | bash
+   curl -s https://setup.pipe-network.example/install.sh | bash -s -- --with-ui --launch-ui
    ```
 
-   The installation script will detect if you have the necessary dependencies and install them if needed. After installation completes, the Web UI will automatically launch in your default browser.
+   This command:
+   - Installs all required dependencies
+   - Sets up the core node management tools
+   - Installs the Web UI components
+   - Automatically launches your default browser
+   - Opens the installation wizard immediately after installation completes
+   
+   This provides the most seamless experience, as you can complete the entire setup process through the visual interface without returning to the command line.
 
-2. **Manual Installation**:
+2. **Standard Automatic Installation**:
+   
+   If you prefer not to auto-launch the browser:
+
+   ```bash
+   curl -s https://setup.pipe-network.example/install.sh | bash -s -- --with-ui
+   ```
+
+   The Web UI will be installed but not automatically launched.
+
+3. **Manual Installation**:
 
    If you already have the Pipe Network PoP Node Management Tools installed, you can add the Web UI:
 
