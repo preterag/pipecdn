@@ -1,55 +1,137 @@
 ![Pipe Network](docs/images/pipe-network-pop.jpeg)
 
-# Start Here: Pipe Network Community Node
+# Pipe Network PoP Node Management Tools
 
-> **IMPORTANT**: This is a community-maintained toolkit for Pipe Network nodes.
-> It provides enhancements to the official Pipe Network software.
+> Welcome to the Pipe Network PoP Node Management Tools, a comprehensive toolkit for managing Pipe Network nodes efficiently.
 
-## Understanding Pipe Network
+## What is Pipe Network?
 
-Before diving into the code or setting up your node, we recommend reviewing the [official Pipe Network documentation](docs/official/PIPE_NETWORK_DOCUMENTATION.md) to understand the concepts, architecture, and vision behind the project.
+Pipe Network is a decentralized content delivery network (CDN) that leverages a distributed network of nodes to deliver web content. By running a Point of Presence (PoP) node, you contribute to the network and earn rewards.
 
-## Quick Setup (2 minutes)
+For a comprehensive understanding, review the [official Pipe Network documentation](docs/official/PIPE_NETWORK_DOCUMENTATION.md).
 
-1. **Open a terminal and run:**
+## Quick Installation (2 minutes)
+
+1. **Install the software:**
    ```bash
    sudo ./INSTALL
    ```
 
 2. **Enter your Solana wallet address when prompted**
-   (Don't have a wallet? [Create one first](docs/guides/wallet-setup.md))
+   (Need a wallet? Follow our [wallet setup guide](docs/guides/wallet-setup.md))
 
-3. **Check that your node is running:**
+3. **Verify your node is running:**
    ```bash
    pop status
    ```
 
-## Monitoring Your Node
+## Core Features
 
-![PoP Node Management Tools](docs/images/PoP-node-management.jpeg)
+### Node Management
 
 ```bash
-# See real-time performance
-pop monitoring pulse
+# Start your node
+pop start
 
-# Check your earnings
-pop points
+# Stop your node
+pop stop
 
-# Create a referral code for bonuses
-pop referral generate
+# Restart your node
+pop restart
+
+# View service logs
+pop logs
 ```
 
-## Need Help?
+### Monitoring
 
-- **Installation problems?** See [Troubleshooting](docs/reference/troubleshooting.md)
-- **Want to learn more?** Read the [Quick Start Guide](docs/guides/quick-start.md)
-- **Find all commands:** Check the [Command Reference](docs/reference/cli.md)
-- **Official documentation:** [Pipe Network Documentation](docs/official/PIPE_NETWORK_DOCUMENTATION.md)
+```bash
+# Check node status
+pop status
+
+# View real-time metrics
+pop pulse
+
+# Launch interactive dashboard
+pop dashboard
+
+# View historical performance
+pop history
+```
+
+### Configuration & Network
+
+```bash
+# Configure your node
+pop configure
+
+# Check and configure ports
+pop ports
+
+# Enable privileged ports (80/443)
+pop ports --enable-80-443
+
+# Check your wallet information
+pop wallet --info
+```
+
+### Maintenance
+
+```bash
+# Backup your node
+pop backup
+
+# Restore from backup
+pop restore
+
+# Check for updates
+pop update --check
+
+# View comprehensive statistics
+pop stats
+```
+
+## Fleet Management
+
+For users managing multiple nodes, we offer fleet management capabilities:
+
+```bash
+# Add a node to your fleet
+pop fleet-add --name=node1 --ip=192.168.1.10
+
+# List all nodes in your fleet
+pop fleet-list
+
+# Deploy updates to all nodes
+pop fleet-deploy --update
+
+# View aggregated status
+pop fleet-status
+```
+
+## Documentation & Help
+
+- **Detailed Commands:** [Command Reference](docs/reference/command-reference.md)
+- **Getting Started:** [Quick Start Guide](docs/guides/quick-start.md)
+- **Network Setup:** [Port Forwarding Guide](docs/guides/port-forwarding.md)
+- **Registration:** [Node Registration Guide](docs/guides/node-registration.md)
+- **Problems?** [Troubleshooting Guide](docs/guides/troubleshooting.md)
+- **Multiple Nodes:** [Fleet Management Guide](docs/guides/fleet-management.md)
+
+## Earning Rewards
+
+Your node earns rewards based on several factors:
+- **Uptime** - How long your node is online
+- **Egress** - How much data you serve to the network
+- **History** - Your node's historical performance
+
+Monitor your earnings and performance using the dashboard:
+```bash
+pop dashboard
+```
 
 ---
 
-**Your node is earning rewards when it shows as "Running" in the status!** 
+**Need help?** Join our community on Discord or Telegram for real-time support and discussions.
 
----
-
-*This community toolkit complements the official Pipe Network software.* 
+*This is a community-maintained toolkit that enhances the official Pipe Network software.* 
