@@ -1,39 +1,43 @@
-# Release Notes: PipeNetwork v1.0.0
+# Release Notes - Pipe Network PoP Node Management Tools
 
-## New Repository Structure
+## v0.0.1 (Development Version) - March 21, 2024
 
-We've completely reorganized the repository for better user experience:
+This is the initial development version of the Pipe Network PoP Node Management Tools.
 
-### Core Components
-- Simplified entry point with `START_HERE.md` and one-command `INSTALL` script
-- Intuitive directory structure focused on user needs
-- Global `pop` command for all node management
+### Features Implemented
 
-### Documentation
-- New user-friendly guides for installation, wallet setup, security, and earning
-- Technical reference for configuration, CLI commands, and troubleshooting
-- Concise, readable formatting throughout
+#### Core Functionality
+- Repository structure and documentation system
+- Command-line interface with comprehensive help system
+- Service management (start, stop, restart, logs)
+- Global installation support for running `pop` from any directory
+- Configuration management system with JSON-based storage
 
-### Security Enhancements
-- Clear security best practices
-- Template-based configuration to avoid exposing sensitive data
-- Improved backup and recovery tools
+#### Monitoring System
+- Real-time node status display with `pop status`
+- Interactive dashboard with multiple view modes via `pop dashboard`
+- Historical data collection and visualization with `pop history`
+- Trend analysis for node performance metrics
+- Alert system with configurable thresholds via `pop alerts`
+- Multiple notification channels (terminal, email, log)
+- System resource monitoring (CPU, memory, disk)
 
-## Upgrade Instructions
+### Known Issues
+- Email notifications require local mail transport agent or SMTP configuration
+- Historical data requires regular collection via `pop pulse` to be useful
 
-For existing users:
+### Coming Soon
+- Fleet management for multiple nodes
+- Automatic updates
+- Backup and restore functionality
+- Advanced security features
 
-1. Backup your node:
-   ```
-   pop backup
-   ```
+**Note:** This is a pre-release development version. Features may change before the first stable release.
 
-2. Install the new version:
-   ```
-   sudo ./INSTALL
-   ```
+## Future Releases
 
-3. Restore your wallet:
-   ```
-   sudo pop wallet set YOUR_WALLET_ADDRESS
-   ``` 
+Future releases will focus on:
+1. Fleet management for controlling multiple nodes
+2. Advanced security features
+3. Community integration tools
+4. Performance optimizations 

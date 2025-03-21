@@ -1,29 +1,139 @@
 ![Pipe Network](docs/images/pipe-network-pop.jpeg)
 
-# Pipe Network PoP Node Management Tools
+# Getting Started with Pipe Network PoP Node Management Tools
 
-> Welcome to the Pipe Network PoP Node Management Tools, a comprehensive toolkit for managing Pipe Network nodes efficiently.
+Welcome to the Pipe Network PoP Node Management Tools! This document will help you get up and running quickly with our enhanced node management toolkit.
 
-## What is Pipe Network?
+**Version: v0.0.1 (Development)**
 
-Pipe Network is a decentralized content delivery network (CDN) that leverages a distributed network of nodes to deliver web content. By running a Point of Presence (PoP) node, you contribute to the network and earn rewards.
+## What is This?
 
-For a comprehensive understanding, review the [official Pipe Network documentation](docs/official/PIPE_NETWORK_DOCUMENTATION.md).
+This toolkit provides an enhanced command-line interface for managing and monitoring your Pipe Network Proof of Participation (PoP) node. It offers features like real-time performance monitoring, historical data analysis, alerts, and simplified service management.
 
-## Quick Installation (2 minutes)
+## Quick Install
 
-1. **Install the software:**
-   ```bash
-   sudo ./INSTALL
-   ```
+### Prerequisites
 
-2. **Enter your Solana wallet address when prompted**
-   (Need a wallet? Follow our [wallet setup guide](docs/guides/wallet-setup.md))
+- Linux operating system (Ubuntu 20.04+ recommended)
+- Basic command line knowledge
+- A Pipe Network node already installed
 
-3. **Verify your node is running:**
-   ```bash
-   pop status
-   ```
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/username/pipe-pop.git
+cd pipe-pop
+
+# Run the installation script
+./tools/pop install
+```
+
+After installation, you can run `pop` commands from any directory.
+
+## Essential Commands
+
+Here are the most important commands to know:
+
+```bash
+# Get help
+pop help
+
+# Show node status
+pop status
+
+# Launch interactive dashboard
+pop dashboard
+
+# View historical performance
+pop history
+
+# Configure and check alerts
+pop alerts status
+
+# Start/stop your node
+pop start
+pop stop
+```
+
+## What Can You Do?
+
+### 1. Monitor Your Node
+
+```bash
+# Basic status
+pop status
+
+# Interactive dashboard
+pop dashboard
+
+# Historical performance
+pop history
+```
+
+### 2. Get Alerts & Notifications
+
+```bash
+# Check alert configuration
+pop alerts status
+
+# Configure email notifications
+pop alerts config email.enable
+pop alerts config email.from your-email@example.com
+pop alerts config email.to admin@example.com
+
+# Test the alert system
+pop alerts test
+```
+
+### 3. Manage Your Node
+
+```bash
+# Start/stop/restart the node
+pop start
+pop stop
+pop restart
+
+# View logs
+pop logs
+```
+
+### 4. Configure Your Node
+
+```bash
+# List configuration
+pop config list
+
+# Set configuration values
+pop config set wallet.address YOUR_WALLET_ADDRESS
+```
+
+## Where to Go From Here?
+
+- **Detailed Documentation**: Check the [docs](docs/) directory for comprehensive guides
+- **Command Reference**: See [Command Reference](docs/reference/command-reference.md) for all available commands
+- **Troubleshooting**: If you encounter issues, see [Troubleshooting Guide](docs/reference/troubleshooting.md)
+- **Implementation Status**: See [Implementation Tracker](IMPLEMENTATION_TRACKER.md) for development status
+
+## Getting Help
+
+For help with specific commands, use:
+
+```bash
+pop help [command]
+```
+
+For example:
+```bash
+pop help dashboard
+pop help alerts
+```
+
+## Important Notes
+
+- This is a community-developed toolkit, not an official Pipe Network product
+- Version v0.0.1 is a development release - features may change in future versions
+- Always back up your node configuration before making significant changes
 
 ## Core Features
 
