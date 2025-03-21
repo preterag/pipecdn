@@ -5,24 +5,44 @@
 /PipeNetwork/
 /PipeNetwork_*/
 
+# Backup and temporary files
+backup_*/
+backups/
+!backups/README.md
+PipeNetwork_backup.tar.gz
+*.tmp
+*.temp
+.tmp/
+download_cache/
+temp/
+~/*
+
 # Logs
 logs/
 *.log
 !logs/README.md
+pipe-pop*.log*
+pipe-pop-setup.log
 
 # Cache
 cache/
 node_info.json
 !cache/README.md
 
-# Backups
-backups/
-backup_*/
-!backups/README.md
-PipeNetwork_backup.tar.gz
+# Configuration files with sensitive data
+config/config.json
+config/*.json
+!config/config.template.json
+!config/examples/*.json
+config_fixed.json
+config.json
 
-# Solana
-.config/solana/
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+*.out
 
 # Node modules
 node_modules/
@@ -30,6 +50,23 @@ node_modules/
 # Environment variables
 .env
 *.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Security and authentication files
+github_push.sh
+*_token*
+*_key*
+*_secret*
+*_password*
+*_credential*
+.git-credentials
+.netrc
+solana_id.json
+*.key
+keys/
 
 # OS specific files
 .DS_Store
@@ -41,31 +78,12 @@ Thumbs.db
 *.swp
 *.swo 
 .cursor/
+*.swp
 
-# Security and authentication files
-github_push.sh
-*_token*
-*_key*
-*_secret*
-*_password*
-*_credential*
-.git-credentials
-.netrc
-
-# Configuration files with sensitive data
-config/config.json
-config/*.json
-!config/config.template.json
-!config/*.template.json
-!config/examples/*.json
-
-# Temporary files
-*.tmp
-*.temp
-.tmp/
+# Solana
+.config/solana/
 
 # Running node specific files
-pipe-pop.log*
 pipe-pop-metrics.json
 uptime.json
 *.dat
@@ -75,32 +93,5 @@ uptime.json
 status_cache.json
 .running_instance
 .last_update_check
-download_cache/
-temp/
-
-# Development specific
-.dev/
-.test/
-.local/
-test_data/
-
-# Build artifacts
-dist/
-build/
-*.o
-*.so
-*.out
-
-# Local configuration overrides
-.env.local
-.env.development
-.env.test
-.env.production
-
-# Sensitive data
-solana_id.json
-*.key
-keys/
-
-# Setup logs
-pipe-pop-setup.log
+sample-metrics.json
+sample-metrics.json.prev

@@ -1,0 +1,32 @@
+{
+  "node": {
+    "name": "pipe-network-example-node",
+    "wallet_address": "EXAMPLE_WALLET_ADDRESS",
+    "region": "us-west",
+    "description": "Example Pipe Network node configuration"
+  },
+  "network": {
+    "port": 8003,
+    "firewall_enabled": true,
+    "allow_metrics": true,
+    "enable_privileged_ports": true
+  },
+  "monitoring": {
+    "dashboard_enabled": true,
+    "dashboard_port": 8081,
+    "metrics_interval": 60,
+    "log_level": "info"
+  },
+  "backup": {
+    "enabled": true,
+    "schedule": "daily",
+    "retention_days": 7,
+    "include_logs": true
+  },
+  "community_enhancements": {
+    "pulse_monitoring": true,
+    "historical_tracking": true,
+    "auto_update_check": true,
+    "port_forwarding_check": true
+  }
+} 

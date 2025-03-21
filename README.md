@@ -11,17 +11,7 @@ A community-maintained toolkit for running a Pipe Network node and earning rewar
 
 **First time setting up?** → [Start Here](START_HERE.md)
 
-## Official Pipe Network Documentation
-
-For official documentation, please see [Official Pipe Network Documentation](docs/official/PIPE_NETWORK_DOCUMENTATION.md).
-
-## One-Command Setup
-
-```bash
-sudo ./INSTALL
-```
-
-## Community Enhancements
+## Features
 
 This repository provides the following community-created tools and enhancements:
 
@@ -29,6 +19,8 @@ This repository provides the following community-created tools and enhancements:
 - **Complete Monitoring**: Track your node's performance in real-time
 - **Secure by Default**: Automatic firewall and security configuration
 - **Easy Management**: Simple commands for all common tasks
+- **Port Forwarding Tools**: Verify and configure network ports properly
+- **Node Registration Helpers**: Ensure your node is properly registered
 
 See [COMMUNITY_ENHANCEMENTS.md](COMMUNITY_ENHANCEMENTS.md) for a complete list.
 
@@ -41,12 +33,31 @@ pop wallet info         # Show wallet address
 pop security check      # Verify security settings
 ```
 
+## Utility Scripts
+
+We provide several helper scripts to assist with common tasks:
+
+- `port_check.sh`: Verifies if ports are properly forwarded
+- `enable_ports.sh`: Configures port capabilities for ports 80 and 443
+- `fix_node_registration.sh`: Ensures consistent node registration
+- `register_node.sh`: Registers or re-registers your node
+
 ## Documentation
 
 - [Quick Start Guide](docs/guides/quick-start.md) - Get up and running in minutes
+- [Port Forwarding Guide](docs/guides/port_forwarding.md) - Configure your network
+- [Node Registration Guide](docs/guides/node_registration.md) - Register your node
+- [Scoring & Rewards](docs/guides/scoring.md) - Understand how rewards work
 - [Command Reference](docs/reference/cli.md) - All available commands
-- [Earning Guide](docs/guides/earning.md) - Maximize your rewards
 - [Troubleshooting](docs/reference/troubleshooting.md) - Solve common issues
+
+## Installation
+
+One-command installation:
+
+```bash
+sudo ./INSTALL
+```
 
 ## Support
 
@@ -55,6 +66,10 @@ Report issues via GitHub or check the [troubleshooting guide](docs/reference/tro
 ## Version Compatibility
 
 The community enhancements in this repository are compatible with Pipe Network DevNet 2.
+
+## For Developers
+
+If you want to contribute to this project, please check [Developer Documentation](docs/development/README.md).
 
 ---
 
