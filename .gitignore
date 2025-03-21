@@ -20,6 +20,7 @@ node_modules/
 
 # Environment variables
 .env
+*.env
 
 # OS specific files
 .DS_Store
@@ -51,3 +52,77 @@ pipe_network_dashboard_*.html
 
 # Service files with system-specific paths
 pipe-pop.service*
+
+# Configuration files with sensitive data
+config/config.json
+config/*.json
+!config/config.template.json
+!config/examples/*.json
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Running node specific files
+pipe-pop.log*
+pipe-pop-metrics.json
+uptime.json
+*.dat
+*.db
+*.db-shm
+*.db-wal
+status_cache.json
+.running_instance
+.last_update_check
+download_cache/
+temp/
+
+# Development specific
+.dev/
+.test/
+.local/
+node_modules/
+test_data/
+
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+*.out
+
+# Local configuration overrides
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Sensitive data
+solana_id.json
+*.key
+keys/
+backup_*/
+PipeNetwork_backup.tar.gz
+
+# Temporary files
+.cursor/
+*.log
+*.tmp
+*.temp
+
+# Cache and local data
+cache/
+logs/
+*.cache
+*.local
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db

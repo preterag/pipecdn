@@ -1,46 +1,46 @@
-# Pipe Network: Decentralized Content Delivery Network
+![Pipe Network](docs/images/pipe-network-pop.jpeg)
 
-Welcome to Pipe Network - Building a permissionless future, one node at a time.
+# PipeNetwork Node
 
-## Overview
+A community-maintained toolkit for running a Pipe Network node and earning rewards.
 
-Pipe Network is a hyper-localized, scalable content delivery network (CDN) built on Solana's high-performance blockchain. Each CDN PoP node in the network is strategically placed close to users for fast, reliable content delivery. Pipe Network's nodes ensure low-latency content streaming, making it ideal for media and real-time applications.
+## 📋 New User? Start Here
 
-## Quick Links
+**First time setting up?** → [Start Here](START_HERE.md)
 
-- [Complete Documentation](docs/PIPE_NETWORK_DOCUMENTATION.md)
-- [Dashboard](https://dashboard.pipenetwork.com/node-lookup)
-- [DevNet Signup Form](https://docs.google.com/forms/d/e/1FAIpQLScbxN1qlstpbyU55K5I1UPufzfwshcv7uRJG6aLZQDk52ma0w/viewform)
+## One-Command Setup
+
+```bash
+sudo ./INSTALL
+```
 
 ## Key Features
 
-- **Hyperlocal PoP Nodes**: Strategically placed nodes for ultra-low latency
-- **Cost Efficiency**: Significantly lower prices than traditional CDNs
-- **Real-time Data Delivery**: Optimized for streaming and real-time applications
-- **Security**: Built-in DDoS protection and DMCA compliance
-- **Decentralized**: Anyone can run a node and contribute to the network
+- **Simple Installation**: One command to set up everything
+- **Complete Monitoring**: Track your node's performance in real-time
+- **Secure by Default**: Automatic firewall and security configuration
+- **Easy Management**: Simple commands for all common tasks
 
-## Getting Started
+## Quick Commands
 
-For detailed instructions on running a node, setting up the service, and interacting with the API, please refer to our [comprehensive documentation](docs/PIPE_NETWORK_DOCUMENTATION.md).
+```bash
+pop status              # Check node status
+pop monitoring pulse    # Real-time monitoring
+pop wallet info         # Show wallet address
+pop security check      # Verify security settings
+```
 
-## Current Status
+## Documentation
 
-- **DevNet 2**: Currently in alpha testnet phase
-- **Testnet**: Coming Soon
-- **Mainnet**: Expected 2025
+- [Quick Start Guide](docs/guides/quick-start.md) - Get up and running in minutes
+- [Command Reference](docs/reference/cli.md) - All available commands
+- [Earning Guide](docs/guides/earning.md) - Maximize your rewards
+- [Troubleshooting](docs/reference/troubleshooting.md) - Solve common issues
 
 ## Support
 
-For technical support and updates:
-- Check the [documentation](docs/PIPE_NETWORK_DOCUMENTATION.md)
-- Visit the [Dashboard](https://dashboard.pipenetwork.com/node-lookup)
-- Join our community (links coming soon)
-
-## License
-
-All rights reserved. Copyright © 2024 Pipe Network
+Report issues via GitHub or check the [troubleshooting guide](docs/reference/troubleshooting.md).
 
 ---
 
-*Last updated: March 2024*
+*This is a community enhancement of the official Pipe Network node software.*
