@@ -126,9 +126,65 @@ fi
 # Standardize arguments to support both command formats
 standardized_args=$(standardize_args "$@")
 
+# Custom run_command function to handle all commands
+run_command() {
+  # Parse global options first
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --debug)
+        DEBUG="true"
+        shift
+        ;;
+      --quiet|-q)
+        QUIET="true"
+        shift
+        ;;
+      --help|-h)
+        show_help
+        return 0
+        ;;
+      --version|-v)
+        show_version
+        return 0
+        ;;
+      --install|--uninstall)
+        # Already handled in main script
+        shift
+        ;;
+      --fleet)
+        shift
+        if type fleet_command &>/dev/null; then
+          if [[ $# -gt 0 ]]; then
+            fleet_command "$@"
+            return $?
+          else
+            fleet_command "help"
+            return 0
+          fi
+        else
+          echo -e "${RED}[ERROR] Fleet management is not available.${NC}"
+          echo -e "Please check your installation and try again."
+          return 1
+        fi
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  # Call the existing command handler from command.sh
+  if type handle_command &>/dev/null; then
+    handle_command "$@"
+    return $?
+  else
+    echo -e "${RED}[ERROR] Command handler not found.${NC}"
+    return 1
+  fi
+}
+
 # Run the main command with standardized arguments
-# run_command $standardized_args
-process_command $standardized_args
+run_command $standardized_args
 exit $?
 
 # Process command line arguments
