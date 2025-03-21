@@ -14,40 +14,65 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Constants
-FLEET_DIR="${INSTALL_DIR:-/opt/pipe-pop}/fleet"
-SSH_DIR="$FLEET_DIR/ssh"
-KEY_FILE="$SSH_DIR/fleet_rsa"
-CONFIG_FILE="$FLEET_DIR/nodes.conf"
+# Ensure we're in the correct directory
+if [[ -z "$ROOT_DIR" ]]; then
+  # Determine script location for relative paths
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+fi
+
+# Define paths
+FLEET_DIR="${ROOT_DIR}/src/fleet"
+CONFIG_DIR="${ROOT_DIR}/config/fleet"
+SSH_DIR="${CONFIG_DIR}/ssh"
+KEY_FILE="${SSH_DIR}/fleet_rsa"
+KNOWN_HOSTS="${SSH_DIR}/known_hosts"
 AUTH_COMMAND="~/tools/pop --status; ~/tools/pop --pulse --export json"
 
-# Ensure directories exist
+# Create SSH directory and files
 create_ssh_directories() {
   mkdir -p "$SSH_DIR"
   chmod 700 "$SSH_DIR"
-  echo -e "${GREEN}SSH directory created at $SSH_DIR${NC}"
+  
+  if [[ ! -f "$KNOWN_HOSTS" ]]; then
+    touch "$KNOWN_HOSTS"
+    chmod 600 "$KNOWN_HOSTS"
+  fi
+  
+  echo -e "${GREEN}SSH directories created.${NC}"
 }
 
 # Generate a new SSH key for fleet management
 generate_ssh_key() {
+  # Check if key already exists
   if [[ -f "$KEY_FILE" ]]; then
-    echo -e "${YELLOW}SSH key already exists at $KEY_FILE${NC}"
-    read -p "Do you want to replace it? (y/n): " confirm
-    if [[ "$confirm" != "y" ]]; then
-      echo -e "${YELLOW}Keeping existing key.${NC}"
-      return 0
-    fi
+    echo -e "${YELLOW}SSH key already exists.${NC}"
+    echo -e "Use 'pop --fleet keygen --force' to regenerate."
+    return 0
   fi
   
-  echo -e "Generating new SSH key for fleet management..."
+  # Generate SSH key
+  echo -e "${BLUE}Generating SSH key pair for fleet management...${NC}"
   ssh-keygen -t rsa -b 4096 -f "$KEY_FILE" -N "" -C "pipe-pop-fleet-$(hostname)"
-  chmod 600 "$KEY_FILE"
-  echo -e "${GREEN}SSH key generated successfully.${NC}"
   
-  echo -e "\nYour public key is:"
-  cat "${KEY_FILE}.pub"
-  echo -e "\n${YELLOW}Add this key to your nodes' authorized_keys files with command restrictions:${NC}"
-  echo -e "command=\"$AUTH_COMMAND\",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty $(cat ${KEY_FILE}.pub)"
+  if [[ $? -ne 0 ]]; then
+    echo -e "${RED}Failed to generate SSH key.${NC}"
+    return 1
+  fi
+  
+  chmod 600 "$KEY_FILE"
+  chmod 644 "${KEY_FILE}.pub"
+  
+  echo -e "${GREEN}SSH key pair generated successfully.${NC}"
+  echo -e "${YELLOW}Public key:${NC}"
+  echo -e "${CYAN}$(cat ${KEY_FILE}.pub)${NC}"
+  
+  echo
+  echo -e "${YELLOW}When registering a node, you should add this public key to the node's"
+  echo -e "~/.ssh/authorized_keys file with appropriate restrictions:${NC}"
+  echo -e "${CYAN}command=\"~/tools/pop --status; ~/tools/pop --pulse --export json\",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty $(cat ${KEY_FILE}.pub)${NC}"
+  
+  return 0
 }
 
 # Test SSH connection to a node
