@@ -3,13 +3,25 @@
     "name": "pipe-network-example-node",
     "wallet_address": "EXAMPLE_WALLET_ADDRESS",
     "region": "us-west",
-    "description": "Example Pipe Network node configuration"
+    "description": "Example Pipe Network node configuration",
+    "wallet": "your_wallet_address_here",
+    "email": "your_email@example.com",
+    "ports": {
+      "http": 80,
+      "https": 443,
+      "management": 8003
+    }
   },
   "network": {
     "port": 8003,
     "firewall_enabled": true,
     "allow_metrics": true,
-    "enable_privileged_ports": true
+    "enable_privileged_ports": true,
+    "enable_ipv6": false,
+    "dns_servers": [
+      "1.1.1.1",
+      "8.8.8.8"
+    ]
   },
   "monitoring": {
     "dashboard_enabled": true,
@@ -28,5 +40,19 @@
     "historical_tracking": true,
     "auto_update_check": true,
     "port_forwarding_check": true
+  },
+  "logs": {
+    "level": "info",
+    "max_size": "50M",
+    "retention": 7
+  },
+  "metrics": {
+    "enable_collection": true,
+    "history_days": 30
+  },
+  "maintenance": {
+    "auto_update": true,
+    "auto_backup": true,
+    "backup_interval_days": 7
   }
 } 

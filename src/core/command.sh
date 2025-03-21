@@ -2,137 +2,203 @@
 # Command Parser for Pipe Network PoP Node Management Tools
 # This module handles command-line argument parsing and routing
 
-# ====================
-# Core Command Parser
-# ====================
+# =====================
+# Basic Information
+# =====================
 
 # Version information
 VERSION="v0.0.1"
 
-# Color definitions for output formatting
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-PURPLE='\033[0;35m'
-NC='\033[0m' # No Color
-
-# Log levels
-LOG_LEVEL_ERROR=0
-LOG_LEVEL_WARN=1
-LOG_LEVEL_INFO=2
-LOG_LEVEL_DEBUG=3
-CURRENT_LOG_LEVEL=$LOG_LEVEL_INFO
+# Color definitions
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+BLUE="\033[0;34m"
+CYAN="\033[0;36m"
+NC="\033[0m" # No Color
 
 # =====================
 # Logging Functions
 # =====================
 
-# Log an error message
-log_error() {
-  if [[ $CURRENT_LOG_LEVEL -ge $LOG_LEVEL_ERROR ]]; then
-    echo -e "${RED}ERROR: $1${NC}" >&2
-  fi
-}
-
-# Log a warning message
-log_warn() {
-  if [[ $CURRENT_LOG_LEVEL -ge $LOG_LEVEL_WARN ]]; then
-    echo -e "${YELLOW}WARNING: $1${NC}" >&2
-  fi
-}
-
-# Log an informational message
+# Log info message
 log_info() {
-  if [[ $CURRENT_LOG_LEVEL -ge $LOG_LEVEL_INFO ]]; then
-    echo -e "${BLUE}INFO: $1${NC}"
+  echo -e "[${GREEN}INFO${NC}] $1"
+}
+
+# Log warning message
+log_warn() {
+  echo -e "[${YELLOW}WARN${NC}] $1" >&2
+}
+
+# Log error message
+log_error() {
+  echo -e "[${RED}ERROR${NC}] $1" >&2
+}
+
+# Log debug message (only when debug is enabled)
+log_debug() {
+  if [[ "$DEBUG" == "true" ]]; then
+    echo -e "[${BLUE}DEBUG${NC}] $1"
   fi
 }
 
-# Log a debug message
-log_debug() {
-  if [[ $CURRENT_LOG_LEVEL -ge $LOG_LEVEL_DEBUG ]]; then
-    echo -e "${PURPLE}DEBUG: $1${NC}"
+# Print a section header
+print_header() {
+  local title="$1"
+  local width=50
+  local padding=$(( (width - ${#title} - 2) / 2 ))
+  local left_padding=$padding
+  local right_padding=$padding
+  
+  if (( ${#title} % 2 == 1 )); then
+    right_padding=$((right_padding + 1))
   fi
+  
+  echo
+  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $width))${NC}"
+  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $left_padding)) ${title} $(printf '=%.0s' $(seq 1 $right_padding))${NC}"
+  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $width))${NC}"
+  echo
 }
 
 # =====================
 # Utility Functions
 # =====================
 
-# Print header for various outputs
-print_header() {
-  local title="$1"
-  echo -e "${CYAN}=================================================${NC}"
-  echo -e "${CYAN}     PIPE NETWORK NODE ${title}${NC}"
-  echo -e "${CYAN}     PoP Node Management Tools v${VERSION}${NC}"
-  echo -e "${CYAN}=================================================${NC}"
-  echo
+# Ensures all required paths are set up
+setup_paths() {
+  # If ROOT_DIR is not set, try to determine it
+  if [[ -z "$ROOT_DIR" ]]; then
+    # Get the directory of this script
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    ROOT_DIR="$(cd "$script_dir/../.." && pwd)"
+  fi
+  
+  # Set up common directories
+  SRC_DIR="${ROOT_DIR}/src"
+  BIN_DIR="${ROOT_DIR}/bin"
+  TOOLS_DIR="${ROOT_DIR}/tools"
+  
+  # Set up installation directories if not already set
+  if [[ -z "$INSTALL_DIR" ]]; then
+    INSTALL_DIR="/opt/pipe-pop"
+  fi
+  
+  if [[ -z "$CONFIG_DIR" ]]; then
+    CONFIG_DIR="${INSTALL_DIR}/config"
+  fi
+  
+  if [[ -z "$CONFIG_FILE" ]]; then
+    CONFIG_FILE="${CONFIG_DIR}/config.json"
+  fi
+  
+  if [[ -z "$LOCAL_CONFIG_FILE" ]]; then
+    LOCAL_CONFIG_FILE="./config.json"
+  fi
+  
+  # Export all paths for use by other modules
+  export ROOT_DIR
+  export SRC_DIR
+  export BIN_DIR
+  export TOOLS_DIR
+  export INSTALL_DIR
+  export CONFIG_DIR
+  export CONFIG_FILE
+  export LOCAL_CONFIG_FILE
 }
 
-# Get value of named parameter
-# Usage: get_param "--name" "$@"
-get_param() {
-  local param_name="$1"
-  shift
-  
-  while [[ $# -gt 0 ]]; do
-    if [[ "$1" == "$param_name" ]]; then
-      if [[ $# -gt 1 && ! "$2" =~ ^-- ]]; then
-        echo "$2"
-        return 0
-      else
-        # Parameter exists but has no value
-        echo "true"
-        return 0
-      fi
-    elif [[ "$1" =~ ^$param_name=(.*)$ ]]; then
-      # Handle --param=value syntax
-      echo "${BASH_REMATCH[1]}"
-      return 0
-    fi
-    shift
-  done
-  
-  # Parameter not found
-  echo ""
-  return 1
-}
-
-# Check if a parameter flag exists
-# Usage: has_param "--flag" "$@"
-has_param() {
-  local param_name="$1"
-  shift
-  
-  while [[ $# -gt 0 ]]; do
-    if [[ "$1" == "$param_name" || "$1" =~ ^$param_name= ]]; then
-      return 0
-    fi
-    shift
-  done
-  
-  return 1
-}
-
-# Validate that required tools are available
+# Validate the environment (required files, dependencies)
 validate_environment() {
-  local required_tools=("jq" "systemctl" "curl" "basename" "dirname")
-  local missing_tools=()
+  local errors=0
   
-  for tool in "${required_tools[@]}"; do
-    if ! command -v "$tool" &> /dev/null; then
-      missing_tools+=("$tool")
-    fi
-  done
+  # Check for critical dependencies
+  if ! command -v jq &> /dev/null; then
+    log_warn "jq is not installed. Some features may not work properly."
+  fi
   
-  if [[ ${#missing_tools[@]} -gt 0 ]]; then
-    log_error "Missing required tools: ${missing_tools[*]}"
-    echo -e "Please install the missing tools using your package manager."
-    echo -e "For example: sudo apt-get install ${missing_tools[*]}"
+  if ! command -v systemctl &> /dev/null; then
+    log_warn "systemctl is not available. Service management features may not work."
+  fi
+  
+  if (( errors > 0 )); then
+    log_error "Environment validation failed with $errors errors."
     return 1
   fi
+  
+  return 0
+}
+
+# Load a module by name
+load_module() {
+  local module_name="$1"
+  local module_path="${SRC_DIR}/${module_name}"
+  
+  if [[ ! -f "$module_path" ]]; then
+    log_error "Module not found: $module_path"
+    return 1
+  fi
+  
+  source "$module_path"
+  return $?
+}
+
+# =====================
+# Command Functions
+# =====================
+
+# Display version information
+show_version() {
+  print_header "VERSION"
+  echo -e "Pipe Network PoP Node Management Tools"
+  echo -e "Version: ${GREEN}${VERSION}${NC}"
+  echo
+  echo -e "Visit ${BLUE}https://pipe.network${NC} for more information."
+  return 0
+}
+
+# Display help message
+show_help() {
+  print_header "HELP"
+  
+  echo -e "Usage: pop [OPTIONS] [COMMAND]"
+  echo
+  echo -e "The Pipe Network PoP Node Management Tools provide a unified"
+  echo -e "interface for managing your Pipe Network point-of-presence nodes."
+  echo
+  
+  echo -e "Commands:"
+  echo -e "  ${CYAN}status${NC}                 Show current node status"
+  echo -e "  ${CYAN}start${NC}                  Start the node service"
+  echo -e "  ${CYAN}stop${NC}                   Stop the node service"
+  echo -e "  ${CYAN}restart${NC}                Restart the node service"
+  echo -e "  ${CYAN}logs${NC}                   View node service logs"
+  echo -e "  ${CYAN}configure${NC}              Configure node settings"
+  echo -e "  ${CYAN}wallet${NC}                 Manage wallet information"
+  echo -e "  ${CYAN}pulse${NC}                  View real-time node metrics"
+  echo
+  
+  echo -e "Global Options:"
+  echo -e "  ${CYAN}--help${NC}, ${CYAN}-h${NC}             Show this help message"
+  echo -e "  ${CYAN}--version${NC}, ${CYAN}-v${NC}          Show version information"
+  echo -e "  ${CYAN}--debug${NC}                Enable debug output"
+  echo -e "  ${CYAN}--quiet${NC}, ${CYAN}-q${NC}            Suppress non-essential output"
+  echo
+  
+  echo -e "Installation Options:"
+  echo -e "  ${CYAN}--install${NC}              Install pop command globally"
+  echo -e "  ${CYAN}--uninstall${NC}            Remove pop command and all files"
+  echo -e "  ${CYAN}--update-installation${NC}  Update an existing installation"
+  echo
+  
+  echo -e "Examples:"
+  echo -e "  ${CYAN}pop status${NC}             Show current node status"
+  echo -e "  ${CYAN}pop start${NC}              Start the node service"
+  echo -e "  ${CYAN}pop configure --wizard${NC} Run the configuration wizard"
+  echo -e "  ${CYAN}pop logs --follow${NC}      View and follow service logs"
+  echo
+  
+  echo -e "For more information, visit ${BLUE}https://pipe.network${NC}"
   
   return 0
 }
@@ -141,260 +207,99 @@ validate_environment() {
 # Command Routing
 # =====================
 
-# Display help information
-show_help() {
-  local command="$1"
+# Main function that parses and routes commands
+main() {
+  # Setup paths
+  setup_paths
   
-  if [[ -z "$command" ]]; then
-    # Show general help
-    print_header "HELP"
-    echo -e "Usage: pop [command] [options]"
-    echo
-    echo -e "Available commands:"
-    echo
-    echo -e "  ${YELLOW}Monitoring Commands:${NC}"
-    echo -e "    status                  Check if your node is running"
-    echo -e "    pulse [options]         View detailed node metrics"
-    echo -e "    dashboard [options]     Open performance dashboard"
-    echo -e "    history [options]       View historical performance"
-    echo
-    echo -e "  ${YELLOW}Service Management Commands:${NC}"
-    echo -e "    start                   Start your node"
-    echo -e "    stop                    Stop your node"
-    echo -e "    restart                 Restart your node"
-    echo -e "    logs [options]          View service logs"
-    echo
-    echo -e "  ${YELLOW}Backup & Recovery Commands:${NC}"
-    echo -e "    backup [options]        Create a data backup"
-    echo -e "    restore [options]       Restore from a backup"
-    echo -e "    list-backups            List all backups"
-    echo
-    echo -e "  ${YELLOW}Configuration Commands:${NC}"
-    echo -e "    configure [options]     Adjust node settings"
-    echo -e "    ports [options]         Configure port settings"
-    echo -e "    wallet [options]        Manage wallet settings"
-    echo
-    echo -e "  ${YELLOW}Update & Maintenance Commands:${NC}"
-    echo -e "    update [options]        Update the PoP Node Management Tools"
-    echo -e "    refresh                 Refresh node registration and tokens"
-    echo
-    echo -e "  ${YELLOW}Fleet Management Commands:${NC}"
-    echo -e "    fleet-add [options]     Add a node to your fleet"
-    echo -e "    fleet-list [options]    List all nodes in your fleet"
-    echo -e "    fleet-status [options]  Show status of all fleet nodes"
-    echo -e "    fleet-deploy [options]  Deploy config or updates to all nodes"
-    echo
-    echo -e "  ${YELLOW}Help & Information:${NC}"
-    echo -e "    help [command]          Show help for a specific command"
-    echo -e "    version                 Show version information"
-    echo
-    echo -e "For detailed help on a specific command, use: pop help [command]"
-    echo -e "For more information, see: https://github.com/user/pipe-pop"
-  else
-    # Show command-specific help
-    case "$command" in
-      status)
-        print_header "HELP: STATUS"
-        echo -e "Usage: pop status"
-        echo
-        echo -e "Description:"
-        echo -e "  Check the status of your Pipe Network node."
-        echo
-        echo -e "Options:"
-        echo -e "  None"
+  # Parse global options
+  local global_args=()
+  local command=""
+  local command_args=()
+  
+  # Parse command line
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --debug)
+        DEBUG="true"
+        global_args+=("$1")
+        shift
         ;;
-      pulse)
-        print_header "HELP: PULSE"
-        echo -e "Usage: pop pulse [options]"
-        echo
-        echo -e "Description:"
-        echo -e "  View real-time metrics of your node."
-        echo
-        echo -e "Options:"
-        echo -e "  --compact             Display metrics in a compact format"
-        echo -e "  --refresh=N           Set refresh interval in seconds (default: 5)"
+      --quiet|-q)
+        QUIET="true"
+        global_args+=("$1")
+        shift
         ;;
-      # Add more command-specific help sections as needed
+      --help|-h)
+        show_help
+        return 0
+        ;;
+      --version|-v)
+        show_version
+        return 0
+        ;;
+      -*)
+        global_args+=("$1")
+        shift
+        ;;
       *)
-        log_error "Unknown command: $command"
-        echo -e "Use 'pop help' to see available commands."
-        return 1
+        command="$1"
+        shift
+        command_args=("$@")
+        break
         ;;
     esac
+  done
+  
+  # Handle empty command (default to status)
+  if [[ -z "$command" ]]; then
+    command="status"
   fi
   
-  return 0
-}
-
-# Display version information
-show_version() {
-  echo -e "Pipe Network PoP Node Management Tools v${VERSION}"
-  echo -e "Community-maintained toolkit for Pipe Network nodes"
-  echo
-}
-
-# Route commands to appropriate handlers
-route_command() {
-  local command="$1"
-  shift
-  
-  log_debug "Routing command: $command"
-  log_debug "Arguments: $*"
-  
+  # Load modules based on the command
   case "$command" in
-    # Monitoring Commands
     status)
-      source "$SCRIPT_DIR/../src/monitoring/metrics.sh"
-      show_status "$@"
-      ;;
-    pulse)
-      source "$SCRIPT_DIR/../src/monitoring/metrics.sh"
-      run_pulse_monitoring "$@"
-      ;;
-    dashboard)
-      source "$SCRIPT_DIR/../src/monitoring/dashboard.sh"
-      run_dashboard "$@"
-      ;;
-    history)
-      source "$SCRIPT_DIR/../src/monitoring/history.sh"
-      show_history "$@"
-      ;;
+      # Load required modules
+      load_module "core/service.sh"
+      load_module "monitoring/metrics.sh"
       
-    # Service Management Commands
+      # Execute command
+      show_status
+      ;;
     start)
-      source "$SCRIPT_DIR/../src/core/service.sh"
-      start_node "$@"
+      load_module "core/service.sh"
+      start_service "${command_args[@]}"
       ;;
     stop)
-      source "$SCRIPT_DIR/../src/core/service.sh"
-      stop_node "$@"
+      load_module "core/service.sh"
+      stop_service "${command_args[@]}"
       ;;
     restart)
-      source "$SCRIPT_DIR/../src/core/service.sh"
-      restart_node "$@"
+      load_module "core/service.sh"
+      restart_service "${command_args[@]}"
       ;;
     logs)
-      source "$SCRIPT_DIR/../src/core/service.sh"
-      view_logs "$@"
+      load_module "core/service.sh"
+      view_logs "${command_args[@]}"
       ;;
-      
-    # Backup & Recovery Commands
-    backup)
-      source "$SCRIPT_DIR/../src/maintenance/backup.sh"
-      create_backup "$@"
-      ;;
-    restore)
-      source "$SCRIPT_DIR/../src/maintenance/backup.sh"
-      restore_backup "$@"
-      ;;
-    list-backups)
-      source "$SCRIPT_DIR/../src/maintenance/backup.sh"
-      list_backups "$@"
-      ;;
-      
-    # Configuration Commands
     configure)
-      source "$SCRIPT_DIR/../src/core/config.sh"
-      configure_node "$@"
-      ;;
-    ports)
-      source "$SCRIPT_DIR/../src/core/network.sh"
-      configure_ports "$@"
+      load_module "core/config.sh"
+      configure_node "${command_args[@]}"
       ;;
     wallet)
-      source "$SCRIPT_DIR/../src/core/config.sh"
-      manage_wallet "$@"
+      load_module "core/config.sh"
+      manage_wallet "${command_args[@]}"
       ;;
-      
-    # Update & Maintenance Commands
-    update)
-      source "$SCRIPT_DIR/../src/maintenance/updates.sh"
-      update_software "$@"
+    pulse)
+      load_module "monitoring/metrics.sh"
+      run_pulse_monitoring "${command_args[@]}"
       ;;
-    refresh)
-      source "$SCRIPT_DIR/../src/maintenance/updates.sh"
-      refresh_token "$@"
-      ;;
-      
-    # Fleet Management Commands
-    fleet-add|fleet_add)
-      source "$SCRIPT_DIR/../src/fleet/manager.sh"
-      fleet_add_node "$@"
-      ;;
-    fleet-list|fleet_list)
-      source "$SCRIPT_DIR/../src/fleet/manager.sh"
-      fleet_list_nodes "$@"
-      ;;
-    fleet-status|fleet_status)
-      source "$SCRIPT_DIR/../src/fleet/monitor.sh"
-      fleet_status "$@"
-      ;;
-    fleet-deploy|fleet_deploy)
-      source "$SCRIPT_DIR/../src/fleet/deploy.sh"
-      fleet_deploy "$@"
-      ;;
-      
-    # Help & Information Commands
-    help)
-      show_help "$1"
-      ;;
-    version)
-      show_version
-      ;;
-      
-    # Handle unknown commands
     *)
-      if [[ -z "$command" ]]; then
-        # No command specified, show help
-        show_help
-      else
-        log_error "Unknown command: $command"
-        echo -e "Use 'pop help' to see available commands."
-        return 1
-      fi
+      log_error "Unknown command: $command"
+      echo -e "Run 'pop --help' for usage information."
+      return 1
       ;;
   esac
   
-  return $?
-}
-
-# Main function to parse global options and route commands
-parse_command() {
-  # Global options handling first
-  local skip_count=0
-  
-  # Handle verbose/debug flag
-  if has_param "--verbose" "$@" || has_param "-v" "$@"; then
-    CURRENT_LOG_LEVEL=$LOG_LEVEL_DEBUG
-    log_debug "Debug logging enabled"
-    ((skip_count++))
-  fi
-  
-  # Handle quiet flag
-  if has_param "--quiet" "$@" || has_param "-q" "$@"; then
-    CURRENT_LOG_LEVEL=$LOG_LEVEL_ERROR
-    ((skip_count++))
-  fi
-  
-  # Skip processed global options
-  shift $skip_count
-  
-  # Route to appropriate command handler
-  if [[ $# -eq 0 ]]; then
-    # No command provided, show help
-    show_help
-    return 0
-  fi
-  
-  local command="$1"
-  shift
-  
-  # Convert any --command format to just command format
-  if [[ "$command" =~ ^--(.+)$ ]]; then
-    command="${BASH_REMATCH[1]}"
-  fi
-  
-  # Route the command
-  route_command "$command" "$@"
   return $?
 }

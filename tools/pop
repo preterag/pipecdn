@@ -1,37 +1,68 @@
 #!/bin/bash
-# Pipe Network PoP Node Management Tools - Main entry script
-# This script provides a unified command-line interface for managing Pipe Network nodes.
+# Pipe Network PoP Node Management Tools
+# Main entry script for the command line interface
 
-# Determine script location for reliable sourcing
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT_DIR="$( dirname "$SCRIPT_DIR" )"
+# Version information
+VERSION="v0.0.1"
+VERSION_FILE=""
 
-# Installation paths
-INSTALL_DIR="/opt/pipe-pop"
-CONFIG_DIR="${INSTALL_DIR}/config"
-CONFIG_FILE="${CONFIG_DIR}/config.json"
-LOCAL_CONFIG_FILE="./config.json"
-
-# Export necessary paths for other scripts
-export SCRIPT_DIR
-export ROOT_DIR
-export INSTALL_DIR
-export CONFIG_DIR
-export CONFIG_FILE
-export LOCAL_CONFIG_FILE
-
-# Source command parser
-if [[ -f "${ROOT_DIR}/src/core/command.sh" ]]; then
-  source "${ROOT_DIR}/src/core/command.sh"
-else
-  echo -e "\033[0;31mERROR: Command parser not found!\033[0m" >&2
-  echo "Expected at: ${ROOT_DIR}/src/core/command.sh" >&2
-  exit 1
+# Set up paths
+if [[ -z "$ROOT_DIR" ]]; then
+  # Determine script location for relative paths
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 fi
 
-# Validate environment
-validate_environment
+# Define common paths
+SRC_DIR="${ROOT_DIR}/src"
+TOOLS_DIR="${ROOT_DIR}/tools"
+BIN_DIR="${ROOT_DIR}/bin"
 
-# Parse command line arguments and execute appropriate action
-parse_command "$@"
+# Default installation directory
+if [[ -z "$INSTALL_DIR" ]]; then
+  INSTALL_DIR="/opt/pipe-pop"
+fi
+
+# Check for version file
+if [[ -f "${BIN_DIR}/version.txt" ]]; then
+  VERSION_FILE="${BIN_DIR}/version.txt"
+  VERSION=$(cat "$VERSION_FILE")
+fi
+
+# Import core utilities
+source "${SRC_DIR}/core/command.sh"
+
+# ===============================
+# Main script execution
+# ===============================
+
+# Check for installation/uninstallation commands
+if [[ "$1" == "--install" ]]; then
+  # Source the installation module
+  source "${SRC_DIR}/core/install.sh"
+  
+  # Remove first argument and pass the rest to the install function
+  shift
+  install_global_command "$@"
+  exit $?
+elif [[ "$1" == "--uninstall" ]]; then
+  # Source the installation module
+  source "${SRC_DIR}/core/install.sh"
+  
+  # Remove first argument and pass the rest to the uninstall function
+  shift
+  uninstall_global_command "$@"
+  exit $?
+elif [[ "$1" == "--update-installation" ]]; then
+  # Source the installation module
+  source "${SRC_DIR}/core/install.sh"
+  
+  # Remove first argument and pass the rest to the update function
+  shift
+  update_global_command "$@"
+  exit $?
+fi
+
+# Process all other commands through the command router
+main "$@"
 exit $?

@@ -25,35 +25,36 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
   - [x] Build version information and basic utilities
   - [x] Create the main 'pop' entry script
 
-- [ ] **1.4. Core Service Management**
-  - [ ] Implement core/service.sh for service control
-  - [ ] Create start, stop, restart functionality
-  - [ ] Add service status checking
-  - [ ] Implement log viewing capabilities
+- [✓] **1.4. Core Service Management**
+  - [✓] Implement core/service.sh for service control
+  - [✓] Create start, stop, restart functionality
+  - [✓] Add service status checking
+  - [✓] Implement log viewing capabilities
+  - [✓] Add global installation support and wrapper
 
 ### Day 5-7: Network & Core Features
 
-- [ ] **1.5. Network Configuration**
-  - [ ] Develop core/network.sh
-  - [ ] Implement port configuration functionality
-  - [ ] Create port checking and testing
-  - [ ] Migrate functionality from existing port_check.sh
+- [✓] **1.5. Network Configuration**
+  - [✓] Develop core/network.sh
+  - [✓] Implement port configuration functionality
+  - [✓] Create port checking and testing
+  - [✓] Migrate functionality from existing port_check.sh
 
-- [ ] **1.6. Config Management**
-  - [ ] Create core/config.sh
-  - [ ] Implement configuration loading/saving
-  - [ ] Add wallet information management
-  - [ ] Create template configuration files
+- [✓] **1.6. Config Management**
+  - [✓] Create core/config.sh
+  - [✓] Implement configuration loading/saving
+  - [✓] Add wallet information management
+  - [✓] Create template configuration files
 
 ## Phase 2: Monitoring & Maintenance (Week 2)
 
 ### Day 8-9: Basic Monitoring
 
-- [ ] **2.1. Metrics Collection**
-  - [ ] Implement monitoring/metrics.sh
-  - [ ] Create data collection functions
-  - [ ] Implement status command
-  - [ ] Add basic pulse view
+- [✓] **2.1. Metrics Collection**
+  - [✓] Implement monitoring/metrics.sh
+  - [✓] Create data collection functions
+  - [✓] Implement status command
+  - [✓] Add basic pulse view
 
 ### Day 10-11: Advanced Monitoring
 
@@ -171,48 +172,50 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
-| `pop --status` | Check if node is running | In Progress | High | | |
-| `pop --pulse` | View detailed node metrics | Planned | High | | |
-| `pop --dashboard` | Open performance dashboard | Planned | High | | |
-| `pop --leaderboard` | View network rankings | Not Started | Medium | | |
-| `pop --history` | View historical performance | Not Started | Medium | | |
+| `pop status` | Check if node is running | Completed | High | | Implemented in metrics.sh |
+| `pop pulse` | View detailed node metrics | Completed | High | | Implemented in metrics.sh |
+| `pop dashboard` | Open performance dashboard | Planned | High | | |
+| `pop leaderboard` | View network rankings | Not Started | Medium | | |
+| `pop history` | View historical performance | Not Started | Medium | | |
 
 ### Service Management Commands
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
-| `pop --start` | Start node | In Progress | High | | |
-| `pop --stop` | Stop node | In Progress | High | | |
-| `pop --restart` | Restart node | In Progress | High | | |
-| `pop --check` | Verify node setup | In Progress | High | | |
-| `pop --logs` | View service logs | In Progress | High | | |
+| `pop start` | Start node | Completed | High | | Implemented in service.sh |
+| `pop stop` | Stop node | Completed | High | | Implemented in service.sh |
+| `pop restart` | Restart node | Completed | High | | Implemented in service.sh |
+| `pop logs` | View service logs | Completed | High | | Implemented in service.sh |
 
 ### Backup & Recovery Commands
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
-| `pop --backup` | Create a data backup | Not Started | High | | |
-| `pop --restore` | Restore from a backup | Not Started | High | | |
-| `pop --list-backups` | List all backups | Not Started | Medium | | |
+| `pop backup` | Create a data backup | Not Started | High | | |
+| `pop restore` | Restore from a backup | Not Started | High | | |
+| `pop list-backups` | List all backups | Not Started | Medium | | |
 
 ### Configuration Commands
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
-| `pop --configure` | Adjust node settings | Partial | High | | |
-| `pop --auth` | Manage authentication | Not Started | Medium | | |
-| `pop --ports` | Configure port settings | In Progress | High | | |
-| `pop --enable-80-443` | Enable ports 80/443 | In Progress | High | | |
-| `pop --wallet-info` | Show wallet address | In Progress | High | | |
-| `pop --set-wallet` | Set a new wallet | Not Started | Medium | | |
+| `pop configure` | Adjust node settings | Completed | High | | Implemented in config.sh |
+| `pop wallet` | Manage wallet information | Completed | High | | Implemented in config.sh |
+
+### Installation Commands
+
+| Command | Description | Status | Priority | Assigned To | Notes |
+|---------|-------------|--------|----------|-------------|-------|
+| `pop --install` | Install pop command globally | Completed | High | | Implemented in install.sh |
+| `pop --uninstall` | Remove pop command | Completed | High | | Implemented in install.sh |
+| `pop --update-installation` | Update installation | Completed | High | | Implemented in install.sh |
 
 ### Help & Info Commands
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
-| `pop --help` | Show help message | In Progress | High | | |
-| `pop --version` | Check binary version | In Progress | High | | |
-| `pop --list-commands` | List all commands | Not Started | Low | | |
+| `pop --help` | Show help message | Completed | High | | Implemented in command.sh |
+| `pop --version` | Check binary version | Completed | High | | Implemented in command.sh |
 
 ### Update & Maintenance Commands
 
@@ -221,16 +224,6 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 | `pop --check-update` | Check for updates | Not Started | Medium | | |
 | `pop --update` | Install latest version | Not Started | Medium | | |
 | `pop --refresh` | Refresh token/upgrades | Not Started | Medium | | |
-| `pop --stats` | View uptime statistics | Not Started | Medium | | |
-| `pop --egress-test` | Run egress speed test | Partial | High | | |
-
-### Referral System Commands
-
-| Command | Description | Status | Priority | Assigned To | Notes |
-|---------|-------------|--------|----------|-------------|-------|
-| `pop --gen-referral-route` | Generate referral code | Not Started | Low | | |
-| `pop --points` | Check referral points | Not Started | Low | | |
-| `pop --signup-by-referral-route` | Join using referral | Not Started | Low | | |
 
 ### Fleet Management Commands
 
@@ -239,19 +232,16 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 | `pop fleet-add` | Add node to fleet | Not Started | High | | |
 | `pop fleet-remove` | Remove node from fleet | Not Started | High | | |
 | `pop fleet-list` | List all fleet nodes | Not Started | High | | |
-| `pop fleet-deploy` | Deploy to all nodes | Not Started | Medium | | |
-| `pop fleet-update` | Update all nodes | Not Started | Medium | | |
 | `pop fleet-status` | Show all node statuses | Not Started | High | | |
-| `pop fleet-dashboard` | Multi-node dashboard | Not Started | Medium | | |
 
 ## Progress Summary
 
-- **Phase 1**: 15% complete
-- **Phase 2**: 0% complete
+- **Phase 1**: 85% complete
+- **Phase 2**: 20% complete
 - **Phase 3**: 0% complete
 - **Phase 4**: 0% complete
 
-**Overall Progress**: 3% complete
+**Overall Progress**: 25% complete
 
 ---
 
