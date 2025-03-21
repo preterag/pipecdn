@@ -114,7 +114,7 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
   - [x] Add sensitive data encryption
   - [x] Create security checking functionality
 
-## Phase 4: Community Features and Final Release (85% → 95%)
+## Phase 4: Community Features and UI Development (85% → 90%)
 
 - [x] Implement community referral system
   - [x] Create referral code generation and tracking
@@ -127,6 +127,36 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
   - [x] Implement leaderboards
   - [x] Add network statistics visualization
   - [x] Develop node-specific analytics
+
+- [ ] Web-based User Interface
+  - [ ] Set up web server component
+    - [ ] Implement Flask/Node.js backend
+    - [ ] Create command execution layer
+    - [ ] Add local authentication system
+    - [ ] Implement API endpoints for CLI functions
+  - [ ] Develop core dashboard UI
+    - [ ] Create responsive layout system
+    - [ ] Implement status dashboard
+    - [ ] Add node control interface
+    - [ ] Develop configuration editor
+  - [ ] Implement fleet management UI
+    - [ ] Create node registration interface
+    - [ ] Add fleet overview dashboard
+    - [ ] Implement command execution UI
+    - [ ] Develop file deployment interface
+  - [ ] Build analytics visualization
+    - [ ] Create interactive charts and graphs
+    - [ ] Implement leaderboard UI
+    - [ ] Add referral management interface
+    - [ ] Develop network statistics dashboard
+
+- [ ] Testing and integration
+  - [ ] Perform end-to-end testing of UI with CLI
+  - [ ] Verify all CLI functions accessible via UI
+  - [ ] Browser compatibility testing
+  - [ ] Optimize performance and loading times
+
+## Phase 5: Final Testing and Release (90% → 100%)
 
 - [ ] Final testing and quality assurance
   - [ ] Conduct comprehensive regression testing
@@ -239,14 +269,25 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 | `pop --fleet group` | Manage node groups | Completed | Medium | | Implemented in manager.sh |
 | `pop --fleet deploy` | Deploy files to nodes | Completed | High | | Implemented in deploy.sh |
 
+### UI Commands
+
+| Command | Description | Status | Priority | Assigned To | Notes |
+|---------|-------------|--------|----------|-------------|-------|
+| `pop --ui start` | Start the web UI server | Not Started | High | | |
+| `pop --ui stop` | Stop the web UI server | Not Started | High | | |
+| `pop --ui status` | Check UI server status | Not Started | High | | |
+| `pop --ui config` | Configure UI settings | Not Started | Medium | | |
+| `pop --ui reset` | Reset UI to defaults | Not Started | Low | | |
+
 ## Progress Summary
 
 - **Phase 1**: 100% complete
 - **Phase 2**: 100% complete
 - **Phase 3**: 100% complete
 - **Phase 4**: 50% complete
+- **Phase 5**: 0% complete
 
-**Overall Progress**: ~87% complete
+**Overall Progress**: ~82% complete
 
 ---
 
