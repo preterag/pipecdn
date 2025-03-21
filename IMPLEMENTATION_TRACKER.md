@@ -130,10 +130,15 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 
 - [ ] Web-based User Interface
   - [ ] Set up web server component
-    - [ ] Implement Flask/Node.js backend
+    - [ ] Implement Node.js backend with Express
     - [ ] Create command execution layer
     - [ ] Add local authentication system
     - [ ] Implement API endpoints for CLI functions
+  - [ ] Develop installation wizard and auto-launch
+    - [ ] Create browser detection mechanism
+    - [ ] Implement auto-launch functionality during installation
+    - [ ] Develop step-by-step installation wizard UI
+    - [ ] Add system validation and configuration screens
   - [ ] Develop core dashboard UI
     - [ ] Create responsive layout system
     - [ ] Implement status dashboard
@@ -237,6 +242,8 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
 | `pop --install` | Install pop command globally | Completed | High | | Implemented in install.sh |
+| `pop --install --with-ui` | Install with Web UI | Not Started | High | | For installation script |
+| `pop --install --with-ui --launch-ui` | Install with auto-launching Web UI | Not Started | High | | Auto-launches browser |
 | `pop --uninstall` | Remove pop command | Completed | High | | Implemented in install.sh |
 | `pop --update-installation` | Update installation | Completed | High | | Implemented in install.sh |
 
@@ -273,10 +280,14 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 
 | Command | Description | Status | Priority | Assigned To | Notes |
 |---------|-------------|--------|----------|-------------|-------|
+| `pop --ui install` | Install the web UI component | Not Started | High | | |
+| `pop --ui install --launch` | Install and launch the UI | Not Started | High | | Auto-launches browser |
 | `pop --ui start` | Start the web UI server | Not Started | High | | |
 | `pop --ui stop` | Stop the web UI server | Not Started | High | | |
 | `pop --ui status` | Check UI server status | Not Started | High | | |
 | `pop --ui config` | Configure UI settings | Not Started | Medium | | |
+| `pop --ui config --remote-access` | Configure remote access settings | Not Started | Medium | | |
+| `pop --ui config --port` | Change UI server port | Not Started | Medium | | |
 | `pop --ui reset` | Reset UI to defaults | Not Started | Low | | |
 
 ## Progress Summary
@@ -284,11 +295,11 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 - **Phase 1**: 100% complete
 - **Phase 2**: 100% complete
 - **Phase 3**: 100% complete
-- **Phase 4**: 50% complete
-- **Phase 5**: 0% complete
+- **Phase 4**: 60% complete (Documentation for Web UI completed)
+- **Phase 5**: 10% complete (Documentation finalization started)
 
-**Overall Progress**: ~82% complete
+**Overall Progress**: ~85% complete
 
 ---
 
-*Updated: March 22, 2025* 
+*Updated: March 24, 2025* 
