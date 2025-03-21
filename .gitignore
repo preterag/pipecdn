@@ -31,8 +31,8 @@ node_info.json
 
 # Configuration files with sensitive data
 config/config.json
-config/*.json
 !config/config.template.json
+!config/fleet.template.json
 !config/examples/*.json
 config_fixed.json
 config.json
@@ -78,7 +78,6 @@ Thumbs.db
 *.swp
 *.swo 
 .cursor/
-*.swp
 
 # Solana
 .config/solana/

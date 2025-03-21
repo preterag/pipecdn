@@ -1,181 +1,188 @@
-# Development Roadmap for Pipe Network Community Tools
+# Pipe Network PoP Node Management Tools Roadmap
 
-> **IMPORTANT**: This is a community-created roadmap for enhancing Pipe Network node tools.
-> It is not an official roadmap for the Pipe Network project.
+This roadmap outlines the development plan for the Pipe Network PoP Node Management Tools, a comprehensive suite of commands and utilities to manage Pipe Network nodes.
 
-This document outlines the planned development of community enhancements for Pipe Network nodes.
+## Current Status
 
-## Short-Term Goals (Next 3 Months)
+As of March 2025, we have implemented the following core components:
 
-### Enhanced Node Management
-- [ ] Improved node status monitoring with more detailed metrics
-- [ ] Enhanced backup and restore functionality with encryption options
-- [ ] More detailed performance analytics and visualization
+- Basic node setup and installation
+- System service configuration
+- Port forwarding and networking configuration
+- Node registration and identity management
+- Basic monitoring and status checking
 
-### Cross-Platform Support
-- [ ] Windows support for the community tools
-- [ ] macOS packaging and installation support
-- [ ] Docker containerization for easy deployment
+## Feature Implementation Roadmap
 
-### Documentation
-- [ ] Expanded troubleshooting guides with common scenarios
-- [ ] Video tutorials for setup and management
-- [ ] Interactive CLI documentation with examples
+### Phase 1: Core Infrastructure (Completed)
 
-## Mid-Term Goals (3-6 Months)
+- ✅ Basic installation system
+- ✅ Service management scripts
+- ✅ Port configuration utilities
+- ✅ Node registration system
+- ✅ Documentation structure
 
-### Advanced Monitoring
-- [ ] Predictive analytics for node performance
-- [ ] Notification system for critical events
-- [ ] Integration with popular monitoring platforms (Grafana, Prometheus)
+### Phase 2: Monitoring & Management (In Progress)
 
-### Network Insights
-- [ ] Network-wide statistics dashboard
-- [ ] Node comparison tools for performance benchmarking
-- [ ] Geographic visualization of your node in the network
+- ✅ Basic status reporting (`pop --status`)
+- ✅ Service control (`pop --start`, `pop --stop`, `pop --restart`)
+- ✅ Log viewing (`pop --logs`)
+- ✅ Wallet information (`pop --wallet-info`)
+- ✅ Port management (`pop --ports`, `pop --enable-80-443`)
+- ⏳ Interactive monitoring dashboard (`pop --dashboard`)
+- ⏳ Real-time metrics view (`pop --pulse`)
+- ⏳ Historical performance data (`pop --history`)
 
-### Security Enhancements
-- [ ] Advanced security hardening options
-- [ ] Automatic security audits for node configuration
-- [ ] Encryption for sensitive configuration data
+### Phase 3: Advanced Features (Planned)
 
-## Long-Term Vision (6+ Months)
+- ⏳ Network leaderboard (`pop --leaderboard`)
+- ⏳ Backup and recovery system (`pop --backup`, `pop --restore`, `pop --list-backups`)
+- ⏳ Configuration management (`pop --configure`, `pop --auth`)
+- ⏳ Update management (`pop --check-update`, `pop --update`, `pop --refresh`)
+- ⏳ Performance statistics (`pop --stats`)
+- ⏳ Egress testing (`pop --egress-test`)
 
-### Ecosystem Tools
-- [ ] Mobile companion app for monitoring nodes
-- [x] Multi-node management dashboard
-- [ ] Community node performance aggregation
+### Phase 4: Community & Growth (Planned)
 
-### Integration Opportunities
-- [ ] Integration with cloud providers for easy deployment
-- [ ] API extensions for third-party applications
-- [ ] Web-based management interface
+- ⏳ Referral system (`pop --gen-referral-route`, `pop --points`, `pop --signup-by-referral-route`)
+- ⏳ Advanced analytics integration
+- ⏳ Multi-node management capabilities
+- ⏳ API integration for external services
 
-### Advanced Features
-- [ ] AI-powered optimization suggestions
-- [ ] Predictive maintenance alerts
-- [ ] Automatic performance tuning
+## Command Interface Implementation Plan
 
-## Multi-Node Fleet Management System
+We will implement a unified command interface with the following categories:
 
-We are prioritizing the development of a comprehensive fleet management system for Pipe Network nodes. This system will enable users to efficiently manage multiple nodes from a central interface.
+### Monitoring
 
-### Architecture Overview
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --status` | Check if your node is running | ✅ Complete | - |
+| `pop --pulse` | View detailed node metrics | 🔶 Partial | High |
+| `pop --dashboard` | Open performance dashboard | 🔶 Partial | High |
+| `pop --leaderboard` | View network leaderboard rankings | ⏳ Planned | Medium |
+| `pop --history` | View historical performance data | ⏳ Planned | Medium |
 
-The system will use an SSH-based polling architecture with the following components:
+### Service Management
 
-1. **Central Management Server**
-   - Main controller interface for multi-node management
-   - Database for node data and metrics storage
-   - Web/CLI dashboard for fleet visualization
-   - Scheduler for timed operations
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --start` | Start your node | ✅ Complete | - |
+| `pop --stop` | Stop your node | ✅ Complete | - |
+| `pop --restart` | Restart your node | ✅ Complete | - |
+| `pop --check` | Verify node setup | ✅ Complete | - |
+| `pop --logs` | View service logs | ✅ Complete | - |
 
-2. **Secure Connection Layer**
-   - Restricted SSH key management
-   - Connection pooling and optimization
-   - Failure handling and automatic retries
-   - Connection health monitoring
+### Backup & Recovery
 
-3. **Command Execution Framework**
-   - Standardized command interface across nodes
-   - Batch command execution capabilities
-   - Output parsing and standardization
-   - Error handling and reporting
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --backup` | Create a data backup | ⏳ Planned | High |
+| `pop --restore` | Restore from a backup | ⏳ Planned | High |
+| `pop --list-backups` | List all backups | ⏳ Planned | Medium |
 
-4. **Data Collection and Analysis**
-   - Time-series metrics storage
-   - Historical performance analysis
-   - Trend visualization and reporting
-   - Alert generation based on thresholds
+### Configuration
 
-### Development Timeline
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --configure` | Adjust node settings | 🔶 Partial | High |
+| `pop --auth` | Manage authentication | ⏳ Planned | Medium |
+| `pop --ports` | Configure port settings | ✅ Complete | - |
+| `pop --enable-80-443` | Enable ports 80/443 | ✅ Complete | - |
+| `pop --wallet-info` | Show wallet address | ✅ Complete | - |
+| `pop --set-wallet <address>` | Set a new wallet | ⏳ Planned | Medium |
 
-#### Phase 1: Core Infrastructure (Weeks 1-4)
-- [ ] Create directory structure for fleet management
-- [ ] Develop SSH key management utilities
-- [ ] Implement node registration system
-- [ ] Build basic database schema and storage
-- [ ] Create basic polling functionality
+### Help & Info
 
-#### Phase 2: Monitoring Enhancement (Weeks 5-8)
-- [ ] Develop metrics collection and aggregation
-- [ ] Create multi-node dashboard visualization
-- [ ] Implement basic alerting system
-- [ ] Build historical data storage and retrieval
-- [ ] Add node comparison functionality
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --help` | Show help message | ✅ Complete | - |
+| `pop --version` | Check binary version | ✅ Complete | - |
+| `pop --list-commands` | List all commands | ⏳ Planned | Low |
 
-#### Phase 3: Command Framework (Weeks 9-12)
-- [ ] Build unified command execution system
-- [ ] Implement batch operations across nodes
-- [ ] Create command templates for common tasks
-- [ ] Add scheduled task capabilities
-- [ ] Develop command history and auditing
+### Update & Maintenance
 
-#### Phase 4: Advanced Features (Weeks 13-16)
-- [ ] Implement configuration management
-- [ ] Create update deployment system
-- [ ] Add performance optimization utilities
-- [ ] Develop node categorization and grouping
-- [ ] Build external API for third-party integration
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --check-update` | Check for binary updates | ⏳ Planned | Medium |
+| `pop --update` | Install latest binary version | ⏳ Planned | Medium |
+| `pop --refresh` | Refresh token/upgrades | ⏳ Planned | Medium |
+| `pop --stats` | View uptime statistics | ⏳ Planned | Medium |
+| `pop --egress-test` | Run egress speed test | 🔶 Partial | High |
 
-### Implementation Structure
+### Referral System
 
-The multi-node management system will be organized under the following directory structure:
+| Command | Description | Status | Priority |
+|---------|-------------|--------|----------|
+| `pop --gen-referral-route` | Generate a referral code | ⏳ Planned | Low |
+| `pop --points` | Check referral points/rewards | ⏳ Planned | Low |
+| `pop --signup-by-referral-route <CODE>` | Join using a referral code | ⏳ Planned | Low |
 
-```
-src/
-  fleet/
-    core/
-      ssh.sh
-      registration.sh
-      discovery.sh
-    monitoring/
-      collector.sh
-      dashboard.sh
-      alerts.sh
-    operations/
-      commands.sh
-      batch.sh
-      scheduler.sh
-    admin/
-      config.sh
-      updates.sh
-    db/
-      metrics.sh
-      nodes.sh
-```
+## Implementation Strategy
 
-### Benefits
+### 1. Core Component Architecture
 
-This system will provide:
-- Centralized management of node fleets
-- Simplified administration of multiple nodes
-- Consistent configuration across installations
-- Comprehensive monitoring and alerting
-- Efficient command execution across your infrastructure
-- Historical performance analysis and trending
+We will implement a modular architecture with the following components:
 
-## Integration with Official Pipe Network
+- **Command Parser**: A unified entry point for all `pop` commands
+- **Service Manager**: Handles node service operations
+- **Monitoring System**: Collects and displays node metrics
+- **Configuration Manager**: Handles node settings and authentication
+- **Backup System**: Manages data backup and recovery
+- **Update Manager**: Handles software updates
+- **Referral System**: Manages referral codes and rewards
 
-As the official Pipe Network project evolves, we plan to:
+### 2. Development Priorities
 
-1. Maintain compatibility with official releases
-2. Provide seamless upgrades for community enhancements
-3. Contribute selected improvements back to the official project where appropriate
-4. Adapt to changes in the reward structure and network requirements
+1. **High Priority**:
+   - Complete the monitoring dashboard and pulse view
+   - Implement backup and recovery system
+   - Finish configuration management
 
-## Community Contribution Opportunities
+2. **Medium Priority**:
+   - Implement historical data tracking
+   - Add update management
+   - Develop network leaderboard integration
 
-We welcome community contributions in these areas:
+3. **Low Priority**:
+   - Implement referral system
+   - Add advanced analytics
+   - Build multi-node management
 
-- Performance optimization scripts
-- Additional monitoring tools
-- Documentation improvements
-- Cross-platform testing and support
-- Security auditing and hardening
-- Multi-node management features and improvements
+### 3. Timeline
 
-To contribute, please see our [CONTRIBUTING.md](../../CONTRIBUTING.md) guide.
+- **Q2 2025**: Complete all High Priority items
+- **Q3 2025**: Complete all Medium Priority items
+- **Q4 2025**: Complete all Low Priority items
+
+## Technical Considerations
+
+### Dependencies
+
+- Bash 4.0+ for core scripting
+- jq for JSON processing
+- systemd for service management
+- curl/wget for network operations
+- Python 3.6+ for advanced features (optional)
+
+### Performance Optimization
+
+- Cache metrics data to reduce API calls
+- Implement efficient log rotation
+- Minimize resource usage during monitoring
+
+### Security Considerations
+
+- Implement proper authentication for sensitive operations
+- Secure storage of wallet information
+- Encrypted backups of sensitive data
+
+## Next Steps
+
+1. Finalize the command parser implementation
+2. Complete the monitoring dashboard
+3. Implement backup and recovery system
+4. Build configuration management interface
 
 ---
 

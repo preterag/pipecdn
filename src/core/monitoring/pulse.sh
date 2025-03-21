@@ -46,6 +46,7 @@ get_disk_usage() {
 
 # Get node metrics
 get_node_metrics() {
+  # First check for the standard metrics file
   if [[ -f "$METRICS_FILE" ]]; then
     jq -r '. | {
       reputation: .reputation,
@@ -53,6 +54,14 @@ get_node_metrics() {
       egress: .egress,
       uptime_percent: .uptime_percent
     }' "$METRICS_FILE" 2>/dev/null || echo "{}"
+  # Then check for our sample metrics file in the current directory
+  elif [[ -f "./sample-metrics.json" ]]; then
+    jq -r '. | {
+      reputation: .reputation,
+      points: .points,
+      egress: .egress,
+      uptime_percent: .uptime_percent
+    }' "./sample-metrics.json" 2>/dev/null || echo "{}"
   else
     echo "{}"
   fi
@@ -68,19 +77,48 @@ check_port_status() {
   fi
 }
 
-# Display monitoring header
+# Display monitoring header with bordered box
 print_header() {
   local title="${1:-PULSE MONITOR}"
   clear
-  echo -e "${CYAN}=======================================${NC}"
-  echo -e "${CYAN}     PIPE NETWORK NODE MONITOR${NC}"
-  echo -e "${CYAN}     ${title}${NC}"
-  echo -e "${CYAN}     Community Enhancement${NC}"
-  echo -e "${CYAN}=======================================${NC}"
+  
+  # Create more distinctive header with double lines
+  echo -e "${CYAN}=================================================${NC}"
+  echo -e "${CYAN}PIPE NETWORK POP NODE ${title}${NC}"
+  echo -e "${CYAN}=================================================${NC}"
   echo
   echo -e "Time: $(date '+%Y-%m-%d %H:%M:%S')"
-  echo -e "Version: ${VERSION}"
+  if [[ -n "$metrics_file_to_use" ]]; then
+    local node_id=$(jq -r '.node_id // "N/A"' "$metrics_file_to_use" 2>/dev/null)
+    echo -e "Node ID: ${node_id}"
+  else
+    # Try to find node id from different sources
+    local node_id=$(jq -r '.node_id // "N/A"' "$METRICS_FILE" 2>/dev/null || jq -r '.node_id // "N/A"' "./sample-metrics.json" 2>/dev/null || echo "N/A")
+    echo -e "Node ID: ${node_id}"
+  fi
   echo
+}
+
+# Create section header with consistent styling
+print_section_header() {
+  local title="$1"
+  echo -e "${CYAN}────────────────────────────────────────────${NC}"
+  echo -e "${CYAN}${title}${NC}"
+  echo -e "${CYAN}────────────────────────────────────────────${NC}"
+}
+
+# Get trend indicator
+get_trend_indicator() {
+  local current="$1"
+  local previous="$2"
+  
+  if [[ "$current" > "$previous" ]]; then
+    echo -e "\e[1;32m↑\e[0m"
+  elif [[ "$current" < "$previous" ]]; then
+    echo -e "\e[1;31m↓\e[0m"
+  else
+    echo -e "→"
+  fi
 }
 
 # Display system metrics
@@ -113,7 +151,7 @@ display_node_metrics() {
   echo
 }
 
-# Dashboard monitoring with more detailed metrics
+# Dashboard monitoring with more organized layout
 dashboard_monitor() {
   local refresh=${1:-$DEFAULT_REFRESH}
   local compact="$2"
@@ -121,68 +159,195 @@ dashboard_monitor() {
   
   check_dependencies
   
-  # Get node info
-  local node_id=$(jq -r '.node_id // "N/A"' "$METRICS_FILE" 2>/dev/null)
-  local wallet_address=$(jq -r '.node.wallet // "N/A"' "$CONFIG_FILE" 2>/dev/null)
+  # Set the metrics file to use
+  local metrics_file_to_use="$METRICS_FILE"
+  if [[ ! -f "$metrics_file_to_use" && -f "./sample-metrics.json" ]]; then
+    metrics_file_to_use="./sample-metrics.json"
+  fi
+  
+  # Get any previous metrics for trend comparison
+  local previous_metrics=""
+  if [[ -f "$metrics_file_to_use.prev" ]]; then
+    previous_metrics=$(cat "$metrics_file_to_use.prev")
+  else
+    # If no previous metrics, make a copy for next time
+    [[ -f "$metrics_file_to_use" ]] && cp "$metrics_file_to_use" "$metrics_file_to_use.prev"
+  fi
   
   while true; do
     print_header "DASHBOARD"
     
-    # Display node identification
-    echo -e "${YELLOW}Node Information:${NC}"
-    echo -e "Node ID: ${node_id}"
-    echo -e "Wallet: ${wallet_address}"
+    # STATUS SECTION
+    print_section_header "STATUS"
+    
+    # Get status info
+    local pid=$(pgrep -f "PipeNetwork/PoP" || echo "N/A")
+    local running=false
+    if [[ "$pid" != "N/A" ]]; then
+      running=true
+    fi
+    
+    # Get system uptime
+    local system_uptime=$(uptime -p 2>/dev/null | sed 's/up //' || echo "N/A")
+    
+    # Get service uptime
+    local service_started=$(systemctl show pipe-pop.service --property=ActiveEnterTimestamp 2>/dev/null | awk -F= '{print $2}' | xargs -I{} date -d {} '+%a %b %d %H:%M:%S %Y' 2>/dev/null || echo "N/A")
+    
+    # Display status info in a clean format
+    if [[ "$running" == "true" ]]; then
+      echo -e "Status: ${GREEN}Running${NC} (PID: $pid)"
+    else
+      echo -e "Status: ${RED}Stopped${NC}"
+    fi
+    echo -e "Uptime: ${CYAN}$system_uptime${NC}"
+    echo -e "Started: $service_started"
+    
+    # Get and display system resource usage
+    local cpu=$(get_cpu_usage)
+    local mem=$(get_memory_usage)
+    local mem_total=$(free -m | awk 'NR==2{printf "%d", $2}')
+    local mem_used=$(free -m | awk 'NR==2{printf "%d", $3}')
+    local disk=$(get_disk_usage)
+    local disk_used=$(df -h / | awk 'NR==2{printf "%d", $3}' | sed 's/G//')
+    local disk_total=$(df -h / | awk 'NR==2{printf "%d", $2}' | sed 's/G//')
+    
+    echo -e "Resources: CPU: ${cpu}% | RAM: ${mem}% (${mem_used}/${mem_total} MB) | Disk: ${disk}% (${disk_used}/${disk_total} GB)"
+    
+    # Check port status for all relevant ports
+    echo -ne "Ports: 80: "
+    if netstat -tuln | grep -q ":80 "; then
+      echo -ne "${GREEN}✓${NC}"
+    else
+      echo -ne "${RED}✗${NC}"
+    fi
+    
+    echo -ne " 443: "
+    if netstat -tuln | grep -q ":443 "; then
+      echo -ne "${GREEN}✓${NC}"
+    else
+      echo -ne "${RED}✗${NC}"
+    fi
+    
+    echo -ne " 8003: "
+    if netstat -tuln | grep -q ":8003 "; then
+      echo -e "${GREEN}✓${NC}"
+    else
+      echo -e "${RED}✗${NC}"
+    fi
+    
     echo
     
-    # Display system metrics
-    display_system_metrics
+    # PERFORMANCE METRICS SECTION
+    print_section_header "PERFORMANCE METRICS"
     
-    # Display node metrics with additional details
+    # Get node metrics
     local metrics=$(get_node_metrics)
     local reputation=$(echo "$metrics" | jq -r '.reputation // "N/A"')
     local points=$(echo "$metrics" | jq -r '.points // "N/A"')
     local egress=$(echo "$metrics" | jq -r '.egress // "N/A"')
-    local uptime=$(echo "$metrics" | jq -r '.uptime_percent // "N/A"')
     
-    echo -e "${YELLOW}Node Performance:${NC}"
-    echo -e "Reputation: ${reputation}"
-    echo -e "Points: ${points}"
-    echo -e "Egress: ${egress}"
-    echo -e "Uptime: ${uptime}%"
-    
-    # Display network metrics if available
-    if [[ -f "$METRICS_FILE" ]]; then
-      local network_stats=$(jq -r '.network_stats // {}' "$METRICS_FILE" 2>/dev/null)
-      local connections=$(echo "$network_stats" | jq -r '.connections // "N/A"')
-      local requests=$(echo "$network_stats" | jq -r '.requests_served // "N/A"')
-      local data_transferred=$(echo "$network_stats" | jq -r '.data_transferred_gb // "N/A"')
-      
-      echo
-      echo -e "${YELLOW}Network Statistics:${NC}"
-      echo -e "Connections: ${connections}"
-      echo -e "Requests Served: ${requests}"
-      echo -e "Data Transferred: ${data_transferred} GB"
+    # Get node rank if available
+    local rank="N/A"
+    local total_nodes="N/A"
+    if [[ -f "$metrics_file_to_use" ]]; then
+      rank=$(jq -r '.rank // "N/A"' "$metrics_file_to_use" 2>/dev/null)
+      total_nodes=$(jq -r '.total_nodes // "N/A"' "$metrics_file_to_use" 2>/dev/null)
     fi
     
-    # Display rank information if available
-    if [[ -f "$METRICS_FILE" ]]; then
-      local rank=$(jq -r '.rank // "N/A"' "$METRICS_FILE" 2>/dev/null)
-      local total_nodes=$(jq -r '.total_nodes // "N/A"' "$METRICS_FILE" 2>/dev/null)
-      
-      echo
-      echo -e "${YELLOW}Ranking:${NC}"
-      echo -e "Rank: ${rank} / ${total_nodes}"
-    fi
-    
-    # Handle export if requested
-    if [[ -n "$export_format" ]]; then
-      local export_file="pipe_pop_dashboard_$(date +%Y%m%d_%H%M%S).html"
-      echo -e "${GREEN}Exporting dashboard to ${export_file}...${NC}"
-      # Add HTML export code here in a real implementation
-    fi
+    # Show main performance metrics in a single line
+    echo -e "Rank: ${CYAN}$rank${NC} | Reputation: ${CYAN}$reputation${NC} | Points: ${CYAN}$points${NC} | Egress: ${CYAN}$egress${NC}"
     
     echo
-    echo -e "${BLUE}Press Ctrl+C to exit. Refreshing every ${refresh} seconds...${NC}"
+    
+    # HISTORICAL TRENDS SECTION
+    print_section_header "HISTORICAL TRENDS"
+    
+    # Get previous metrics for comparison if available
+    local prev_reputation="0"
+    local prev_points="0"
+    local prev_egress="0"
+    local prev_rank="0"
+    
+    if [[ -n "$previous_metrics" ]]; then
+      prev_reputation=$(echo "$previous_metrics" | jq -r '.reputation // 0')
+      prev_points=$(echo "$previous_metrics" | jq -r '.points // 0')
+      prev_egress=$(echo "$previous_metrics" | jq -r '.egress // "0"' | sed 's/[^0-9.]//g')
+      prev_rank=$(echo "$previous_metrics" | jq -r '.rank // 0')
+    fi
+    
+    # Current values as plain numbers for comparison
+    local curr_points=$points
+    local curr_egress=$(echo "$egress" | sed 's/[^0-9.]//g')
+    local curr_rank=$rank
+    
+    # Calculate differences
+    local points_diff=$(echo "$curr_points - $prev_points" | bc 2>/dev/null || echo "0")
+    local egress_diff=$(echo "$curr_egress - $prev_egress" | bc 2>/dev/null || echo "0")
+    local rank_diff=$(echo "$prev_rank - $curr_rank" | bc 2>/dev/null || echo "0")
+    
+    # Format the differences with proper sign
+    [[ "$points_diff" != "0" ]] && points_diff="(${points_diff})"
+    [[ "$egress_diff" != "0" ]] && egress_diff="(${egress_diff} TB)"
+    [[ "$rank_diff" != "0" ]] && rank_diff="(+${rank_diff})"
+    
+    # Show trend indicators
+    echo -ne "Reputation: "
+    if (( $(echo "$reputation > $prev_reputation" | bc -l) )); then
+      echo -ne "${GREEN}↑${NC}"
+    elif (( $(echo "$reputation < $prev_reputation" | bc -l) )); then
+      echo -ne "${RED}↓${NC}"
+    else
+      echo -ne "→"
+    fi
+    
+    echo -ne " | Points: "
+    if (( $(echo "$curr_points > $prev_points" | bc -l) )); then
+      echo -ne "${GREEN}↑${NC}"
+    elif (( $(echo "$curr_points < $prev_points" | bc -l) )); then
+      echo -ne "${RED}↓${NC}"
+    else
+      echo -ne "→"
+    fi
+    echo -ne " ${CYAN}$points_diff${NC}"
+    
+    echo -ne " | Egress: "
+    if (( $(echo "$curr_egress > $prev_egress" | bc -l) )); then
+      echo -ne "${GREEN}↑${NC}"
+    elif (( $(echo "$curr_egress < $prev_egress" | bc -l) )); then
+      echo -ne "${RED}↓${NC}"
+    else
+      echo -ne "→"
+    fi
+    echo -ne " ${CYAN}$egress_diff${NC}"
+    
+    echo -ne " | Rank: "
+    if (( $(echo "$curr_rank < $prev_rank" | bc -l) )); then
+      echo -ne "${GREEN}↑${NC}"
+    elif (( $(echo "$curr_rank > $prev_rank" | bc -l) )); then
+      echo -ne "${RED}↓${NC}"
+    else
+      echo -ne "→"
+    fi
+    echo -e " ${CYAN}$rank_diff${NC}"
+    
+    echo
+    
+    # ACTIONS SECTION
+    print_section_header "ACTIONS"
+    
+    # Show available actions with global command names
+    echo -e "- View detailed metrics: ${CYAN}pop --pulse${NC}"
+    echo -e "- View leaderboard: ${CYAN}pop --leaderboard${NC}"
+    echo -e "- View historical data: ${CYAN}pop --history${NC}"
+    echo -e "- Restart node: ${CYAN}pop --restart${NC}"
+    
+    echo
+    echo -e "Press Ctrl+C to exit"
+    
+    # Save current metrics for next comparison
+    [[ -f "$metrics_file_to_use" ]] && cp "$metrics_file_to_use" "$metrics_file_to_use.prev"
+    
+    # Sleep for refresh
     sleep $refresh
   done
 }
