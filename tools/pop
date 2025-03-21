@@ -55,6 +55,11 @@ if [[ -f "${SRC_DIR}/core/privilege.sh" ]]; then
   source "${SRC_DIR}/core/privilege.sh"
 fi
 
+# Source the fleet manager if available
+if [[ -f "${SRC_DIR}/fleet/manager.sh" ]]; then
+  source "${SRC_DIR}/fleet/manager.sh"
+fi
+
 # Setup fallback handlers
 setup_fallbacks() {
   # Create a data directory for temporary metrics if it doesn't exist
@@ -124,3 +129,173 @@ standardized_args=$(standardize_args "$@")
 # Run the main command with standardized arguments
 run_command $standardized_args
 exit $?
+
+# Process command line arguments
+process_command() {
+  # Parse global options first
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --debug)
+        DEBUG="true"
+        shift
+        ;;
+      --quiet|-q)
+        QUIET="true"
+        shift
+        ;;
+      --help|-h)
+        show_help
+        return 0
+        ;;
+      --version|-v)
+        show_version
+        return 0
+        ;;
+      --install|--uninstall)
+        # Already handled in main script
+        shift
+        ;;
+      --fleet)
+        shift
+        if [[ $# -gt 0 ]]; then
+          fleet_command "$@"
+          return $?
+        else
+          fleet_command "help"
+          return 0
+        fi
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  # Handle legacy command format (without leading --)
+  if [[ $# -gt 0 && ! "$1" == --* ]]; then
+    local cmd="$1"
+    shift
+
+    # Convert to flag format
+    case "$cmd" in
+      help)
+        show_help
+        return 0
+        ;;
+      version)
+        show_version
+        return 0
+        ;;
+      status)
+        cmd="--status"
+        ;;
+      start)
+        cmd="--start"
+        ;;
+      stop)
+        cmd="--stop"
+        ;;
+      restart)
+        cmd="--restart"
+        ;;
+      logs)
+        cmd="--logs"
+        ;;
+      configure)
+        cmd="--configure"
+        ;;
+      wallet)
+        cmd="--wallet"
+        ;;
+      pulse)
+        cmd="--pulse"
+        ;;
+      dashboard)
+        cmd="--dashboard"
+        ;;
+      history)
+        cmd="--history"
+        ;;
+      alerts)
+        cmd="--alerts"
+        ;;
+      auth)
+        cmd="--auth"
+        ;;
+      fleet)
+        if [[ $# -gt 0 ]]; then
+          fleet_command "$@"
+          return $?
+        else
+          fleet_command "help"
+          return 0
+        fi
+        ;;
+      *)
+        echo -e "${RED}Unknown command: $cmd. Run 'pop --help' for usage information.${NC}"
+        return 1
+        ;;
+    esac
+    
+    # Continue processing with the flag version
+    set -- "$cmd" "$@"
+  fi
+}
+
+# Show help information
+show_help() {
+  echo "Pipe Network PoP Node Management Tools"
+  echo "Usage: pop [--options] [--command] [arguments]"
+  echo
+  echo "Commands:"
+  echo "  --status                Show node status information"
+  echo "  --start                 Start node service"
+  echo "  --stop                  Stop node service"
+  echo "  --restart               Restart node service"
+  echo "  --logs [--follow]       View service logs"
+  echo "  --configure [--wizard]  Configure node settings"
+  echo "  --wallet [--import]     Manage wallet settings"
+  echo "  --pulse                 Check node performance"
+  echo "  --dashboard             Interactive status dashboard"
+  echo "  --history               View historical metrics"
+  echo "  --alerts                Manage alert configurations"
+  echo "  --auth                  Authenticate sudo access once"
+  echo "  --fleet <subcommand>    Manage multiple nodes (see below)"
+  echo
+  echo "Global Options:"
+  echo "  --help, -h              Show this help message"
+  echo "  --version, -v           Show version information"
+  echo "  --debug                 Enable debug logging"
+  echo "  --quiet, -q             Minimize output"
+  echo
+  echo "Installation Options:"
+  echo "  --install [--user]      Install globally or user-only"
+  echo "  --install --dir=PATH    Custom installation location"
+  echo "  --uninstall             Remove installation"
+  echo
+  echo "Examples:"
+  echo "  pop --status                # Show node status"
+  echo "  pop --start                 # Start the node service"
+  echo "  pop --configure --wizard    # Run configuration wizard"
+  echo "  pop --logs --follow         # View and follow service logs"
+  echo "  pop --install --user        # Install for current user only"
+  echo
+  echo "Fleet Management Commands:"
+  echo "  pop --fleet init            # Initialize fleet management"
+  echo "  pop --fleet register <n> <ip> <user> [port]  # Register a node"
+  echo "  pop --fleet list            # List all registered nodes"
+  echo "  pop --fleet test <n>        # Test connection to a node"
+  echo "  pop --fleet collect         # Collect metrics from all nodes"
+  echo "  pop --fleet dashboard       # Display fleet dashboard"
+  echo "  pop --fleet exec <n> <cmd>  # Execute command on a node"
+  echo "  pop --fleet status          # Show fleet status summary"
+  echo
+  echo "For more information, visit: https://pipenetwork.io/pop-node"
+}
+
+# If this script is being run directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  # Process command line arguments
+  process_command "$@"
+  exit $?
+fi
