@@ -182,52 +182,66 @@ get_wallet_address() {
 
 # Collect current metrics and save to file
 collect_metrics() {
+  # Create metrics directory if it doesn't exist
   ensure_metrics_dir
   
-  local metrics_file="${METRICS_DIR}/current.json"
-  local temp_file="${METRICS_DIR}/temp_metrics.json"
+  # Collect node metrics
+  echo "Collecting node metrics..."
+  get_wallet_address > /dev/null
+  get_node_status > /dev/null
+  get_uptime > /dev/null
   
-  # Default metrics structure
-  echo '{
-    "timestamp": '$(date +%s)',
-    "reputation": 0,
-    "points": 0,
-    "egress": "0 B",
-    "uptime_score": "0%",
-    "historical_score": "0%",
-    "egress_score": "0%",
-    "node_id": "",
-    "uptime": 0
-  }' > "$temp_file"
+  # Collect system metrics
+  echo "Collecting system metrics..."
+  get_cpu_usage > /dev/null
+  get_memory_usage > /dev/null
+  get_disk_usage > /dev/null
   
-  # Update metrics from various sources
-  if [[ -f "$NODE_INFO_FILE" ]]; then
-    # Extract node_id
-    local node_id=$(jq -r '.node_id // ""' "$NODE_INFO_FILE" 2>/dev/null)
-    if [[ -n "$node_id" ]]; then
-      jq --arg node_id "$node_id" '.node_id = $node_id' "$temp_file" > "${temp_file}.new"
-      mv "${temp_file}.new" "$temp_file"
-    fi
+  # Save metrics to history
+  save_metrics_to_history
+  
+  echo "Metrics collection complete."
+  return 0
+}
+
+# Save metrics to history
+save_metrics_to_history() {
+  # Ensure history directory exists
+  ensure_history_dir
+  
+  # Create metrics data
+  local metrics_data
+  metrics_data=$(cat << EOF
+{
+  "timestamp": $(date +%s),
+  "date": "$(date "+%Y-%m-%d %H:%M:%S")",
+  "reputation": $(get_current_reputation),
+  "points": $(get_current_points),
+  "uptime_score": "$(get_uptime_score)",
+  "historical_score": "$(get_historical_score)",
+  "egress_score": "$(get_egress_score)",
+  "cpu_usage": "$(get_cpu_usage)",
+  "memory_usage": "$(get_memory_usage)",
+  "disk_usage": "$(get_disk_usage)",
+  "network_status": "$(get_network_status)"
+}
+EOF
+)
+  
+  # Save to file with timestamp in filename
+  local history_dir=$(get_history_dir)
+  local timestamp=$(date "+%Y%m%d_%H%M%S")
+  local filename="${history_dir}/metrics_${timestamp}.json"
+  
+  echo "$metrics_data" > "$filename"
+  log_debug "Saved metrics to history: $filename"
+  
+  # Clean up old files (keep last 1000)
+  local file_count=$(ls -1 "${history_dir}/metrics_"*.json 2>/dev/null | wc -l)
+  if [[ $file_count -gt 1000 ]]; then
+    log_debug "Cleaning up old history files (keeping latest 1000)"
+    ls -1t "${history_dir}/metrics_"*.json | tail -n +1001 | xargs rm -f
   fi
-  
-  # Get uptime
-  local uptime=$(get_node_uptime)
-  jq --arg uptime "$uptime" '.uptime = ($uptime | tonumber)' "$temp_file" > "${temp_file}.new"
-  mv "${temp_file}.new" "$temp_file"
-  
-  # TODO: Get reputation, points, egress, scores from external API
-  # This would typically involve making API calls to the Pipe Network service
-  # For now, we'll use placeholder values or calculate estimates
-  
-  # Save to metrics file
-  mv "$temp_file" "$metrics_file"
-  
-  # Save historical copy
-  local date_str=$(date +%Y%m%d_%H%M%S)
-  cp "$metrics_file" "${HISTORY_DIR}/metrics_${date_str}.json"
-  
-  # Clean up old history files (keep last 100)
-  find "${HISTORY_DIR}" -type f -name "metrics_*.json" | sort -r | tail -n +101 | xargs -r rm
   
   return 0
 }

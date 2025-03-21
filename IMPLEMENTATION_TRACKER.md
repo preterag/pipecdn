@@ -46,43 +46,32 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
   - [✓] Add wallet information management
   - [✓] Create template configuration files
 
-## Phase 2: Monitoring & Maintenance (Week 2)
+## Phase 2: Monitoring System Development
 
-### Day 8-9: Basic Monitoring
+- [x] **Task 2.1: Core Metrics Collection** (Completed)
+  - [x] Create `metrics.sh` module
+  - [x] Implement status checking
+  - [x] Implement live status display
+  - [x] Add basic system resource monitoring
 
-- [✓] **2.1. Metrics Collection**
-  - [✓] Implement monitoring/metrics.sh
-  - [✓] Create data collection functions
-  - [✓] Implement status command
-  - [✓] Add basic pulse view
+- [x] **Task 2.2: Dashboard Development** (Completed)
+  - [x] Create `dashboard.sh` module
+  - [x] Implement real-time data visualization
+  - [x] Add interactive mode options
+  - [x] Create compact view mode
 
-### Day 10-11: Advanced Monitoring
+- [x] **Task 2.3: Historical Data** (Completed)
+  - [x] Create `history.sh` module
+  - [x] Implement data storage mechanisms
+  - [x] Add trend analysis functionality
+  - [x] Implement history visualization
+  - [x] Support viewing different time periods
 
-- [✓] **2.2. Dashboard Development**
-  - [✓] Create monitoring/dashboard.sh
-  - [✓] Implement real-time updates
-  - [✓] Add interactive mode options
-  - [✓] Create compact view mode
-
-- [ ] **2.3. Historical Data**
-  - [ ] Develop monitoring/history.sh
-  - [ ] Create data storage mechanism
-  - [ ] Implement history viewing
-  - [ ] Add trend analysis
-
-### Day 12-14: Backup & Maintenance
-
-- [ ] **2.4. Backup System**
-  - [ ] Create maintenance/backup.sh
-  - [ ] Implement backup creation
-  - [ ] Add restore functionality
-  - [ ] Create backup listing and management
-
-- [ ] **2.5. Update Management**
-  - [ ] Develop maintenance/updates.sh
-  - [ ] Implement update checking
-  - [ ] Create update installation
-  - [ ] Add token refresh capabilities
+- [ ] **Task 2.4: Alerts and Notifications**
+  - [ ] Create alerts system
+  - [ ] Implement threshold configuration
+  - [ ] Add email notification support
+  - [ ] Create notification log
 
 ## Phase 3: Fleet Management & Security (Week 3)
 
@@ -237,11 +226,11 @@ This tracker documents our step-by-step implementation plan for the Pipe Network
 ## Progress Summary
 
 - **Phase 1**: 85% complete
-- **Phase 2**: 40% complete
+- **Phase 2**: 60% complete
 - **Phase 3**: 0% complete
 - **Phase 4**: 0% complete
 
-**Overall Progress**: 30% complete
+**Overall Progress**: ~35% complete
 
 ---
 

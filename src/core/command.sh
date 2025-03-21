@@ -299,9 +299,101 @@ main() {
       load_module "monitoring/dashboard.sh"
       run_dashboard "${command_args[@]}"
       ;;
+    history)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/history.sh"
+      run_history "${command_args[@]}"
+      ;;
     *)
       log_error "Unknown command: $command"
       echo -e "Run 'pop --help' for usage information."
+      return 1
+      ;;
+  esac
+  
+  return $?
+}
+
+# Process command based on first argument
+process_command() {
+  if [[ $# -eq 0 ]]; then
+    # No arguments, show help
+    show_help
+    return 0
+  fi
+  
+  local command="$1"
+  shift  # Remove the command from args
+  local command_args=("$@")
+  
+  # Parse main command
+  # Route to appropriate module/function
+  case "$command" in
+    # Service commands
+    start|stop|restart|enable|disable|logs)
+      load_module "core/service.sh"
+      run_service_command "$command" "${command_args[@]}"
+      ;;
+    
+    # Installation commands
+    install|uninstall|update)
+      load_module "core/install.sh"
+      
+      case "$command" in
+        install) install_global_command "${command_args[@]}" ;;
+        uninstall) uninstall_global_command "${command_args[@]}" ;;
+        update) update_global_command "${command_args[@]}" ;;
+      esac
+      ;;
+    
+    # Status reporting
+    status)
+      load_module "monitoring/metrics.sh"
+      show_status "${command_args[@]}"
+      ;;
+    
+    # Dashboard
+    dashboard)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/dashboard.sh"
+      run_dashboard "${command_args[@]}"
+      ;;
+    
+    history)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/history.sh"
+      run_history "${command_args[@]}"
+      ;;
+    
+    # Configuration
+    config)
+      load_module "core/config.sh"
+      run_config_command "${command_args[@]}"
+      ;;
+    
+    # Metrics collection
+    pulse)
+      load_module "monitoring/metrics.sh"
+      collect_metrics "${command_args[@]}"
+      ;;
+    
+    # Help and version
+    help)
+      if [[ ${#command_args[@]} -gt 0 ]]; then
+        show_command_help "${command_args[0]}"
+      else
+        show_help
+      fi
+      ;;
+    
+    version)
+      show_version
+      ;;
+    
+    *)
+      log_error "Unknown command: $command"
+      echo
+      show_help
       return 1
       ;;
   esac
