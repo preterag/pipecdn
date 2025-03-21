@@ -1,3 +1,10 @@
+# Operational directories (never committed)
+/operational/
+/node_data/
+/user_configs/
+/PipeNetwork/
+/PipeNetwork_*/
+
 # Logs
 logs/
 *.log
@@ -10,7 +17,9 @@ node_info.json
 
 # Backups
 backups/
+backup_*/
 !backups/README.md
+PipeNetwork_backup.tar.gz
 
 # Solana
 .config/solana/
@@ -31,6 +40,7 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo 
+.cursor/
 
 # Security and authentication files
 github_push.sh
@@ -42,21 +52,11 @@ github_push.sh
 .git-credentials
 .netrc
 
-# Keep the secure scripts that don't contain tokens
-!git_setup.sh
-!secure_push.sh 
-*.bak
-
-# Generated dashboard files
-pipe_network_dashboard_*.html
-
-# Service files with system-specific paths
-pipe-pop.service*
-
 # Configuration files with sensitive data
 config/config.json
 config/*.json
 !config/config.template.json
+!config/*.template.json
 !config/examples/*.json
 
 # Temporary files
@@ -82,7 +82,6 @@ temp/
 .dev/
 .test/
 .local/
-node_modules/
 test_data/
 
 # Build artifacts
@@ -102,27 +101,6 @@ build/
 solana_id.json
 *.key
 keys/
-backup_*/
-PipeNetwork_backup.tar.gz
 
-# Temporary files
-.cursor/
-*.log
-*.tmp
-*.temp
-
-# Cache and local data
-cache/
-logs/
-*.cache
-*.local
-
-# IDE specific files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS specific files
-.DS_Store
-Thumbs.db
+# Setup logs
+pipe-pop-setup.log

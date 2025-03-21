@@ -1,255 +1,351 @@
 #!/bin/bash
+# Community Enhancement: POP Command for Pipe Network
+# This script provides a unified command-line interface for managing Pipe Network nodes.
 
-# PipeNetwork PoP Node Management Tool
-VERSION="2.0.0"
+# IMPORTANT: This is a community-created enhancement for Pipe Network.
+# It is not part of the official Pipe Network project.
+# For official documentation, please refer to the official Pipe Network documentation.
 
-# Standard paths
+VERSION="community-v0.0.1"
 INSTALL_DIR="/opt/pipe-pop"
-CONFIG_DIR="${INSTALL_DIR}/config"
-CACHE_DIR="${INSTALL_DIR}/cache"
-BIN_DIR="${INSTALL_DIR}/bin"
+SRC_DIR="$INSTALL_DIR/src"
+CONFIG_DIR="$INSTALL_DIR/config"
+CONFIG_FILE="$CONFIG_DIR/config.json"
 
-# Color codes for output
+# Import utility functions if available
+if [[ -f "$SRC_DIR/core/node.sh" ]]; then
+  source "$SRC_DIR/core/node.sh"
+fi
+
+# Color definitions
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Function to print colored messages
-print_message() { echo -e "${GREEN}[INFO]${NC} $1"; }
-print_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
-print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
-
-# Function to check if running as root when needed
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        print_error "This command must be run as root (with sudo)"
-        exit 1
-    fi
+# Print header for various outputs
+print_header() {
+  local title="$1"
+  echo -e "${CYAN}╔════════════════════════════════════════════╗${NC}"
+  echo -e "${CYAN}║           PIPE NETWORK NODE STATUS            ║${NC}"
+  echo -e "${CYAN}║           Community Enhancement            ║${NC}"
+  echo -e "${CYAN}╚════════════════════════════════════════════╝${NC}"
+  echo
 }
 
-# Function to get node status with colored output
-get_node_status() {
-    local NODE_STATUS
-    NODE_STATUS=$(${BIN_DIR}/pipe-pop --status 2>/dev/null)
-    if [ $? -ne 0 ]; then
-        print_error "Failed to get node status. Check if pipe-pop is running."
-        return 1
-    fi
+# Display node status
+show_status() {
+  print_header "NODE STATUS"
+  
+  # Get node status
+  local status=$(get_node_status)
+  
+  if [[ "$status" == "running" ]]; then
+    echo -e "Status: ${GREEN}Running${NC}"
     
-    # Extract metrics
-    local UPTIME=$(echo "$NODE_STATUS" | grep -i "uptime" | head -n 1)
-    local REPUTATION=$(echo "$NODE_STATUS" | grep -i "reputation" | head -n 1)
-    local POINTS=$(echo "$NODE_STATUS" | grep -i "points" | head -n 1)
-    local EGRESS=$(echo "$NODE_STATUS" | grep -i "egress" | head -n 1)
+    # Get additional status information if node is running
+    local uptime=$(get_node_uptime)
+    local uptime_formatted=$(printf '%dd %dh %dm %ds' $(($uptime/86400)) $(($uptime%86400/3600)) $(($uptime%3600/60)) $(($uptime%60)))
+    echo -e "Uptime: $uptime_formatted"
     
-    # Display status in formatted box
-    echo -e "\033[1;36m╔═══════════════════════════════════════════════╗\033[0m"
-    echo -e "\033[1;36m║           PIPE NETWORK NODE STATUS            ║\033[0m"
-    echo -e "\033[1;36m╠═══════════════════════════════════════════════╣\033[0m"
-    echo -e "\033[1;36m║\033[0m $UPTIME"
-    echo -e "\033[1;36m║\033[0m $REPUTATION"
-    echo -e "\033[1;36m║\033[0m $POINTS"
-    echo -e "\033[1;36m║\033[0m $EGRESS"
-    echo -e "\033[1;36m╚═══════════════════════════════════════════════╝\033[0m"
-}
-
-# Function to handle wallet operations
-handle_wallet() {
-    local operation=$1
-    local wallet_address=$2
-    
-    case $operation in
-        "info")
-            print_message "Current wallet configuration:"
-            if [ -f "${CONFIG_DIR}/config.json" ]; then
-                jq -r '.node.wallet_address' "${CONFIG_DIR}/config.json"
-            else
-                print_error "Configuration file not found"
-            fi
-            ;;
-        "set")
-            check_root
-            if [ -z "$wallet_address" ]; then
-                print_error "No wallet address provided"
-                exit 1
-            fi
-            # Update config.json
-            if [ -f "${CONFIG_DIR}/config.json" ]; then
-                tmp=$(mktemp)
-                jq --arg addr "$wallet_address" '.node.wallet_address = $addr' "${CONFIG_DIR}/config.json" > "$tmp"
-                mv "$tmp" "${CONFIG_DIR}/config.json"
-                chmod 600 "${CONFIG_DIR}/config.json"
-                print_message "Wallet address updated successfully"
-                systemctl restart pipe-pop.service
-            else
-                print_error "Configuration file not found"
-            fi
-            ;;
-    esac
-}
-
-# Function to handle security operations
-handle_security() {
-    local operation=$1
-    
-    case $operation in
-        "check")
-            print_message "Running security checks..."
-            # Check file permissions
-            [ "$(stat -c %a ${CONFIG_DIR}/config.json)" = "600" ] || print_warning "Insecure config.json permissions"
-            [ "$(stat -c %a ${BIN_DIR}/pipe-pop)" = "755" ] || print_warning "Insecure binary permissions"
-            
-            # Check firewall
-            ufw status | grep -q "Status: active" || print_warning "Firewall not active"
-            
-            # Check service status
-            systemctl is-active --quiet pipe-pop.service || print_warning "Service not running"
-            ;;
-        "audit")
-            check_root
-            print_message "Running security audit..."
-            # Comprehensive security check
-            ${BIN_DIR}/pipe-pop --security-audit
-            ;;
-    esac
-}
-
-# Function to handle monitoring
-handle_monitoring() {
-    case $1 in
-        "pulse")
-            # Get node pulse with real-time updates
-            while true; do
-                clear
-                get_node_status
-                echo "Press Ctrl+C to exit"
-                sleep 5
-            done
-            ;;
-        "logs")
-            journalctl -u pipe-pop.service -n 50 -f
-            ;;
-    esac
-}
-
-# Function to handle updates
-handle_update() {
-    check_root
-    print_message "Checking for updates..."
-    
-    # Create backup
-    print_message "Creating backup..."
-    mkdir -p "${INSTALL_DIR}/backups"
-    tar -czf "${INSTALL_DIR}/backups/backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "${INSTALL_DIR}" .
-    
-    # Download and install update
-    print_message "Downloading latest version..."
-    curl -L "https://github.com/pipe-network/pipe-pop/releases/latest/download/pipe-pop" -o "${BIN_DIR}/pipe-pop.new"
-    
-    if [ -f "${BIN_DIR}/pipe-pop.new" ]; then
-        mv "${BIN_DIR}/pipe-pop.new" "${BIN_DIR}/pipe-pop"
-        chmod 755 "${BIN_DIR}/pipe-pop"
-        systemctl restart pipe-pop.service
-        print_message "Update completed successfully"
+    # Get wallet information
+    local wallet=$(get_wallet_address)
+    if [[ -n "$wallet" && "$wallet" != "No wallet configured" ]]; then
+      echo -e "Wallet: $wallet"
     else
-        print_error "Update failed"
-        exit 1
+      echo -e "Wallet: ${RED}Not configured${NC}"
     fi
+    
+    # Get additional metrics if available
+    if [[ -f "/opt/pipe-pop/metrics/current.json" ]]; then
+      local reputation=$(jq -r '.reputation // "N/A"' "/opt/pipe-pop/metrics/current.json" 2>/dev/null)
+      local points=$(jq -r '.points // "N/A"' "/opt/pipe-pop/metrics/current.json" 2>/dev/null)
+      local egress=$(jq -r '.egress // "N/A"' "/opt/pipe-pop/metrics/current.json" 2>/dev/null)
+      
+      echo -e "Reputation: $reputation"
+      echo -e "Points: $points"
+      echo -e "Egress: $egress"
+    else
+      echo -e "${YELLOW}Note: Metrics file not found. Run 'pop monitoring update' to generate metrics.${NC}"
+    fi
+  else
+    echo -e "Status: ${RED}Not Running${NC}"
+    echo -e "${YELLOW}Use 'pop start' to start the node.${NC}"
+  fi
+  
+  echo
 }
 
-# Function to show help
+# Start the node
+start_node_cmd() {
+  echo -e "Starting Pipe Network node..."
+  
+  if [[ "$(get_node_status)" == "running" ]]; then
+    echo -e "${YELLOW}Node is already running.${NC}"
+    return 0
+  fi
+  
+  # Check if systemd service exists
+  if systemctl list-unit-files | grep -q pipe-pop.service; then
+    systemctl start pipe-pop
+    echo -e "${GREEN}Node started via systemd service.${NC}"
+  else
+    echo -e "${RED}Error: systemd service not found.${NC}"
+    echo -e "${YELLOW}Please run the installation script to set up the service.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Stop the node
+stop_node_cmd() {
+  echo -e "Stopping Pipe Network node..."
+  
+  if [[ "$(get_node_status)" == "stopped" ]]; then
+    echo -e "${YELLOW}Node is already stopped.${NC}"
+    return 0
+  fi
+  
+  # Check if systemd service exists
+  if systemctl list-unit-files | grep -q pipe-pop.service; then
+    systemctl stop pipe-pop
+    echo -e "${GREEN}Node stopped via systemd service.${NC}"
+  else
+    echo -e "${RED}Error: systemd service not found.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Restart the node
+restart_node_cmd() {
+  echo -e "Restarting Pipe Network node..."
+  
+  # Check if systemd service exists
+  if systemctl list-unit-files | grep -q pipe-pop.service; then
+    systemctl restart pipe-pop
+    echo -e "${GREEN}Node restarted via systemd service.${NC}"
+  else
+    echo -e "${RED}Error: systemd service not found.${NC}"
+    echo -e "${YELLOW}Please run the installation script to set up the service.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Run the pulse monitoring
+run_pulse_monitoring() {
+  local refresh_rate="$1"
+  
+  if [[ -f "$SRC_DIR/core/monitoring/pulse.sh" ]]; then
+    # Run the pulse monitoring script with the specified refresh rate
+    bash "$SRC_DIR/core/monitoring/pulse.sh" "$refresh_rate"
+  else
+    echo -e "${RED}Error: Pulse monitoring script not found.${NC}"
+    echo -e "${YELLOW}Please run the installation script to set up monitoring.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Run security check
+run_security_check() {
+  if [[ -f "$SRC_DIR/utils/security/security_check.sh" ]]; then
+    # Run the security check script
+    bash "$SRC_DIR/utils/security/security_check.sh"
+  else
+    echo -e "${RED}Error: Security check script not found.${NC}"
+    echo -e "${YELLOW}Please run the installation script to set up security tools.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Manage backups
+manage_backups() {
+  local backup_command="$1"
+  shift
+  
+  if [[ -f "$SRC_DIR/utils/backup/backup.sh" ]]; then
+    # Run the backup script with the specified command
+    bash "$SRC_DIR/utils/backup/backup.sh" "$backup_command" "$@"
+  else
+    echo -e "${RED}Error: Backup script not found.${NC}"
+    echo -e "${YELLOW}Please run the installation script to set up backup tools.${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
+# Show wallet information
+show_wallet_info() {
+  print_header "WALLET INFORMATION"
+  
+  # Get wallet address
+  local wallet=$(get_wallet_address)
+  
+  if [[ -n "$wallet" && "$wallet" != "No wallet configured" ]]; then
+    echo -e "Wallet Address: $wallet"
+    
+    # Show additional wallet information if available
+    if [[ -f "/opt/pipe-pop/metrics/current.json" ]]; then
+      local points=$(jq -r '.points // "N/A"' "/opt/pipe-pop/metrics/current.json" 2>/dev/null)
+      echo -e "Points Earned: $points"
+    fi
+    
+    echo -e "${YELLOW}Note: This is a Solana wallet address used for receiving rewards.${NC}"
+  else
+    echo -e "${RED}No wallet configured.${NC}"
+    echo -e "${YELLOW}Use 'pop config wallet <address>' to set your wallet address.${NC}"
+  fi
+  
+  echo
+}
+
+# Display usage information
 show_help() {
-    cat << EOF
-Pipe Network PoP Node Management Tool v${VERSION}
-
-USAGE:
-    pop [COMMAND] [OPTIONS]
-
-COMMANDS:
-    status              Show node status
-    wallet             Wallet management commands
-        info           Show current wallet
-        set ADDRESS    Set wallet address
-    security           Security management commands
-        check         Basic security check
-        audit         Full security audit
-    monitoring         Monitoring commands
-        pulse         Real-time node pulse
-        logs          View service logs
-    update             Update node software
-    points             Show earned points
-    referral           Referral management
-        code          Show referral code
-        generate      Generate new referral code
-    backup             Create node backup
-    restart            Restart node service
-    help               Show this help message
-
-EXAMPLES:
-    pop status                     Check node status
-    pop wallet set ADDRESS        Set wallet address
-    pop security check            Run security check
-    pop monitoring pulse          Show real-time pulse
-EOF
+  echo -e "Pipe Network PoP Node Management Tool v${VERSION}"
+  echo -e "Community Enhancement"
+  echo
+  echo -e "Usage: pop [command] [options]"
+  echo
+  echo -e "Commands:"
+  echo -e "  ${YELLOW}Basic Node Management:${NC}"
+  echo -e "    status              Show node status"
+  echo -e "    start               Start the node"
+  echo -e "    stop                Stop the node"
+  echo -e "    restart             Restart the node"
+  echo
+  echo -e "  ${YELLOW}Monitoring:${NC}"
+  echo -e "    monitoring pulse    Run real-time monitoring dashboard"
+  echo -e "    monitoring logs     Show node logs"
+  echo
+  echo -e "  ${YELLOW}Security:${NC}"
+  echo -e "    security check      Run security checks"
+  echo
+  echo -e "  ${YELLOW}Backup:${NC}"
+  echo -e "    backup create       Create a backup"
+  echo -e "    backup list         List available backups"
+  echo -e "    backup restore      Restore from a backup"
+  echo
+  echo -e "  ${YELLOW}Configuration:${NC}"
+  echo -e "    config show         Show current configuration"
+  echo -e "    config wallet       Show wallet information"
+  echo
+  echo -e "  ${YELLOW}Help:${NC}"
+  echo -e "    help                Show this help message"
+  echo -e "    version             Show version information"
+  echo
+  echo -e "For more information, see the documentation at:"
+  echo -e "${BLUE}https://github.com/[username]/pipe-pop${NC}"
+  echo
 }
 
-# Main command processing
-case "$1" in
-    "status")
-        get_node_status
-        ;;
-    "wallet")
-        case "$2" in
-            "info") handle_wallet "info" ;;
-            "set") handle_wallet "set" "$3" ;;
-            *) print_error "Unknown wallet command. Use: info or set" ;;
-        esac
-        ;;
-    "security")
-        case "$2" in
-            "check") handle_security "check" ;;
-            "audit") handle_security "audit" ;;
-            *) print_error "Unknown security command. Use: check or audit" ;;
-        esac
-        ;;
-    "monitoring")
-        case "$2" in
-            "pulse") handle_monitoring "pulse" ;;
-            "logs") handle_monitoring "logs" ;;
-            *) print_error "Unknown monitoring command. Use: pulse or logs" ;;
-        esac
-        ;;
-    "update")
-        handle_update
-        ;;
-    "points")
-        ${BIN_DIR}/pipe-pop --points
-        ;;
-    "referral")
-        case "$2" in
-            "code") ${BIN_DIR}/pipe-pop --show-referral ;;
-            "generate") ${BIN_DIR}/pipe-pop --gen-referral-route ;;
-            *) print_error "Unknown referral command. Use: code or generate" ;;
-        esac
-        ;;
-    "backup")
-        check_root
-        ${BIN_DIR}/pipe-pop --backup
-        ;;
-    "restart")
-        check_root
-        systemctl restart pipe-pop.service
-        ;;
-    "help"|"--help"|"-h"|"")
-        show_help
-        ;;
-    *)
-        print_error "Unknown command: $1"
-        show_help
-        exit 1
-        ;;
-esac
+# Display version information
+show_version() {
+  echo -e "Pipe Network PoP Node Management Tool v${VERSION}"
+  echo -e "Community Enhancement"
+  echo
+}
 
-exit 0 
+# Main command handler
+main() {
+  case "$1" in
+    status)
+      show_status
+      ;;
+    start)
+      start_node_cmd
+      ;;
+    stop)
+      stop_node_cmd
+      ;;
+    restart)
+      restart_node_cmd
+      ;;
+    monitoring)
+      case "$2" in
+        pulse)
+          run_pulse_monitoring "$3"
+          ;;
+        logs)
+          # Just a simple log viewer for now
+          if [[ -f "/var/log/pipe-pop.log" ]]; then
+            tail -n 50 "/var/log/pipe-pop.log"
+          else
+            echo -e "${RED}Error: Log file not found.${NC}"
+          fi
+          ;;
+        *)
+          echo -e "${RED}Error: Unknown monitoring subcommand: $2${NC}"
+          echo -e "Available subcommands: pulse, logs"
+          ;;
+      esac
+      ;;
+    security)
+      case "$2" in
+        check)
+          run_security_check
+          ;;
+        *)
+          echo -e "${RED}Error: Unknown security subcommand: $2${NC}"
+          echo -e "Available subcommands: check"
+          ;;
+      esac
+      ;;
+    backup)
+      case "$2" in
+        create|list|restore|cleanup)
+          manage_backups "$2" "$3"
+          ;;
+        *)
+          echo -e "${RED}Error: Unknown backup subcommand: $2${NC}"
+          echo -e "Available subcommands: create, list, restore, cleanup"
+          ;;
+      esac
+      ;;
+    config)
+      case "$2" in
+        show)
+          if [[ -f "$CONFIG_FILE" ]]; then
+            cat "$CONFIG_FILE" | jq
+          else
+            echo -e "${RED}Error: Configuration file not found.${NC}"
+          fi
+          ;;
+        wallet)
+          show_wallet_info
+          ;;
+        *)
+          echo -e "${RED}Error: Unknown config subcommand: $2${NC}"
+          echo -e "Available subcommands: show, wallet"
+          ;;
+      esac
+      ;;
+    help)
+      show_help
+      ;;
+    version)
+      show_version
+      ;;
+    "")
+      # Default action if no command is provided
+      show_status
+      ;;
+    *)
+      echo -e "${RED}Error: Unknown command: $1${NC}"
+      show_help
+      ;;
+  esac
+}
+
+# Run the main function with all arguments
+main "$@" 

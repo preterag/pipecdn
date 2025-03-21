@@ -1,6 +1,10 @@
-# Quick Start Guide
+# Community Enhancement: Quick Start Guide
 
-Get your Pipe Network node running in minutes.
+> **IMPORTANT**: This is a community-created enhancement for Pipe Network. 
+> It is not part of the official Pipe Network project.
+> For official documentation, please refer to [Official Pipe Network Documentation](../official/PIPE_NETWORK_DOCUMENTATION.md).
+
+Get your Pipe Network node running in minutes with these community-enhanced tools.
 
 ## 1. One-Command Installation
 

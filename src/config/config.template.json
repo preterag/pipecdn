@@ -1,0 +1,37 @@
+{
+  "// IMPORTANT": "This is a community-enhanced template configuration for Pipe Network",
+  "// NOTE": "Replace placeholder values with your actual configuration",
+  
+  "node": {
+    "name": "community-enhanced-node",
+    "wallet_address": "<YOUR_SOLANA_WALLET_ADDRESS>",
+    "region": "<YOUR_GEOGRAPHIC_REGION>",
+    "description": "Pipe Network node with community enhancements"
+  },
+  
+  "network": {
+    "port": 8080,
+    "firewall_enabled": true,
+    "allow_metrics": true
+  },
+  
+  "monitoring": {
+    "dashboard_enabled": true,
+    "dashboard_port": 8081,
+    "metrics_interval": 60,
+    "log_level": "info"
+  },
+  
+  "backup": {
+    "enabled": true,
+    "schedule": "daily",
+    "retention_days": 7,
+    "include_logs": true
+  },
+  
+  "community_enhancements": {
+    "pulse_monitoring": true,
+    "historical_tracking": true,
+    "auto_update_check": true
+  }
+} 
