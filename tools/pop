@@ -94,7 +94,7 @@ standardize_args() {
     if [[ "$arg" != -* && $i -eq 0 ]]; then
       # Common commands to standardize
       case "$arg" in
-        status|start|stop|restart|logs|configure|wallet|pulse|dashboard|history|alerts)
+        status|start|stop|restart|logs|configure|wallet|pulse|dashboard|history|alerts|fleet)
           new_args+=("--$arg")
           ;;
         *)
@@ -127,7 +127,8 @@ fi
 standardized_args=$(standardize_args "$@")
 
 # Run the main command with standardized arguments
-run_command $standardized_args
+# run_command $standardized_args
+process_command $standardized_args
 exit $?
 
 # Process command line arguments
