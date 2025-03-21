@@ -304,6 +304,11 @@ main() {
       load_module "monitoring/history.sh"
       run_history "${command_args[@]}"
       ;;
+    alerts)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/alerts.sh"
+      run_alerts "${command_args[@]}"
+      ;;
     *)
       log_error "Unknown command: $command"
       echo -e "Run 'pop --help' for usage information."
@@ -359,10 +364,18 @@ process_command() {
       run_dashboard "${command_args[@]}"
       ;;
     
+    # History
     history)
       load_module "monitoring/metrics.sh"
       load_module "monitoring/history.sh"
       run_history "${command_args[@]}"
+      ;;
+    
+    # Alerts and notifications
+    alerts)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/alerts.sh"
+      run_alerts "${command_args[@]}"
       ;;
     
     # Configuration
@@ -399,4 +412,51 @@ process_command() {
   esac
   
   return $?
+}
+
+# Display help for a specific command
+show_command_help() {
+  local command="$1"
+  
+  case "$command" in
+    "start"|"stop"|"restart"|"enable"|"disable"|"logs")
+      load_module "core/service.sh"
+      show_service_help
+      ;;
+    "install"|"uninstall"|"update")
+      load_module "core/install.sh"
+      show_install_help
+      ;;
+    "config")
+      load_module "core/config.sh"
+      show_config_help
+      ;;
+    "dashboard")
+      load_module "monitoring/dashboard.sh"
+      show_dashboard_help
+      ;;
+    "history")
+      load_module "monitoring/history.sh"
+      show_history_help
+      ;;
+    "alerts")
+      load_module "monitoring/alerts.sh"
+      show_alerts_help
+      ;;
+    "pulse")
+      load_module "monitoring/metrics.sh"
+      show_pulse_help
+      ;;
+    "status")
+      load_module "monitoring/metrics.sh"
+      show_status_help
+      ;;
+    *)
+      log_error "Unknown command: $command"
+      show_help
+      return 1
+      ;;
+  esac
+  
+  return 0
 }
