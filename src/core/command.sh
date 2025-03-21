@@ -28,37 +28,31 @@ log_info() {
 
 # Log warning message
 log_warn() {
-  echo -e "[${YELLOW}WARN${NC}] $1" >&2
+  echo -e "[${YELLOW}WARNING${NC}] $1"
 }
 
 # Log error message
 log_error() {
-  echo -e "[${RED}ERROR${NC}] $1" >&2
+  echo -e "[${RED}ERROR${NC}] $1"
 }
 
-# Log debug message (only when debug is enabled)
+# Log debug message
 log_debug() {
   if [[ "$DEBUG" == "true" ]]; then
     echo -e "[${BLUE}DEBUG${NC}] $1"
   fi
 }
 
-# Print a section header
+# Print a header block
 print_header() {
   local title="$1"
-  local width=50
-  local padding=$(( (width - ${#title} - 2) / 2 ))
-  local left_padding=$padding
-  local right_padding=$padding
-  
-  if (( ${#title} % 2 == 1 )); then
-    right_padding=$((right_padding + 1))
-  fi
+  local width=${#title}
+  local padding=$((width + 6))
   
   echo
-  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $width))${NC}"
-  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $left_padding)) ${title} $(printf '=%.0s' $(seq 1 $right_padding))${NC}"
-  echo -e "${CYAN}$(printf '=%.0s' $(seq 1 $width))${NC}"
+  printf "%${padding}s\n" | tr " " "="
+  echo -e "   ${CYAN}${title}${NC}"
+  printf "%${padding}s\n" | tr " " "="
   echo
 }
 
@@ -129,95 +123,111 @@ validate_environment() {
   return 0
 }
 
-# Load a module by name
+# Load a module
 load_module() {
-  local module_name="$1"
-  local module_path="${SRC_DIR}/${module_name}"
+  local module="$1"
+  local module_path="${SRC_DIR}/${module}"
   
-  if [[ ! -f "$module_path" ]]; then
+  if [[ -f "$module_path" ]]; then
+    source "$module_path"
+    return 0
+  else
     log_error "Module not found: $module_path"
     return 1
   fi
-  
-  source "$module_path"
-  return $?
 }
 
 # =====================
 # Command Functions
 # =====================
 
-# Display version information
-show_version() {
-  print_header "VERSION"
-  echo -e "Pipe Network PoP Node Management Tools"
-  echo -e "Version: ${GREEN}${VERSION}${NC}"
-  echo
-  echo -e "Visit ${BLUE}https://pipe.network${NC} for more information."
-  return 0
-}
-
-# Display help message
+# Show help text
 show_help() {
-  print_header "HELP"
-  
-  echo -e "Usage: pop [OPTIONS] [COMMAND]"
+  echo -e "Pipe Network PoP Node Management Tools"
+  echo -e "Usage: pop [--options] [--command] [arguments]"
   echo
-  echo -e "The Pipe Network PoP Node Management Tools provide a unified"
-  echo -e "interface for managing your Pipe Network point-of-presence nodes."
-  echo
-  
   echo -e "Commands:"
-  echo -e "  ${CYAN}status${NC}                 Show current node status"
-  echo -e "  ${CYAN}start${NC}                  Start the node service"
-  echo -e "  ${CYAN}stop${NC}                   Stop the node service"
-  echo -e "  ${CYAN}restart${NC}                Restart the node service"
-  echo -e "  ${CYAN}logs${NC}                   View node service logs"
-  echo -e "  ${CYAN}configure${NC}              Configure node settings"
-  echo -e "  ${CYAN}wallet${NC}                 Manage wallet information"
-  echo -e "  ${CYAN}pulse${NC}                  View real-time node metrics"
+  echo -e "  ${CYAN}--status${NC}                Show node status information"
+  echo -e "  ${CYAN}--start${NC}                 Start node service"
+  echo -e "  ${CYAN}--stop${NC}                  Stop node service"
+  echo -e "  ${CYAN}--restart${NC}               Restart node service"
+  echo -e "  ${CYAN}--logs${NC} [--follow]       View service logs"
+  echo -e "  ${CYAN}--configure${NC} [--wizard]  Configure node settings"
+  echo -e "  ${CYAN}--wallet${NC} [--import]     Manage wallet settings"
+  echo -e "  ${CYAN}--pulse${NC}                 Check node performance"
+  echo -e "  ${CYAN}--dashboard${NC}             Interactive status dashboard"
+  echo -e "  ${CYAN}--history${NC}               View historical metrics"
+  echo -e "  ${CYAN}--alerts${NC}                Manage alert configurations"
+  echo -e "  ${CYAN}--auth${NC}                  Authenticate sudo access once"
   echo
-  
   echo -e "Global Options:"
-  echo -e "  ${CYAN}--help${NC}, ${CYAN}-h${NC}             Show this help message"
-  echo -e "  ${CYAN}--version${NC}, ${CYAN}-v${NC}          Show version information"
-  echo -e "  ${CYAN}--debug${NC}                Enable debug output"
-  echo -e "  ${CYAN}--quiet${NC}, ${CYAN}-q${NC}            Suppress non-essential output"
+  echo -e "  ${CYAN}--help, -h${NC}              Show this help message"
+  echo -e "  ${CYAN}--version, -v${NC}           Show version information"
+  echo -e "  ${CYAN}--debug${NC}                 Enable debug logging"
+  echo -e "  ${CYAN}--quiet, -q${NC}             Minimize output"
   echo
-  
   echo -e "Installation Options:"
-  echo -e "  ${CYAN}--install${NC}              Install pop command globally"
-  echo -e "  ${CYAN}--uninstall${NC}            Remove pop command and all files"
-  echo -e "  ${CYAN}--update-installation${NC}  Update an existing installation"
+  echo -e "  ${CYAN}--install${NC} [--user]      Install globally or user-only"
+  echo -e "  ${CYAN}--install --dir=PATH${NC}    Custom installation location"
+  echo -e "  ${CYAN}--uninstall${NC}             Remove installation"
   echo
-  
   echo -e "Examples:"
-  echo -e "  ${CYAN}pop status${NC}             Show current node status"
-  echo -e "  ${CYAN}pop start${NC}              Start the node service"
-  echo -e "  ${CYAN}pop configure --wizard${NC} Run the configuration wizard"
-  echo -e "  ${CYAN}pop logs --follow${NC}      View and follow service logs"
+  echo -e "  pop --status                # Show node status"
+  echo -e "  pop --start                 # Start the node service"
+  echo -e "  pop --configure --wizard    # Run configuration wizard"
+  echo -e "  pop --logs --follow         # View and follow service logs"
+  echo -e "  pop --install --user        # Install for current user only"
   echo
-  
-  echo -e "For more information, visit ${BLUE}https://pipe.network${NC}"
-  
-  return 0
+  echo -e "For more information, visit: https://pipenetwork.io/pop-node"
+}
+
+# Show version information
+show_version() {
+  echo -e "Pipe Network PoP Node Management Tools ${CYAN}${VERSION}${NC}"
+  echo -e "For more information, visit: https://pipenetwork.io/pop-node"
 }
 
 # =====================
-# Command Routing
+# Command Parsing
 # =====================
 
-# Main function that parses and routes commands
-main() {
-  # Setup paths
-  setup_paths
+# Convert traditional command to flag format
+standardize_command() {
+  local cmd="$1"
   
-  # Parse global options
-  local global_args=()
+  # If it already starts with --, return as is
+  if [[ "$cmd" == --* ]]; then
+    echo "$cmd"
+    return 0
+  fi
+  
+  # Otherwise add -- prefix
+  echo "--$cmd"
+}
+
+# Load the privilege helper module
+ensure_privilege_helper() {
+  if [[ "$(type -t request_sudo_once)" != "function" ]]; then
+    load_module "core/privilege.sh"
+  fi
+}
+
+# Parse and execute command line arguments
+parse_command_line() {
+  # Handle empty invocation
+  if [[ $# -eq 0 ]]; then
+    show_help
+    return 0
+  fi
+  
+  # Load the privilege helper if needed
+  ensure_privilege_helper
+  
   local command=""
+  local global_args=()
   local command_args=()
   
-  # Parse command line
+  # First pass: Look for global options
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --debug)
@@ -238,11 +248,36 @@ main() {
         show_version
         return 0
         ;;
+      --install)
+        load_module "core/install.sh"
+        install_global_command "${@:2}"
+        return $?
+        ;;
+      --uninstall)
+        load_module "core/install.sh"
+        uninstall_global_command "${@:2}"
+        return $?
+        ;;
+      --auth)
+        ensure_privilege_helper
+        auth_sudo
+        return $?
+        ;;
       -*)
-        global_args+=("$1")
-        shift
+        # If this is a command (starts with --), capture it
+        if [[ "$1" == --* && "$1" != "--debug" && "$1" != "--quiet" && "$1" != "--help" && "$1" != "--version" ]]; then
+          command="${1:2}" # Remove -- prefix
+          shift
+          command_args=("$@")
+          break
+        else
+          # Otherwise it's a global arg
+          global_args+=("$1")
+          shift
+        fi
         ;;
       *)
+        # For backward compatibility, treat first non-flag arg as a command
         command="$1"
         shift
         command_args=("$@")
@@ -256,7 +291,7 @@ main() {
     command="status"
   fi
   
-  # Load modules based on the command
+  # Load modules and execute command
   case "$command" in
     status)
       # Load required modules
@@ -288,21 +323,23 @@ main() {
       ;;
     wallet)
       load_module "core/config.sh"
+      load_module "core/wallet.sh"
       manage_wallet "${command_args[@]}"
       ;;
     pulse)
-      load_module "monitoring/metrics.sh"
-      run_pulse_monitoring "${command_args[@]}"
+      load_module "core/service.sh"
+      load_module "core/monitoring/pulse.sh"
+      check_pulse "${command_args[@]}"
       ;;
     dashboard)
       load_module "monitoring/metrics.sh"
       load_module "monitoring/dashboard.sh"
-      run_dashboard "${command_args[@]}"
+      show_dashboard "${command_args[@]}"
       ;;
     history)
       load_module "monitoring/metrics.sh"
       load_module "monitoring/history.sh"
-      run_history "${command_args[@]}"
+      show_history "${command_args[@]}"
       ;;
     alerts)
       load_module "monitoring/metrics.sh"
@@ -319,144 +356,17 @@ main() {
   return $?
 }
 
-# Process command based on first argument
-process_command() {
-  if [[ $# -eq 0 ]]; then
-    # No arguments, show help
-    show_help
-    return 0
-  fi
-  
-  local command="$1"
-  shift  # Remove the command from args
-  local command_args=("$@")
-  
-  # Parse main command
-  # Route to appropriate module/function
-  case "$command" in
-    # Service commands
-    start|stop|restart|enable|disable|logs)
-      load_module "core/service.sh"
-      run_service_command "$command" "${command_args[@]}"
-      ;;
-    
-    # Installation commands
-    install|uninstall|update)
-      load_module "core/install.sh"
-      
-      case "$command" in
-        install) install_global_command "${command_args[@]}" ;;
-        uninstall) uninstall_global_command "${command_args[@]}" ;;
-        update) update_global_command "${command_args[@]}" ;;
-      esac
-      ;;
-    
-    # Status reporting
-    status)
-      load_module "monitoring/metrics.sh"
-      show_status "${command_args[@]}"
-      ;;
-    
-    # Dashboard
-    dashboard)
-      load_module "monitoring/metrics.sh"
-      load_module "monitoring/dashboard.sh"
-      run_dashboard "${command_args[@]}"
-      ;;
-    
-    # History
-    history)
-      load_module "monitoring/metrics.sh"
-      load_module "monitoring/history.sh"
-      run_history "${command_args[@]}"
-      ;;
-    
-    # Alerts and notifications
-    alerts)
-      load_module "monitoring/metrics.sh"
-      load_module "monitoring/alerts.sh"
-      run_alerts "${command_args[@]}"
-      ;;
-    
-    # Configuration
-    config)
-      load_module "core/config.sh"
-      run_config_command "${command_args[@]}"
-      ;;
-    
-    # Metrics collection
-    pulse)
-      load_module "monitoring/metrics.sh"
-      collect_metrics "${command_args[@]}"
-      ;;
-    
-    # Help and version
-    help)
-      if [[ ${#command_args[@]} -gt 0 ]]; then
-        show_command_help "${command_args[0]}"
-      else
-        show_help
-      fi
-      ;;
-    
-    version)
-      show_version
-      ;;
-    
-    *)
-      log_error "Unknown command: $command"
-      echo
-      show_help
-      return 1
-      ;;
-  esac
-  
-  return $?
-}
+# =====================
+# Main Command Execution
+# =====================
 
-# Display help for a specific command
-show_command_help() {
-  local command="$1"
+# Execute main command
+run_command() {
+  local exit_code=0
   
-  case "$command" in
-    "start"|"stop"|"restart"|"enable"|"disable"|"logs")
-      load_module "core/service.sh"
-      show_service_help
-      ;;
-    "install"|"uninstall"|"update")
-      load_module "core/install.sh"
-      show_install_help
-      ;;
-    "config")
-      load_module "core/config.sh"
-      show_config_help
-      ;;
-    "dashboard")
-      load_module "monitoring/dashboard.sh"
-      show_dashboard_help
-      ;;
-    "history")
-      load_module "monitoring/history.sh"
-      show_history_help
-      ;;
-    "alerts")
-      load_module "monitoring/alerts.sh"
-      show_alerts_help
-      ;;
-    "pulse")
-      load_module "monitoring/metrics.sh"
-      show_pulse_help
-      ;;
-    "status")
-      load_module "monitoring/metrics.sh"
-      show_status_help
-      ;;
-    *)
-      log_error "Unknown command: $command"
-      show_help
-      return 1
-      ;;
-  esac
+  # Parse command line arguments
+  parse_command_line "$@"
+  exit_code=$?
   
-  return 0
+  return $exit_code
 }

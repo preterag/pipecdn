@@ -18,10 +18,9 @@ SRC_DIR="${ROOT_DIR}/src"
 TOOLS_DIR="${ROOT_DIR}/tools"
 BIN_DIR="${ROOT_DIR}/bin"
 
-# Default installation directory
-if [[ -z "$INSTALL_DIR" ]]; then
-  INSTALL_DIR="/opt/pipe-pop"
-fi
+# Default installation directories
+SYSTEM_INSTALL_DIR="/opt/pipe-pop"
+USER_INSTALL_DIR="${HOME}/.local/share/pipe-pop"
 
 # Check for version file
 if [[ -f "${BIN_DIR}/version.txt" ]]; then
@@ -29,40 +28,99 @@ if [[ -f "${BIN_DIR}/version.txt" ]]; then
   VERSION=$(cat "$VERSION_FILE")
 fi
 
-# Import core utilities
-source "${SRC_DIR}/core/command.sh"
+# Set debug mode if requested
+DEBUG="false"
+QUIET="false"
 
-# ===============================
-# Main script execution
-# ===============================
-
-# Check for installation/uninstallation commands
+# Check for installation commands
 if [[ "$1" == "--install" ]]; then
-  # Source the installation module
+  # Source installation module
   source "${SRC_DIR}/core/install.sh"
-  
-  # Remove first argument and pass the rest to the install function
-  shift
-  install_global_command "$@"
+  # Call the installation function with remaining arguments
+  install_global_command "${@:2}"
   exit $?
 elif [[ "$1" == "--uninstall" ]]; then
-  # Source the installation module
+  # Source installation module
   source "${SRC_DIR}/core/install.sh"
-  
-  # Remove first argument and pass the rest to the uninstall function
-  shift
-  uninstall_global_command "$@"
-  exit $?
-elif [[ "$1" == "--update-installation" ]]; then
-  # Source the installation module
-  source "${SRC_DIR}/core/install.sh"
-  
-  # Remove first argument and pass the rest to the update function
-  shift
-  update_global_command "$@"
+  # Call the uninstallation function with remaining arguments
+  uninstall_global_command "${@:2}"
   exit $?
 fi
 
-# Process all other commands through the command router
-main "$@"
+# Source the command parser module
+source "${SRC_DIR}/core/command.sh"
+
+# Source the privilege helper if available
+if [[ -f "${SRC_DIR}/core/privilege.sh" ]]; then
+  source "${SRC_DIR}/core/privilege.sh"
+fi
+
+# Setup fallback handlers
+setup_fallbacks() {
+  # Create a data directory for temporary metrics if it doesn't exist
+  local tmp_dir="${HOME}/.cache/pipe-pop/metrics"
+  if [[ ! -d "$tmp_dir" ]]; then
+    mkdir -p "$tmp_dir"
+  fi
+  
+  # Ensure history directory exists for fallback data
+  local history_dir="${tmp_dir}/history"
+  if [[ ! -d "$history_dir" ]]; then
+    mkdir -p "$history_dir"
+  fi
+  
+  # Ensure alerts directory exists for fallback configs
+  local alerts_dir="${tmp_dir}/alerts"
+  if [[ ! -d "$alerts_dir" ]]; then
+    mkdir -p "$alerts_dir"
+  fi
+}
+
+# Standardize the command format
+standardize_args() {
+  local args=("$@")
+  local new_args=()
+  local i=0
+  
+  while [[ $i -lt ${#args[@]} ]]; do
+    local arg="${args[$i]}"
+    
+    # If this is a known command that doesn't have -- prefix, add it
+    if [[ "$arg" != -* && $i -eq 0 ]]; then
+      # Common commands to standardize
+      case "$arg" in
+        status|start|stop|restart|logs|configure|wallet|pulse|dashboard|history|alerts)
+          new_args+=("--$arg")
+          ;;
+        *)
+          new_args+=("$arg")
+          ;;
+      esac
+    else
+      new_args+=("$arg")
+    fi
+    
+    i=$((i+1))
+  done
+  
+  echo "${new_args[@]}"
+}
+
+# Make sure we can find fallback directories if needed
+setup_fallbacks
+
+# If ROOT_DIR is not the expected installation directory, 
+# we're likely running from development/source
+if [[ "$ROOT_DIR" != "$SYSTEM_INSTALL_DIR" && "$ROOT_DIR" != "$USER_INSTALL_DIR" ]]; then
+  # Enable debug mode automatically for development
+  if [[ "$DEBUG" != "true" ]]; then
+    log_debug "Running from development environment: $ROOT_DIR"
+  fi
+fi
+
+# Standardize arguments to support both command formats
+standardized_args=$(standardize_args "$@")
+
+# Run the main command with standardized arguments
+run_command $standardized_args
 exit $?

@@ -9,16 +9,57 @@ HISTORY_DIR="${METRICS_DIR}/history"
 NODE_INFO_FILE="${INSTALL_DIR}/node_info.json"
 LOCAL_NODE_INFO_FILE="./node_info.json"
 
-# Ensure metrics directory exists
+# Function to ensure metrics directory exists
 ensure_metrics_dir() {
-  if [[ ! -d "$METRICS_DIR" ]]; then
-    sudo mkdir -p "$METRICS_DIR"
-    sudo chmod 755 "$METRICS_DIR"
+  # Load privilege helper if needed
+  if [[ "$(type -t create_directory)" != "function" ]]; then
+    if [[ -f "${SRC_DIR}/core/privilege.sh" ]]; then
+      source "${SRC_DIR}/core/privilege.sh"
+    fi
+  fi
+
+  # Determine metrics directory
+  local install_dir=$(get_install_dir 2>/dev/null)
+  
+  if [[ -n "$install_dir" && -d "$install_dir" ]]; then
+    METRICS_DIR="$install_dir/metrics"
+    HISTORY_DIR="$METRICS_DIR/history"
+  else
+    # Fallback to user cache directory
+    METRICS_DIR="${HOME}/.cache/pipe-pop/metrics"
+    HISTORY_DIR="${METRICS_DIR}/history"
   fi
   
+  # Create metrics directory if needed
+  if [[ ! -d "$METRICS_DIR" ]]; then
+    if [[ "$(type -t create_directory)" == "function" ]]; then
+      create_directory "$METRICS_DIR" 755
+    else
+      # Fallback method
+      if [[ -w "$(dirname "$METRICS_DIR")" ]]; then
+        mkdir -p "$METRICS_DIR"
+        chmod 755 "$METRICS_DIR"
+      else
+        sudo mkdir -p "$METRICS_DIR"
+        sudo chmod 755 "$METRICS_DIR"
+      fi
+    fi
+  fi
+  
+  # Create history directory if needed
   if [[ ! -d "$HISTORY_DIR" ]]; then
-    sudo mkdir -p "$HISTORY_DIR"
-    sudo chmod 755 "$HISTORY_DIR"
+    if [[ "$(type -t create_directory)" == "function" ]]; then
+      create_directory "$HISTORY_DIR" 755
+    else
+      # Fallback method
+      if [[ -w "$(dirname "$HISTORY_DIR")" ]]; then
+        mkdir -p "$HISTORY_DIR"
+        chmod 755 "$HISTORY_DIR"
+      else
+        sudo mkdir -p "$HISTORY_DIR"
+        sudo chmod 755 "$HISTORY_DIR"
+      fi
+    fi
   fi
 }
 
@@ -390,4 +431,51 @@ get_node_uptime() {
   fi
   
   echo "0"
+}
+
+# Generate simulated metrics if real data not available
+generate_simulated_metrics() {
+  log_info "No real metrics available. Generating simulated data..."
+  
+  # Generate random CPU usage between 10-80%
+  local cpu_usage=$((10 + RANDOM % 70))
+  
+  # Generate random memory usage between 20-60%
+  local mem_usage=$((20 + RANDOM % 40))
+  
+  # Generate random disk usage between 30-70%
+  local disk_usage=$((30 + RANDOM % 40))
+  
+  # Generate random network usage
+  local net_in=$((RANDOM % 10000))
+  local net_out=$((RANDOM % 5000))
+  
+  # Return metrics as JSON
+  cat << EOF
+{
+  "timestamp": "$(date +%s)",
+  "cpu": {
+    "usage": $cpu_usage,
+    "cores": 4,
+    "temperature": $((40 + RANDOM % 20))
+  },
+  "memory": {
+    "total": 8192,
+    "used": $((8192 * mem_usage / 100)),
+    "percentage": $mem_usage
+  },
+  "disk": {
+    "total": 100,
+    "used": $disk_usage,
+    "percentage": $disk_usage
+  },
+  "network": {
+    "in_bytes": $net_in,
+    "out_bytes": $net_out
+  },
+  "uptime": $((RANDOM % 86400 + 3600)),
+  "connections": $((RANDOM % 20 + 5)),
+  "simulated": true
+}
+EOF
 }

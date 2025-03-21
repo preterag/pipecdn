@@ -23,77 +23,92 @@ get_alerts_dir() {
 
 # Ensure alerts directory exists
 ensure_alerts_dir() {
-  local dir=$(get_alerts_dir)
-  
-  if [[ ! -d "$dir" ]]; then
-    log_debug "Creating alerts directory: $dir"
-    sudo mkdir -p "$dir"
-    sudo chmod 755 "$dir"
+  # Load privilege helper if needed
+  if [[ "$(type -t create_directory)" != "function" ]]; then
+    if [[ -f "${SRC_DIR}/core/privilege.sh" ]]; then
+      source "${SRC_DIR}/core/privilege.sh"
+    fi
   fi
   
-  # Create alerts config if it doesn't exist
-  local config_file="${dir}/alerts.json"
-  if [[ ! -f "$config_file" ]]; then
-    log_debug "Creating default alerts configuration"
-    create_default_alerts_config
+  # Determine alerts directory
+  local install_dir=$(get_install_dir 2>/dev/null)
+  
+  if [[ -n "$install_dir" && -d "$install_dir" ]]; then
+    ALERTS_DIR="$install_dir/metrics/alerts"
+    ALERTS_CONFIG="$ALERTS_DIR/config.json"
+  else
+    # Fallback to user cache directory
+    ALERTS_DIR="${HOME}/.cache/pipe-pop/metrics/alerts"
+    ALERTS_CONFIG="$ALERTS_DIR/config.json"
+  fi
+  
+  # Create alerts directory if needed
+  if [[ ! -d "$ALERTS_DIR" ]]; then
+    if [[ "$(type -t create_directory)" == "function" ]]; then
+      create_directory "$ALERTS_DIR" 755
+    else
+      # Fallback method
+      if [[ -w "$(dirname "$ALERTS_DIR")" ]]; then
+        mkdir -p "$ALERTS_DIR"
+        chmod 755 "$ALERTS_DIR"
+      else
+        if ! sudo mkdir -p "$ALERTS_DIR" 2>/dev/null; then
+          # If sudo fails, use fallback directory
+          ALERTS_DIR="${HOME}/.cache/pipe-pop/metrics/alerts"
+          ALERTS_CONFIG="$ALERTS_DIR/config.json"
+          mkdir -p "$ALERTS_DIR"
+          chmod 755 "$ALERTS_DIR"
+          log_warn "Using fallback alerts directory: $ALERTS_DIR"
+        else
+          sudo chmod 755 "$ALERTS_DIR"
+        fi
+      fi
+    fi
+  fi
+  
+  # Create default config if it doesn't exist
+  if [[ ! -f "$ALERTS_CONFIG" ]]; then
+    create_default_alert_config
   fi
 }
 
-# Create default alerts configuration
-create_default_alerts_config() {
-  local dir=$(get_alerts_dir)
-  local config_file="${dir}/alerts.json"
-  
-  # Default alert thresholds
-  cat > "$config_file" << EOF
+# Create default alert configuration
+create_default_alert_config() {
+  # Default thresholds
+  cat > "$ALERTS_CONFIG" << EOF
 {
   "enabled": true,
-  "notification_methods": {
-    "terminal": true,
-    "email": false,
-    "log": true
-  },
-  "email_settings": {
-    "smtp_server": "",
-    "smtp_port": 587,
-    "smtp_username": "",
-    "smtp_password": "",
-    "from_address": "",
-    "to_address": ""
-  },
-  "alert_thresholds": {
-    "reputation": {
-      "min": 70,
-      "critical": 50
-    },
-    "uptime_score": {
-      "min": 90,
-      "critical": 80
-    },
-    "historical_score": {
-      "min": 85,
-      "critical": 75
-    },
-    "egress_score": {
-      "min": 80,
-      "critical": 60
-    },
-    "disk_usage": {
-      "max": 85,
+  "thresholds": {
+    "cpu": {
+      "warning": 80,
       "critical": 95
     },
-    "cpu_usage": {
-      "max": 80,
+    "memory": {
+      "warning": 75,
+      "critical": 90
+    },
+    "disk": {
+      "warning": 85,
       "critical": 95
     },
-    "memory_usage": {
-      "max": 85,
-      "critical": 95
+    "uptime": {
+      "warning": 43200,
+      "critical": 86400
     }
   },
-  "check_interval_minutes": 60,
-  "alert_cooldown_hours": 12,
-  "log_size_limit": 1000
+  "notifications": {
+    "email": {
+      "enabled": false,
+      "address": ""
+    },
+    "desktop": {
+      "enabled": true
+    },
+    "logs": {
+      "enabled": true,
+      "file": "$ALERTS_DIR/alerts.log"
+    }
+  }
 }
 EOF
 }
@@ -997,4 +1012,58 @@ run_alerts() {
   esac
   
   return $?
-} 
+}
+
+# Generate simulated alert status if real data is not available
+generate_simulated_alert_status() {
+  log_info "No real alert data available. Generating simulated status..."
+  
+  # Randomly generate some alerts for display purposes
+  local has_warnings=$((RANDOM % 2))
+  local has_criticals=$([ $has_warnings -eq 1 ] && echo $((RANDOM % 2)) || echo 0)
+  
+  # Create a simple alert status
+  cat << EOF
+{
+  "status": "$([ $has_criticals -eq 1 ] && echo "critical" || [ $has_warnings -eq 1 ] && echo "warning" || echo "ok")",
+  "alerts": [
+EOF
+
+  # Add CPU alert
+  if [ $has_warnings -eq 1 ]; then
+    local cpu_usage=$((80 + RANDOM % 15))
+    cat << EOF
+    {
+      "type": "cpu",
+      "level": "warning",
+      "threshold": 80,
+      "value": $cpu_usage,
+      "message": "CPU usage at $cpu_usage%",
+      "timestamp": "$(date +%s)"
+    }$([ $has_criticals -eq 1 ] && echo "," || echo "")
+EOF
+  fi
+
+  # Add memory alert (critical)
+  if [ $has_criticals -eq 1 ]; then
+    local mem_usage=$((90 + RANDOM % 9))
+    cat << EOF
+    {
+      "type": "memory",
+      "level": "critical",
+      "threshold": 90,
+      "value": $mem_usage,
+      "message": "Memory usage at $mem_usage%",
+      "timestamp": "$(date +%s)"
+    }
+EOF
+  fi
+
+  # Close the JSON
+  cat << EOF
+  ],
+  "simulated": true,
+  "last_check": "$(date +%s)",
+  "config_path": "$ALERTS_CONFIG"
+}
+EOF 
