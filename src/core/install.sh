@@ -2,6 +2,13 @@
 # Installation Management Module for Pipe Network PoP Node Management Tools
 # This module handles installation, path management, and global command access.
 
+# Set debug mode if requested
+DEBUG="false"
+QUIET="false"
+
+# Load common functions
+source "${SRC_DIR}/core/command.sh"
+
 # Define installation paths
 DEFAULT_SYSTEM_INSTALL_DIR="/opt/pipe-pop"
 DEFAULT_USER_INSTALL_DIR="${HOME}/.local/share/pipe-pop"
