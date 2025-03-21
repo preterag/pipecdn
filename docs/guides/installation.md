@@ -6,7 +6,7 @@
 
 ![Pipe Network](../images/pipe-network-pop.jpeg)
 
-This guide walks you through installing the Pipe Network node with community enhancements.
+This guide walks you through installing the Pipe Network node management tools with community enhancements.
 
 ## System Requirements
 
@@ -16,91 +16,115 @@ This guide walks you through installing the Pipe Network node with community enh
 - Stable internet connection
 - Open ports (80, 443, 8003)
 
-## One-Command Installation
+## Installation Options
 
-The easiest way to install is with our one-command installer:
+The Pipe Network PoP Management Tools support two installation modes:
+
+### System-Wide Installation (Default)
+
+Best for multi-user environments and systems where you have sudo access.
 
 ```bash
-sudo ./INSTALL
+# Download the package (if you haven't already)
+git clone https://github.com/pipe-network/pop-tools.git
+cd pop-tools
+
+# Run the installer
+./tools/pop --install
 ```
 
 This will:
 1. Install all required dependencies
-2. Configure your firewall automatically
+2. Configure system paths
 3. Set up the node as a system service
-4. Install the global `pop` command
-5. Create all necessary configuration files
+4. Install the global `pop` command to `/usr/local/bin/pop`
+5. Create all necessary configuration files in `/opt/pipe-pop/`
+
+### User-Level Installation (No Sudo Required)
+
+Best for single-user environments or systems where you don't have sudo access.
+
+```bash
+# Download the package (if you haven't already)
+git clone https://github.com/pipe-network/pop-tools.git
+cd pop-tools
+
+# Run the user-level installer
+./tools/pop --install --user
+```
+
+This will:
+1. Install required user-level dependencies
+2. Configure user paths
+3. Install the `pop` command to `~/.local/bin/pop`
+4. Create all necessary configuration files in `~/.local/share/pipe-pop/`
 
 ## Post-Installation Setup
 
 After installation, you need to configure your Solana wallet address:
 
 ```bash
-sudo nano /opt/pipe-pop/config/config.json
-```
+# For system-wide installation
+pop --wallet set YOUR_SOLANA_WALLET_ADDRESS
 
-Find the `wallet_address` field and replace `<YOUR_SOLANA_WALLET_ADDRESS>` with your actual Solana wallet address.
+# For user-level installation
+pop --wallet set YOUR_SOLANA_WALLET_ADDRESS
+```
 
 ## Starting Your Node
 
 Start your node with:
 
 ```bash
-pop start
+pop --start
 ```
 
 Check that it's running with:
 
 ```bash
-pop status
+pop --status
 ```
 
 ## Verifying Installation
 
 To verify everything is working correctly:
 
-1. Check node status: `pop status`
-2. Run real-time monitoring: `pop monitoring pulse`
-3. Check security settings: `pop security check`
+1. Check node status: `pop --status`
+2. Run real-time monitoring: `pop --pulse`
+3. Check security settings: `pop --security check`
 
-## Manual Installation (Advanced)
+## Custom Installation Options
 
-If you prefer to install manually:
+You can customize your installation:
 
-1. Create the directory structure:
-   ```bash
-   sudo mkdir -p /opt/pipe-pop/{bin,config,src,tools,logs,metrics,backups}
-   ```
+```bash
+# Force reinstallation
+./tools/pop --install --force
 
-2. Copy the configuration file:
-   ```bash
-   sudo cp src/config/config.template.json /opt/pipe-pop/config/config.json
-   ```
+# Install to a custom location
+./tools/pop --install --dir=/custom/path
 
-3. Install scripts and utilities:
-   ```bash
-   sudo cp -r src/* /opt/pipe-pop/src/
-   sudo cp tools/pop /opt/pipe-pop/tools/
-   ```
+# User-level installation with force option
+./tools/pop --install --user --force
+```
 
-4. Create system service:
-   ```bash
-   sudo cp examples/pipe-pop.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable pipe-pop.service
-   ```
+## Privilege Management
 
-5. Create global command:
-   ```bash
-   sudo ln -sf /opt/pipe-pop/tools/pop /usr/local/bin/pop
-   ```
+Most monitoring commands will work without sudo access, but some commands require elevated privileges. To minimize password prompts:
+
+```bash
+# Pre-authenticate to cache sudo access for 15 minutes
+pop --auth
+```
+
+This will prompt for your password once, and then cache sudo access for 15 minutes, reducing the need for password prompts for subsequent commands.
 
 ## Troubleshooting
 
 If you encounter issues:
 
-- Check the logs: `pop monitoring logs`
-- Verify configuration: `pop config show`
+- Check the logs: `pop --logs`
+- Verify configuration: `pop --config show`
 - See the [Troubleshooting Guide](../reference/troubleshooting.md)
 
 ## Next Steps
@@ -116,8 +140,9 @@ Now that your node is installed:
 To remove:
 
 ```bash
-sudo systemctl stop pipe-pop
-sudo systemctl disable pipe-pop
-sudo rm -rf /opt/pipe-pop /etc/systemd/system/pipe-pop.service
-sudo systemctl daemon-reload
+# Remove system-wide installation
+pop --uninstall
+
+# Remove user-level installation
+pop --uninstall --user
 ``` 

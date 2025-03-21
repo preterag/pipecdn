@@ -8,33 +8,46 @@ This directory contains comprehensive documentation for the Pipe Network PoP Nod
 - **[PIPE_NETWORK_DOCUMENTATION.md](official/PIPE_NETWORK_DOCUMENTATION.md)**: The official Pipe Network technical documentation provided by the core team.
 
 ### [User Guides](guides/)
+- **[installation.md](guides/installation.md)**: Complete installation guide with system and user-level options
 - **[quick-start.md](guides/quick-start.md)**: Step-by-step guide to get started with your node
 - **[node-registration.md](guides/node-registration.md)**: How to register your node with the Pipe Network
 - **[port-forwarding.md](guides/port-forwarding.md)**: Setting up port forwarding for optimal performance
-- **[troubleshooting.md](guides/troubleshooting.md)**: Solutions for common issues
-- **[fleet-management.md](guides/fleet-management.md)**: Managing multiple nodes as a fleet
 - **[wallet-setup.md](guides/wallet-setup.md)**: Setting up a wallet for your Pipe Network node
+- **[fleet-management.md](guides/fleet-management.md)**: Managing multiple nodes as a fleet
 
 ### [Reference](reference/)
-- **[command-reference.md](reference/command-reference.md)**: Complete reference for all available commands
+- **[cli.md](reference/cli.md)**: Complete reference for all available commands
 - **[troubleshooting.md](reference/troubleshooting.md)**: Technical troubleshooting guide
+- **[config.md](reference/config.md)**: Configuration options and formats
 
 ### [Development](development/)
 - **[architecture.md](development/architecture.md)**: Architectural overview of the PoP Node Management Tools
+- **[code_structure.md](development/code_structure.md)**: Code organization and module descriptions
 - **[roadmap.md](development/roadmap.md)**: Development roadmap and feature timeline
 
 ## Reading Order for New Users
 
-1. Start with the **[quick-start.md](guides/quick-start.md)** guide
-2. Read **[node-registration.md](guides/node-registration.md)** to ensure proper registration
-3. Follow **[port-forwarding.md](guides/port-forwarding.md)** to optimize connectivity
-4. Refer to **[command-reference.md](reference/command-reference.md)** as needed for specific commands
+1. Start with the **[installation.md](guides/installation.md)** guide to set up your node
+2. Continue with the **[quick-start.md](guides/quick-start.md)** guide to get started quickly
+3. Read **[node-registration.md](guides/node-registration.md)** to ensure proper registration
+4. Follow **[port-forwarding.md](guides/port-forwarding.md)** to optimize connectivity
+5. Refer to **[cli.md](reference/cli.md)** as needed for specific commands
+6. If you encounter issues, check **[troubleshooting.md](reference/troubleshooting.md)**
+
+## Key Features
+
+- **Dual Command Format**: Supports both flag-based commands (`pop --command`) and traditional format (`pop command`)
+- **Installation Options**: System-wide or user-level installation to accommodate different environments
+- **Privilege Management**: Minimized sudo requirements with command-specific fallbacks
+- **Intelligent Fallbacks**: Graceful degradation when privileges are unavailable
+- **User Documentation**: Complete guides covering all aspects of node operation
 
 ## Reading Order for Developers
 
 1. Review the **[architecture.md](development/architecture.md)** document
-2. Understand the current status and plans in **[roadmap.md](development/roadmap.md)**
-3. Reference the **[command-reference.md](reference/command-reference.md)** for implementation details
+2. Understand the code organization in **[code_structure.md](development/code_structure.md)**
+3. Check the current status and plans in **[roadmap.md](development/roadmap.md)**
+4. Reference the **[cli.md](reference/cli.md)** for implementation details
 
 ## Contributing to Documentation
 
