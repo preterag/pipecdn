@@ -134,7 +134,7 @@ restart_node_cmd() {
   else
     echo -e "${RED}Error: systemd service not found.${NC}"
     echo -e "${YELLOW}Please run the installation script to set up the service.${NC}"
-    return 1
+        return 1
   fi
   
   return 0
@@ -171,7 +171,10 @@ run_dashboard() {
   
   print_header "DASHBOARD"
   
-  if [[ -f "$SRC_DIR/core/monitoring/pulse.sh" ]]; then
+  # Try local script path first, then fallback to installation directory
+  if [[ -f "src/core/monitoring/pulse.sh" ]]; then
+    bash "src/core/monitoring/pulse.sh" --dashboard --refresh "$refresh" $compact $export_format
+  elif [[ -f "$SRC_DIR/core/monitoring/pulse.sh" ]]; then
     bash "$SRC_DIR/core/monitoring/pulse.sh" --dashboard --refresh "$refresh" $compact $export_format
   else
     echo -e "${RED}Error: Dashboard script not found.${NC}"
@@ -414,7 +417,7 @@ enable_privileged_ports() {
       fi
       
       # Restart service for changes to take effect
-      systemctl restart pipe-pop.service
+                systemctl restart pipe-pop.service
       echo -e "${GREEN}Service restarted with new configuration.${NC}"
     else
       echo -e "${RED}Could not determine binary path.${NC}"
@@ -735,7 +738,7 @@ main() {
       # Parse options
       shift
       while [[ $# -gt 0 ]]; do
-        case "$1" in
+case "$1" in
           --refresh)
             refresh="$2"
             shift 2
@@ -829,7 +832,7 @@ main() {
       signup_by_referral "$2"
       ;;
     monitoring)
-      case "$2" in
+        case "$2" in
         pulse)
           run_pulse_monitoring "$3" "$4"
           ;;
@@ -840,10 +843,10 @@ main() {
           echo -e "${RED}Error: Unknown monitoring subcommand: $2${NC}"
           echo -e "Available subcommands: pulse, logs"
           ;;
-      esac
-      ;;
+        esac
+        ;;
     security)
-      case "$2" in
+        case "$2" in
         check)
           run_security_check
           ;;
@@ -851,8 +854,8 @@ main() {
           echo -e "${RED}Error: Unknown security subcommand: $2${NC}"
           echo -e "Available subcommands: check"
           ;;
-      esac
-      ;;
+        esac
+        ;;
     backup)
       case "$2" in
         create|list|restore|cleanup)
@@ -862,8 +865,8 @@ main() {
           echo -e "${RED}Error: Unknown backup subcommand: $2${NC}"
           echo -e "Available subcommands: create, list, restore, cleanup"
           ;;
-      esac
-      ;;
+        esac
+        ;;
     config)
       case "$2" in
         show)
@@ -888,9 +891,9 @@ main() {
       ;;
     *)
       echo -e "${RED}Error: Unknown command: $1${NC}"
-      show_help
-      ;;
-  esac
+        show_help
+        ;;
+esac
 }
 
 # Get wallet address (placeholder for actual implementation)
