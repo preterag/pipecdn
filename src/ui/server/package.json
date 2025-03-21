@@ -1,0 +1,19 @@
+{
+  "name": "pipe-pop-web-ui-server",
+  "version": "1.0.0",
+  "description": "Web UI server for Pipe Network PoP Node Management Tools",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pipe Network Community Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+} 

@@ -1,0 +1,312 @@
+#!/bin/bash
+# pop-ui - UI launcher script for Pipe Network PoP Node Management Tools
+
+# Get the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Source the common utilities
+if [ -f "$ROOT_DIR/src/utils/common.sh" ]; then
+    source "$ROOT_DIR/src/utils/common.sh"
+else
+    # Define minimal logging functions if common.sh is not available
+    log_info() { echo -e "\033[0;32m[INFO]\033[0m $1"; }
+    log_warn() { echo -e "\033[0;33m[WARN]\033[0m $1"; }
+    log_error() { echo -e "\033[0;31m[ERROR]\033[0m $1"; }
+    log_debug() { echo -e "\033[0;34m[DEBUG]\033[0m $1"; }
+fi
+
+# Source the web installer utilities
+if [ -f "$ROOT_DIR/src/installer/web_installer.sh" ]; then
+    source "$ROOT_DIR/src/installer/web_installer.sh"
+else
+    log_error "Web installer utilities not found"
+    exit 1
+fi
+
+# Default values
+DEFAULT_PORT=8585
+
+# Display help message
+show_help() {
+    echo "Pipe Network PoP Web UI Launcher"
+    echo ""
+    echo "Usage: $0 COMMAND [OPTIONS]"
+    echo ""
+    echo "Available commands:"
+    echo "  install          Install the Web UI components"
+    echo "  start            Start the Web UI server"
+    echo "  stop             Stop the Web UI server"
+    echo "  status           Check the status of the Web UI server"
+    echo "  config           Configure the Web UI settings"
+    echo "  help             Show this help message"
+    echo ""
+    echo "Options:"
+    echo "  --port=PORT      Specify the port to use (default: 8585)"
+    echo "  --launch         Launch the browser after starting the server"
+    echo "  --remote-access  Enable remote access (default: local only)"
+    echo "  --set-password   Set a password for remote access"
+    echo ""
+    echo "Examples:"
+    echo "  $0 install --launch      Install and launch the Web UI"
+    echo "  $0 start --port=8080     Start the Web UI on port 8080"
+    echo "  $0 config --remote-access=true     Enable remote access"
+    exit 0
+}
+
+# Parse arguments
+parse_args() {
+    COMMAND=""
+    PORT=$DEFAULT_PORT
+    LAUNCH=false
+    REMOTE_ACCESS=false
+    SET_PASSWORD=false
+    
+    for arg in "$@"; do
+        case $arg in
+            install|start|stop|status|config|help)
+                COMMAND=$arg
+                ;;
+            --port=*)
+                PORT="${arg#*=}"
+                ;;
+            --launch)
+                LAUNCH=true
+                ;;
+            --remote-access=*)
+                REMOTE_ACCESS="${arg#*=}"
+                ;;
+            --remote-access)
+                REMOTE_ACCESS=true
+                ;;
+            --set-password)
+                SET_PASSWORD=true
+                ;;
+            *)
+                log_warn "Unknown argument: $arg"
+                ;;
+        esac
+    done
+    
+    if [ -z "$COMMAND" ]; then
+        log_error "No command specified"
+        show_help
+        exit 1
+    fi
+}
+
+# UI installation function
+install_ui() {
+    log_info "Installing Web UI components..."
+    
+    # Check for Node.js
+    if ! check_nodejs; then
+        log_error "Node.js is required for the Web UI. Please install Node.js 14.x or higher."
+        exit 1
+    fi
+    
+    # Check for npm
+    if ! check_npm; then
+        log_error "npm is required for the Web UI. Please install npm."
+        exit 1
+    fi
+    
+    # Install dependencies
+    log_info "Installing Node.js dependencies..."
+    if ! cd "$ROOT_DIR/src/ui/server" && npm install --no-audit; then
+        log_error "Failed to install Node.js dependencies"
+        exit 1
+    fi
+    
+    # Make the launcher executable
+    chmod +x "$SCRIPT_DIR/pop-ui"
+    
+    log_info "Web UI installation complete."
+    
+    # Launch if requested
+    if [ "$LAUNCH" = true ]; then
+        log_info "Launching Web UI..."
+        start_ui
+    else
+        log_info "You can start the Web UI with: $0 start"
+    fi
+    
+    return 0
+}
+
+# UI start function
+start_ui() {
+    log_info "Starting Web UI server on port $PORT..."
+    
+    # Check if already running
+    if is_ui_running; then
+        log_warn "Web UI server is already running"
+        
+        # Launch browser if requested
+        if [ "$LAUNCH" = true ]; then
+            local url="http://localhost:$PORT"
+            launch_browser "$url"
+        fi
+        
+        return 0
+    fi
+    
+    # Start server
+    auto_launch_ui "$PORT"
+    
+    return 0
+}
+
+# UI stop function
+stop_ui() {
+    log_info "Stopping Web UI server..."
+    
+    # Call stop function from web_installer.sh
+    stop_ui_server
+    
+    return $?
+}
+
+# UI status function
+status_ui() {
+    local pid_file=~/.local/share/pipe-pop/ui-server.pid
+    
+    if [ -f "$pid_file" ]; then
+        local pid
+        pid=$(cat "$pid_file")
+        
+        if kill -0 "$pid" 2>/dev/null; then
+            log_info "Web UI server is running (PID: $pid)"
+            log_info "URL: http://localhost:$PORT"
+            return 0
+        else
+            log_warn "Web UI server is not running (PID file exists but process is dead)"
+            return 1
+        fi
+    else
+        log_info "Web UI server is not running"
+        return 1
+    fi
+}
+
+# Check if UI is running
+is_ui_running() {
+    local pid_file=~/.local/share/pipe-pop/ui-server.pid
+    
+    if [ -f "$pid_file" ]; then
+        local pid
+        pid=$(cat "$pid_file")
+        
+        if kill -0 "$pid" 2>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
+    else
+        return 1
+    fi
+}
+
+# UI config function
+config_ui() {
+    log_info "Configuring Web UI..."
+    
+    # Get config file location
+    local config_file=~/.local/share/pipe-pop/ui-config.json
+    
+    # Create default config if it doesn't exist
+    if [ ! -f "$config_file" ]; then
+        log_info "Creating default configuration..."
+        cat > "$config_file" << EOF
+{
+    "port": $DEFAULT_PORT,
+    "remote_access": false,
+    "auto_start": false
+}
+EOF
+    fi
+    
+    # Update configuration based on arguments
+    if [ "$PORT" != "$DEFAULT_PORT" ]; then
+        log_info "Setting port to $PORT..."
+        sed -i 's/"port": [0-9]*/"port": '$PORT'/' "$config_file"
+    fi
+    
+    if [ "$REMOTE_ACCESS" = true ]; then
+        log_info "Enabling remote access..."
+        sed -i 's/"remote_access": false/"remote_access": true/' "$config_file"
+        
+        if [ "$SET_PASSWORD" = true ]; then
+            log_info "Setting password for remote access..."
+            read -sp "Enter new password: " password
+            echo
+            
+            # Hash password and store it
+            if command -v openssl &> /dev/null; then
+                local hashed_password
+                hashed_password=$(echo -n "$password" | openssl dgst -sha256 | awk '{print $2}')
+                sed -i 's/"password": ".*"/"password": "'$hashed_password'"/' "$config_file"
+                
+                if ! grep -q '"password"' "$config_file"; then
+                    # Add password field if it doesn't exist
+                    sed -i 's/}/,\n    "password": "'$hashed_password'"\n}/' "$config_file"
+                fi
+                
+                log_info "Password updated."
+            else
+                log_error "openssl is required for password hashing."
+                return 1
+            fi
+        fi
+    elif [ "$REMOTE_ACCESS" = false ]; then
+        log_info "Disabling remote access..."
+        sed -i 's/"remote_access": true/"remote_access": false/' "$config_file"
+    fi
+    
+    log_info "Configuration updated."
+    
+    # If the server is running, restart it to apply changes
+    if is_ui_running; then
+        log_info "Restarting server to apply changes..."
+        stop_ui
+        start_ui
+    fi
+    
+    return 0
+}
+
+# Main function
+main() {
+    parse_args "$@"
+    
+    case $COMMAND in
+        help)
+            show_help
+            ;;
+        install)
+            install_ui
+            ;;
+        start)
+            start_ui
+            ;;
+        stop)
+            stop_ui
+            ;;
+        status)
+            status_ui
+            ;;
+        config)
+            config_ui
+            ;;
+        *)
+            log_error "Unknown command: $COMMAND"
+            show_help
+            exit 1
+            ;;
+    esac
+    
+    exit $?
+}
+
+# Run the main function
+main "$@" 

@@ -6,7 +6,7 @@
 # It is not part of the official Pipe Network project.
 # For official documentation, please refer to the official Pipe Network documentation.
 
-VERSION="community-v0.0.1"
+VERSION="community-v0.0.2"
 
 # Color codes for output
 GREEN='\033[0;32m'
@@ -47,6 +47,29 @@ fi
 
 print_header
 
+# Installation variables
+INSTALL_WEB_UI=false
+AUTO_LAUNCH_UI=false
+
+# Process command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --web-ui)
+            INSTALL_WEB_UI=true
+            shift
+            ;;
+        --auto-launch)
+            AUTO_LAUNCH_UI=true
+            INSTALL_WEB_UI=true
+            shift
+            ;;
+        *)
+            # Unknown option
+            shift
+            ;;
+    esac
+done
+
 # Installation directory structure
 INSTALL_DIR="/opt/pipe-pop"
 CONFIG_DIR="${INSTALL_DIR}/config"
@@ -57,10 +80,15 @@ METRICS_DIR="${INSTALL_DIR}/metrics"
 LOGS_DIR="${INSTALL_DIR}/logs"
 BACKUPS_DIR="${INSTALL_DIR}/backups"
 TOOLS_DIR="${INSTALL_DIR}/tools"
+UI_DIR="${SRC_DIR}/ui"
+INSTALLER_DIR="${SRC_DIR}/installer"
 
 # Create directories with proper permissions
 print_message "Creating installation directory structure..."
 mkdir -p "${INSTALL_DIR}" "${CONFIG_DIR}" "${SRC_DIR}/core" "${SRC_DIR}/utils" "${BIN_DIR}" "${CACHE_DIR}" "${METRICS_DIR}" "${LOGS_DIR}" "${BACKUPS_DIR}" "${TOOLS_DIR}"
+if [ "$INSTALL_WEB_UI" = true ]; then
+    mkdir -p "${UI_DIR}" "${INSTALLER_DIR}"
+fi
 chmod 755 "${INSTALL_DIR}" "${BIN_DIR}" "${SRC_DIR}" "${TOOLS_DIR}"
 chmod 700 "${CONFIG_DIR}" "${CACHE_DIR}" "${METRICS_DIR}" "${LOGS_DIR}" "${BACKUPS_DIR}"
 
@@ -69,11 +97,32 @@ print_message "Installing dependencies..."
 apt-get update
 apt-get install -y ufw curl jq netstat net-tools
 
+# If Web UI is requested, install Node.js dependencies
+if [ "$INSTALL_WEB_UI" = true ]; then
+    print_message "Installing Web UI dependencies..."
+    
+    # Check if nodejs is installed
+    if ! command -v node &> /dev/null; then
+        print_message "Installing Node.js..."
+        curl -sL https://deb.nodesource.com/setup_14.x | bash -
+        apt-get install -y nodejs
+    fi
+    
+    # Check if npm is installed
+    if ! command -v npm &> /dev/null; then
+        print_message "Installing npm..."
+        apt-get install -y npm
+    fi
+fi
+
 # Configure firewall
 print_message "Configuring firewall..."
 ufw allow 80/tcp
 ufw allow 443/tcp
 ufw allow 8003/tcp
+if [ "$INSTALL_WEB_UI" = true ]; then
+    ufw allow 8585/tcp
+fi
 ufw --force enable
 ufw reload
 
@@ -101,6 +150,30 @@ cp -r "$(dirname "$0")/src/utils" "${SRC_DIR}/"
 cp -r "$(dirname "$0")/src/config" "${SRC_DIR}/"
 # Copy the pop command tool
 cp "$(dirname "$0")/tools/pop" "${TOOLS_DIR}/"
+
+# Install Web UI components if requested
+if [ "$INSTALL_WEB_UI" = true ]; then
+    print_message "Installing Web UI components..."
+    # Copy browser detection utilities
+    cp -r "$(dirname "$0")/src/installer" "${SRC_DIR}/"
+    # Copy Web UI files
+    cp -r "$(dirname "$0")/src/ui" "${SRC_DIR}/"
+    # Copy the pop-ui command tool
+    cp "$(dirname "$0")/tools/pop-ui" "${TOOLS_DIR}/"
+    
+    # Install Node.js dependencies
+    print_message "Installing Web UI server dependencies..."
+    cd "${SRC_DIR}/ui/server" && npm install --no-audit
+    
+    # Create symbolic link for global pop-ui command
+    print_message "Creating global 'pop-ui' command..."
+    ln -sf "${TOOLS_DIR}/pop-ui" /usr/local/bin/pop-ui
+    
+    # Set correct permissions
+    chmod 755 "${TOOLS_DIR}/pop-ui"
+    chmod 755 "${SRC_DIR}/installer/browser_detect.sh"
+    chmod 755 "${SRC_DIR}/installer/web_installer.sh"
+fi
 
 # Set correct permissions
 chmod 755 "${SRC_DIR}/core/node.sh"
@@ -143,6 +216,41 @@ StandardError=append:${LOGS_DIR}/pipe-pop-error.log
 WantedBy=multi-user.target
 EOF
 
+# Create Web UI systemd service if requested
+if [ "$INSTALL_WEB_UI" = true ]; then
+    print_message "Creating Web UI systemd service..."
+    cat > /etc/systemd/system/pipe-pop-ui.service << EOF
+[Unit]
+Description=Pipe Network PoP Web UI
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=${SRC_DIR}/ui/server
+ExecStart=/usr/bin/node ${SRC_DIR}/ui/server/app.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+StandardOutput=append:${LOGS_DIR}/pipe-pop-ui.log
+StandardError=append:${LOGS_DIR}/pipe-pop-ui-error.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Enable the Web UI service if requested
+    systemctl daemon-reload
+    systemctl enable pipe-pop-ui.service
+    
+    # Auto-launch Web UI if requested
+    if [ "$AUTO_LAUNCH_UI" = true ]; then
+        print_message "Auto-launching Web UI..."
+        source "${SRC_DIR}/installer/web_installer.sh"
+        auto_launch_ui
+    fi
+fi
+
 # Create symbolic link for global pop command
 print_message "Creating global 'pop' command..."
 ln -sf "${TOOLS_DIR}/pop" /usr/local/bin/pop
@@ -160,6 +268,20 @@ print_message "To check node status:"
 echo -e "  ${YELLOW}pop status${NC}"
 print_message "To monitor in real-time:"
 echo -e "  ${YELLOW}pop monitoring pulse${NC}"
+
+if [ "$INSTALL_WEB_UI" = true ]; then
+    print_message "To manage the Web UI:"
+    echo -e "  ${YELLOW}pop-ui start${NC}  - Start the Web UI server"
+    echo -e "  ${YELLOW}pop-ui stop${NC}   - Stop the Web UI server"
+    echo -e "  ${YELLOW}pop-ui status${NC} - Check Web UI server status"
+    
+    # Show URL for accessing Web UI
+    if [ "$AUTO_LAUNCH_UI" = true ]; then
+        print_message "Web UI is now available at: ${YELLOW}http://localhost:8585${NC}"
+    else
+        print_message "You can access the Web UI by running: ${YELLOW}pop-ui start --launch${NC}"
+    fi
+fi
 
 echo
 print_warning "This is a community-enhanced installation. For official support, please refer to the official Pipe Network documentation."

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Pipe Network PoP</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div class="container header-container">
+                <div class="logo">
+                    <img src="../assets/logo.svg" alt="Pipe Network Logo">
+                    <span>Pipe Network PoP</span>
+                </div>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-item">Dashboard</a>
+                    <a href="config.html" class="nav-item">Configuration</a>
+                    <a href="logs.html" class="nav-item">Logs</a>
+                    <a href="fleet.html" class="nav-item">Fleet</a>
+                    <a href="community.html" class="nav-item">Community</a>
+                    <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </nav>
+            </div>
+            <div id="mobile-menu" class="mobile-menu">
+                <a href="../index.html" class="nav-item">Dashboard</a>
+                <a href="config.html" class="nav-item">Configuration</a>
+                <a href="logs.html" class="nav-item">Logs</a>
+                <a href="fleet.html" class="nav-item">Fleet</a>
+                <a href="community.html" class="nav-item">Community</a>
+            </div>
+        </header>
+        
+        <main class="content">
+            <div class="container">
+                <h1>Node Configuration</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Basic Configuration
+                    </div>
+                    <div class="card-content">
+                        <form id="config-form">
+                            <div class="form-group">
+                                <label for="config-node_name" class="form-label">Node Name</label>
+                                <input type="text" id="config-node_name" name="node_name" class="form-control" placeholder="Enter node name">
+                                <small class="form-hint">A friendly name for your node. This will be visible to other network participants.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="config-wallet_address" class="form-label">Wallet Address</label>
+                                <input type="text" id="config-wallet_address" name="wallet_address" class="form-control" placeholder="Enter your wallet address">
+                                <small class="form-hint">Your Solana wallet address for receiving rewards.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="config-log_level" class="form-label">Log Level</label>
+                                <select id="config-log_level" name="log_level" class="form-control">
+                                    <option value="debug">Debug</option>
+                                    <option value="info">Info</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                                <small class="form-hint">Controls the verbosity of the logs.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="config-auto_start" name="auto_start">
+                                    Auto-start node on system boot
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Network Configuration
+                    </div>
+                    <div class="card-content">
+                        <form id="network-config-form">
+                            <div class="form-group">
+                                <label for="config-port" class="form-label">Port</label>
+                                <input type="number" id="config-port" name="port" class="form-control" min="1024" max="65535" placeholder="8080">
+                                <small class="form-hint">The port your node will use for p2p communication.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="config-max_peers" class="form-label">Maximum Peers</label>
+                                <input type="number" id="config-max_peers" name="max_peers" class="form-control" min="1" placeholder="50">
+                                <small class="form-hint">Maximum number of simultaneous peer connections.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="config-upnp" name="upnp">
+                                    Enable UPnP for automatic port forwarding
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="config-public_node" name="public_node">
+                                    Make this node publicly discoverable
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Storage Configuration
+                    </div>
+                    <div class="card-content">
+                        <form id="storage-config-form">
+                            <div class="form-group">
+                                <label for="config-storage_path" class="form-label">Storage Path</label>
+                                <input type="text" id="config-storage_path" name="storage_path" class="form-control" placeholder="/path/to/storage">
+                                <small class="form-hint">Location where node data will be stored.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="config-max_storage" class="form-label">Maximum Storage (GB)</label>
+                                <input type="number" id="config-max_storage" name="max_storage" class="form-control" min="1" placeholder="10">
+                                <small class="form-hint">Maximum storage space the node can use in GB.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="config-backup_interval" class="form-label">Backup Interval (hours)</label>
+                                <input type="number" id="config-backup_interval" name="backup_interval" class="form-control" min="0" placeholder="24">
+                                <small class="form-hint">How often to back up node configuration (0 to disable).</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button id="save-config" class="btn btn-primary">Save Configuration</button>
+                    <button id="reset-config" class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <div class="container footer-content">
+                <div class="footer-copyright">
+                    &copy; 2023 Pipe Network Community
+                </div>
+                <div class="footer-links">
+                    <a href="help.html">Help</a>
+                    <a href="about.html">About</a>
+                    <a href="https://github.com/pipe-network/pipe-pop" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="theme-toggle-container">
+        <label for="theme-toggle" class="theme-toggle-label">
+            <input type="checkbox" id="theme-toggle" class="theme-toggle-input">
+            <span class="theme-toggle-slider"></span>
+        </label>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

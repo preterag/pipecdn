@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipe Network PoP Dashboard</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div class="container header-container">
+                <div class="logo">
+                    <img src="assets/logo.svg" alt="Pipe Network Logo">
+                    <span>Pipe Network PoP</span>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-item">Dashboard</a>
+                    <a href="pages/config.html" class="nav-item">Configuration</a>
+                    <a href="pages/logs.html" class="nav-item">Logs</a>
+                    <a href="pages/fleet.html" class="nav-item">Fleet</a>
+                    <a href="pages/community.html" class="nav-item">Community</a>
+                    <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </nav>
+            </div>
+            <div id="mobile-menu" class="mobile-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <a href="pages/config.html" class="nav-item">Configuration</a>
+                <a href="pages/logs.html" class="nav-item">Logs</a>
+                <a href="pages/fleet.html" class="nav-item">Fleet</a>
+                <a href="pages/community.html" class="nav-item">Community</a>
+            </div>
+        </header>
+        
+        <main class="content">
+            <div class="container">
+                <h1>Dashboard</h1>
+                
+                <div class="node-controls">
+                    <h2>Node Control</h2>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="node-status">
+                                <span class="status-label">Status:</span>
+                                <span id="node-status" class="status-value status-stopped">Checking...</span>
+                            </div>
+                            <div class="node-actions">
+                                <button id="start-node" class="btn btn-success">Start Node</button>
+                                <button id="stop-node" class="btn btn-danger" disabled>Stop Node</button>
+                                <button id="restart-node" class="btn btn-warning" disabled>Restart Node</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Node Statistics</h2>
+                <div class="dashboard-grid">
+                    <div class="card status-card">
+                        <div class="status-icon">📡</div>
+                        <div class="status-details">
+                            <div class="status-title">Uptime</div>
+                            <div class="status-value" id="uptime-value">00:00:00</div>
+                            <div class="status-description">Total time since last restart</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card status-card">
+                        <div class="status-icon">💾</div>
+                        <div class="status-details">
+                            <div class="status-title">Storage Usage</div>
+                            <div class="status-value" id="storage-value">0 GB</div>
+                            <div class="status-description">Current disk space used</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card status-card">
+                        <div class="status-icon">🖥️</div>
+                        <div class="status-details">
+                            <div class="status-title">CPU Usage</div>
+                            <div class="status-value" id="cpu-value">0%</div>
+                            <div class="status-description">Current CPU utilization</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card status-card">
+                        <div class="status-icon">🔄</div>
+                        <div class="status-details">
+                            <div class="status-title">Memory Usage</div>
+                            <div class="status-value" id="memory-value">0 MB</div>
+                            <div class="status-description">Current RAM utilization</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card status-card">
+                        <div class="status-icon">📊</div>
+                        <div class="status-details">
+                            <div class="status-title">Network Traffic</div>
+                            <div class="status-value" id="network-value">0 KB/s</div>
+                            <div class="status-description">Current network throughput</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card status-card">
+                        <div class="status-icon">🔑</div>
+                        <div class="status-details">
+                            <div class="status-title">Connected Peers</div>
+                            <div class="status-value" id="peers-value">0</div>
+                            <div class="status-description">Active peer connections</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Recent Logs</h2>
+                <div class="card">
+                    <div class="card-content">
+                        <div id="logs-container" class="logs-container">
+                            <div class="log-entry log-info">Checking logs...</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="pages/logs.html" class="btn btn-primary">View All Logs</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <div class="container footer-content">
+                <div class="footer-copyright">
+                    &copy; 2023 Pipe Network Community
+                </div>
+                <div class="footer-links">
+                    <a href="pages/help.html">Help</a>
+                    <a href="pages/about.html">About</a>
+                    <a href="https://github.com/pipe-network/pipe-pop" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="theme-toggle-container">
+        <label for="theme-toggle" class="theme-toggle-label">
+            <input type="checkbox" id="theme-toggle" class="theme-toggle-input">
+            <span class="theme-toggle-slider"></span>
+        </label>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html> 
