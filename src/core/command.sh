@@ -294,6 +294,11 @@ main() {
       load_module "monitoring/metrics.sh"
       run_pulse_monitoring "${command_args[@]}"
       ;;
+    dashboard)
+      load_module "monitoring/metrics.sh"
+      load_module "monitoring/dashboard.sh"
+      run_dashboard "${command_args[@]}"
+      ;;
     *)
       log_error "Unknown command: $command"
       echo -e "Run 'pop --help' for usage information."
