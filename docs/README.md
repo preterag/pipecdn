@@ -1,6 +1,10 @@
-# Pipe Network Documentation
+# Pipe Network PoP Node Management Tools Documentation
 
-This directory contains the official documentation for the Pipe Network PoP Node Management Tools.
+This directory contains the documentation for the Pipe Network PoP Node Management Tools. This is a community-developed enhancement to the official Pipe Network tools provided by the core team.
+
+## Community Enhancement
+
+This documentation and the associated tools represent community work that builds upon and extends the official Pipe Network implementation. We aim to provide additional features, improved usability, and comprehensive documentation to support the broader Pipe Network ecosystem.
 
 ## Documentation Structure
 
@@ -9,10 +13,13 @@ The documentation is organized into the following sections:
 ### User Guides
 
 - [`guides/installation.md`](guides/installation.md) - Complete guide for installing the tools (system and user-level options)
-- [`guides/quick-start.md`](guides/quick-start.md) - Get started quickly with a new node
+- [`guides/quick_start.md`](guides/quick_start.md) - Get started quickly with a new node
 - [`guides/fleet_management.md`](guides/fleet_management.md) - Managing multiple nodes with the Fleet System
-- [`guides/node-registration.md`](guides/node-registration.md) - How to register your node
-- [`guides/port-forwarding.md`](guides/port-forwarding.md) - How to configure port forwarding
+- [`guides/node_registration.md`](guides/node_registration.md) - How to register your node
+- [`guides/port_forwarding.md`](guides/port_forwarding.md) - How to configure port forwarding
+- [`guides/wallet_setup.md`](guides/wallet_setup.md) - Setting up a wallet for your node
+- [`guides/security.md`](guides/security.md) - Security best practices
+- [`guides/earning.md`](guides/earning.md) - Learn about earning rewards
 
 ### Reference
 
@@ -33,12 +40,13 @@ The documentation is organized into the following sections:
 If you're new to the Pipe Network, we recommend reading the documentation in this order:
 
 1. [Installation Guide](guides/installation.md)
-2. [Quick Start Guide](guides/quick-start.md)
-3. [Node Registration](guides/node-registration.md)
-4. [Port Forwarding](guides/port-forwarding.md)
-5. [CLI Reference](reference/cli.md)
-6. [Troubleshooting](reference/troubleshooting.md)
-7. [Fleet Management](guides/fleet_management.md) (for managing multiple nodes)
+2. [Quick Start Guide](guides/quick_start.md)
+3. [Node Registration](guides/node_registration.md)
+4. [Port Forwarding](guides/port_forwarding.md)
+5. [Wallet Setup](guides/wallet_setup.md)
+6. [CLI Reference](reference/cli.md)
+7. [Troubleshooting](reference/troubleshooting.md)
+8. [Fleet Management](guides/fleet_management.md) (for managing multiple nodes)
 
 ## Key Features
 
