@@ -20,6 +20,7 @@ The documentation is organized into the following sections:
 - [`guides/wallet_setup.md`](guides/wallet_setup.md) - Setting up a wallet for your node
 - [`guides/security.md`](guides/security.md) - Security best practices
 - [`guides/earning.md`](guides/earning.md) - Learn about earning rewards
+- [`guides/web_ui.md`](guides/web_ui.md) - Using the Web UI for node management
 
 ### Reference
 
@@ -27,6 +28,7 @@ The documentation is organized into the following sections:
 - [`reference/configuration.md`](reference/configuration.md) - Configuration file format and options
 - [`reference/troubleshooting.md`](reference/troubleshooting.md) - Common issues and solutions
 - [`reference/glossary.md`](reference/glossary.md) - Terminology used in the project
+- [`reference/api.md`](reference/api.md) - Web UI API reference for developers
 
 ### Development
 
@@ -34,6 +36,8 @@ The documentation is organized into the following sections:
 - [`development/code_structure.md`](development/code_structure.md) - Code organization and module descriptions
 - [`development/contributing.md`](development/contributing.md) - How to contribute to the project
 - [`development/testing.md`](development/testing.md) - Testing procedures and guidelines
+- [`development/design/web_ui_prd.md`](development/design/web_ui_prd.md) - Web UI Product Requirements Document
+- [`development/ui_customization.md`](development/ui_customization.md) - Customizing the Web UI
 
 ## Reading Order for New Users
 
@@ -44,9 +48,10 @@ If you're new to the Pipe Network, we recommend reading the documentation in thi
 3. [Node Registration](guides/node_registration.md)
 4. [Port Forwarding](guides/port_forwarding.md)
 5. [Wallet Setup](guides/wallet_setup.md)
-6. [CLI Reference](reference/cli.md)
-7. [Troubleshooting](reference/troubleshooting.md)
-8. [Fleet Management](guides/fleet_management.md) (for managing multiple nodes)
+6. [Web UI Guide](guides/web_ui.md) (for graphical management)
+7. [CLI Reference](reference/cli.md) (for command-line management)
+8. [Troubleshooting](reference/troubleshooting.md)
+9. [Fleet Management](guides/fleet_management.md) (for managing multiple nodes)
 
 ## Key Features
 
@@ -54,6 +59,7 @@ If you're new to the Pipe Network, we recommend reading the documentation in thi
 - **Installation Options**: System-wide and user-level installation choices
 - **Privilege Management**: Intelligent falling back to user privileges when needed
 - **Fleet Management**: Tools for managing multiple nodes from a single location
+- **Web User Interface**: Browser-based management with installation wizard
 - **Comprehensive Documentation**: Detailed guides and references for various user roles
 
 ## Reading Order for Developers
@@ -63,8 +69,11 @@ If you're a developer looking to contribute, we recommend this reading order:
 1. [Architecture](development/architecture.md)
 2. [Code Structure](development/code_structure.md)
 3. [CLI Reference](reference/cli.md)
-4. [Contributing Guidelines](development/contributing.md)
-5. [Testing Guidelines](development/testing.md)
+4. [Web UI PRD](development/design/web_ui_prd.md)
+5. [API Reference](reference/api.md)
+6. [UI Customization](development/ui_customization.md)
+7. [Contributing Guidelines](development/contributing.md)
+8. [Testing Guidelines](development/testing.md)
 
 ## Contributing to Documentation
 

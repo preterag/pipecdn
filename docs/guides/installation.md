@@ -59,6 +59,53 @@ This will:
 3. Install the `pop` command to `~/.local/bin/pop`
 4. Create all necessary configuration files in `~/.local/share/pipe-pop/`
 
+## Web UI Installation (New)
+
+Starting with version 1.5.0, the Pipe Network PoP Node Management Tools include a Web UI option for simplified installation and management.
+
+### Automatic Web UI Installation
+
+The standard installation script now includes an option to install the Web UI:
+
+```bash
+# Install with Web UI (recommended for new users)
+curl -s https://setup.pipe-network.example/install.sh | bash -s -- --with-ui
+
+# Or to auto-launch the UI after installation completes
+curl -s https://setup.pipe-network.example/install.sh | bash -s -- --with-ui --launch-ui
+```
+
+When using the `--with-ui` option, the installer will:
+
+1. Check for and install the necessary dependencies (Node.js, etc.)
+2. Install the core CLI tools
+3. Install the Web UI components
+4. Configure the UI server
+
+With the `--launch-ui` option, your default browser will automatically open to the Web UI installation wizard once the installation completes.
+
+### Adding Web UI to Existing Installation
+
+If you already have the Pipe Network tools installed, you can add the Web UI:
+
+```bash
+# Add Web UI to existing installation
+pop --ui install
+
+# Add and launch immediately
+pop --ui install --launch
+```
+
+### Web UI System Requirements
+
+The Web UI has the following additional requirements:
+
+- Node.js 14.x or higher
+- 100MB additional disk space
+- Modern web browser (Chrome, Firefox, Safari, or Edge)
+
+For detailed instructions on using the Web UI after installation, see the [Web UI Guide](web_ui.md).
+
 ## Post-Installation Setup
 
 After installation, you need to configure your Solana wallet address:
