@@ -202,32 +202,6 @@ display_metrics_dashboard() {
   return 0
 }
 
-# Main entry point for monitoring commands
-monitor_command() {
-  local cmd="$1"
-  shift
-  
-  case "$cmd" in
-    collect)
-      if [[ $# -ge 1 ]]; then
-        collect_node_metrics "$1"
-      else
-        collect_all_metrics
-      fi
-      ;;
-    dashboard)
-      display_metrics_dashboard
-      ;;
-    *)
-      echo -e "${RED}Unknown monitoring command: $cmd${NC}"
-      echo -e "Available commands:"
-      echo -e "  collect [node]    Collect metrics from all nodes or a specific node"
-      echo -e "  dashboard         Display fleet metrics dashboard"
-      return 1
-      ;;
-  esac
-}
-
 # Mark a node as online in the database
 mark_node_online() {
   local node_name="$1"
@@ -259,6 +233,185 @@ update_node_last_metrics() {
   
   # Replace the original file
   mv "$temp_file" "$NODE_DB"
+}
+
+# Schedule automated metrics collection
+schedule_collector() {
+  local interval_minutes="$1"
+  local pid_file="${DATA_DIR}/collector.pid"
+  local log_file="${DATA_DIR}/collector.log"
+  
+  # Default interval of 15 minutes if not specified
+  interval_minutes=${interval_minutes:-15}
+  
+  # Validate interval
+  if ! [[ "$interval_minutes" =~ ^[0-9]+$ ]]; then
+    echo -e "${RED}Error: Interval must be a number in minutes (e.g., 15).${NC}"
+    return 1
+  fi
+  
+  # Check if collector is already running
+  if [[ -f "$pid_file" ]]; then
+    local pid=$(cat "$pid_file")
+    if ps -p "$pid" > /dev/null; then
+      echo -e "${YELLOW}Metrics collector is already running (PID: $pid).${NC}"
+      echo -e "Stop it first using 'pop --fleet collector stop'"
+      return 1
+    else
+      rm -f "$pid_file"
+    fi
+  fi
+  
+  # Create data directories if they don't exist
+  mkdir -p "$DATA_DIR"
+  
+  # Start collector in background
+  echo -e "${BLUE}Starting metrics collector daemon...${NC}"
+  echo -e "Collection interval: ${interval_minutes} minutes"
+  echo -e "Log file: $log_file"
+  
+  (
+    # Loop forever
+    while true; do
+      # Collection timestamp for logs
+      timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+      echo "[$timestamp] Collecting metrics from all nodes..." >> "$log_file"
+      
+      # Collect metrics and log output
+      collect_all_metrics >> "$log_file" 2>&1
+      
+      # Report status to log
+      timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+      echo "[$timestamp] Collection complete. Sleeping for ${interval_minutes} minutes..." >> "$log_file"
+      
+      # Sleep for the specified interval
+      sleep $((interval_minutes * 60))
+    done
+  ) &
+  
+  # Save PID for later management
+  local new_pid=$!
+  echo $new_pid > "$pid_file"
+  
+  echo -e "${GREEN}Metrics collector started with PID: $new_pid${NC}"
+  echo -e "Collection will occur every ${interval_minutes} minutes."
+  echo -e "Use 'pop --fleet collector stop' to stop collection."
+  
+  return 0
+}
+
+# Stop automated metrics collection
+stop_collector() {
+  local pid_file="${DATA_DIR}/collector.pid"
+  
+  # Check if collector is running
+  if [[ ! -f "$pid_file" ]]; then
+    echo -e "${YELLOW}Metrics collector is not running.${NC}"
+    return 0
+  fi
+  
+  # Get PID and kill process
+  local pid=$(cat "$pid_file")
+  if ps -p "$pid" > /dev/null; then
+    echo -e "${BLUE}Stopping metrics collector (PID: $pid)...${NC}"
+    kill "$pid"
+    rm -f "$pid_file"
+    echo -e "${GREEN}Metrics collector stopped.${NC}"
+  else
+    echo -e "${YELLOW}Metrics collector process not found. Cleaning up...${NC}"
+    rm -f "$pid_file"
+  fi
+  
+  return 0
+}
+
+# Check collector status
+collector_status() {
+  local pid_file="${DATA_DIR}/collector.pid"
+  local log_file="${DATA_DIR}/collector.log"
+  
+  # Check if collector is running
+  if [[ ! -f "$pid_file" ]]; then
+    echo -e "${YELLOW}Metrics collector is not running.${NC}"
+    return 0
+  fi
+  
+  # Get PID and check process
+  local pid=$(cat "$pid_file")
+  if ps -p "$pid" > /dev/null; then
+    echo -e "${GREEN}Metrics collector is running (PID: $pid)${NC}"
+    
+    # Get last collection time
+    if [[ -f "${DATA_DIR}/last_collection.txt" ]]; then
+      local last_collection=$(cat "${DATA_DIR}/last_collection.txt")
+      echo -e "Last collection: $last_collection"
+    fi
+    
+    # Show recent logs
+    if [[ -f "$log_file" ]]; then
+      echo -e "\n${CYAN}Recent collector logs:${NC}"
+      tail -n 10 "$log_file"
+    fi
+  else
+    echo -e "${RED}Metrics collector process (PID: $pid) not found, but PID file exists.${NC}"
+    echo -e "Use 'pop --fleet collector start' to restart collection."
+    rm -f "$pid_file"
+  fi
+  
+  return 0
+}
+
+# Main entry point for monitoring commands
+monitor_command() {
+  local cmd="$1"
+  shift
+  
+  case "$cmd" in
+    collect)
+      if [[ $# -ge 1 ]]; then
+        collect_node_metrics "$1"
+      else
+        collect_all_metrics
+      fi
+      ;;
+    dashboard)
+      display_metrics_dashboard
+      ;;
+    collector)
+      if [[ $# -lt 1 ]]; then
+        echo -e "${RED}Error: Missing collector subcommand${NC}"
+        echo -e "Available subcommands: start, stop, status"
+        return 1
+      fi
+      
+      case "$1" in
+        start)
+          schedule_collector "$2"
+          ;;
+        stop)
+          stop_collector
+          ;;
+        status)
+          collector_status
+          ;;
+        *)
+          echo -e "${RED}Unknown collector command: $1${NC}"
+          echo -e "Available commands: start, stop, status"
+          return 1
+          ;;
+      esac
+      ;;
+    *)
+      echo -e "${RED}Unknown monitoring command: $cmd${NC}"
+      echo -e "Available commands:"
+      echo -e "  collect [node]        Collect metrics from all nodes or a specific node"
+      echo -e "  dashboard             Display fleet metrics dashboard"
+      echo -e "  collector start [min] Start automated metrics collection with interval"
+      echo -e "  collector stop        Stop automated metrics collection"
+      echo -e "  collector status      Show collector status and recent logs"
+      return 1
+      ;;
+  esac
 }
 
 # If this script is run directly

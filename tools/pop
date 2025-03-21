@@ -343,9 +343,25 @@ show_help() {
   echo "  pop --fleet list            # List all registered nodes"
   echo "  pop --fleet test <n>        # Test connection to a node"
   echo "  pop --fleet collect         # Collect metrics from all nodes"
+  echo "  pop --fleet collector start [min]  # Schedule metrics collection"
+  echo "  pop --fleet collector status       # Check collector status"
+  echo "  pop --fleet collector stop         # Stop automatic collection"
   echo "  pop --fleet dashboard       # Display fleet dashboard"
   echo "  pop --fleet exec <n> <cmd>  # Execute command on a node"
   echo "  pop --fleet status          # Show fleet status summary"
+  echo
+  echo "Group Management Commands:"
+  echo "  pop --fleet group create <name> [desc]        # Create a node group"
+  echo "  pop --fleet group list                        # List all groups"
+  echo "  pop --fleet group show <name>                 # View group details"
+  echo "  pop --fleet group add-node <node> <group>     # Add node to group"
+  echo "  pop --fleet group remove-node <node> <group>  # Remove from group"
+  echo "  pop --fleet group delete <name>               # Delete a group"
+  echo "  pop --fleet group exec <group> <cmd>          # Run command on group"
+  echo
+  echo "Deployment Commands:"
+  echo "  pop --fleet deploy <src> <dest> [nodes]       # Deploy to nodes"
+  echo "  pop --fleet deploy group <src> <dest> <group> # Deploy to a group"
   echo
   echo "For more information, visit: https://pipenetwork.io/pop-node"
 }

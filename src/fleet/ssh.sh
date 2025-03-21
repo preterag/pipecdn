@@ -115,6 +115,68 @@ execute_all_nodes() {
   return 0
 }
 
+# Execute command on nodes in a group
+execute_group_command() {
+  local group_name="$1"
+  shift
+  local command="$*"
+  
+  # Check if group functions are available
+  if ! type get_group_nodes &>/dev/null; then
+    echo -e "${RED}Group management functions not available.${NC}"
+    echo -e "Make sure you're using the latest version of the Fleet Management System."
+    return 1
+  fi
+  
+  # Handle special case "all" for all nodes
+  if [[ "$group_name" == "all" ]]; then
+    execute_all_nodes "$command"
+    return $?
+  fi
+  
+  # Get nodes in the specified group
+  local nodes=($(get_group_nodes "$group_name" 2>/dev/null))
+  
+  if [[ ${#nodes[@]} -eq 0 ]]; then
+    echo -e "${YELLOW}No nodes found in group '$group_name' or group doesn't exist.${NC}"
+    return 1
+  fi
+  
+  local success_count=0
+  local failed_nodes=()
+  
+  echo -e "${CYAN}=== EXECUTING COMMAND ON GROUP: $group_name ===${NC}"
+  echo -e "${YELLOW}Command:${NC} $command"
+  echo -e "${BLUE}Target nodes:${NC} ${nodes[*]}"
+  echo
+  
+  # Execute on each node in the group
+  for node in "${nodes[@]}"; do
+    echo -e "${CYAN}Node: $node${NC}"
+    execute_node_command "$node" "$command" | sed 's/^/  /'
+    if [[ ${PIPESTATUS[0]} -eq 0 ]]; then
+      ((success_count++))
+    else
+      failed_nodes+=("$node")
+    fi
+    echo
+  done
+  
+  # Summary
+  echo -e "${CYAN}Execution Summary:${NC}"
+  echo -e "Group: $group_name"
+  echo -e "Total nodes: ${#nodes[@]}"
+  echo -e "Successful: $success_count"
+  echo -e "Failed: ${#failed_nodes[@]}"
+  
+  if [[ ${#failed_nodes[@]} -gt 0 ]]; then
+    echo -e "${RED}Failed nodes: ${failed_nodes[*]}${NC}"
+    return 1
+  fi
+  
+  return 0
+}
+
 # Generate a script to execute on remote nodes
 generate_remote_script() {
   local script_content="$1"
@@ -241,6 +303,16 @@ ssh_command() {
       fi
       execute_all_nodes "$@"
       ;;
+    exec-group)
+      if [[ $# -lt 2 ]]; then
+        echo -e "${RED}Error: Group name and command required${NC}"
+        echo -e "Usage: pop --fleet ssh exec-group <group> <command>"
+        return 1
+      fi
+      local group_name="$1"
+      shift
+      execute_group_command "$group_name" "$@"
+      ;;
     script)
       if [[ $# -lt 2 ]]; then
         echo -e "${RED}Error: Node name and script content required${NC}"
@@ -262,10 +334,11 @@ ssh_command() {
     *)
       echo -e "${RED}Unknown SSH command: $cmd${NC}"
       echo -e "Available commands:"
-      echo -e "  exec <node> <command>  Execute command on a specific node"
-      echo -e "  exec-all <command>     Execute command on all nodes"
-      echo -e "  script <node> <script> Execute a script on a node"
-      echo -e "  connect <node>         Start interactive SSH session"
+      echo -e "  exec <node> <command>       Execute command on a specific node"
+      echo -e "  exec-all <command>          Execute command on all nodes"
+      echo -e "  exec-group <group> <cmd>    Execute command on all nodes in a group"
+      echo -e "  script <node> <script>      Execute a script on a node"
+      echo -e "  connect <node>              Start interactive SSH session"
       return 1
       ;;
   esac

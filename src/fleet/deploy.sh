@@ -166,6 +166,49 @@ deploy_folder() {
   return $status
 }
 
+# Deploy to nodes in a group
+deploy_to_group() {
+  local src_path="$1"
+  local dest_path="$2"
+  local group_name="$3"
+  
+  # Check if group file exists and source the group module
+  if [[ ! -f "${CONFIG_DIR}/groups.json" ]]; then
+    echo -e "${RED}No groups defined. Initialize fleet management first.${NC}"
+    return 1
+  fi
+  
+  # Get nodes in the group
+  if [[ "$group_name" == "all" ]]; then
+    # Special case for deploying to all nodes
+    deploy_command "$src_path" "$dest_path"
+    return $?
+  fi
+  
+  # Check if the fleet manager has group functions
+  if ! type get_group_nodes &>/dev/null; then
+    echo -e "${RED}Group management functions not available.${NC}"
+    echo -e "Make sure you're using the latest version of the Fleet Management System."
+    return 1
+  fi
+  
+  # Get nodes in the specified group
+  local group_nodes=($(get_group_nodes "$group_name"))
+  
+  if [[ ${#group_nodes[@]} -eq 0 ]]; then
+    echo -e "${YELLOW}No nodes found in group '$group_name' or group doesn't exist.${NC}"
+    return 1
+  fi
+  
+  echo -e "${BLUE}Deploying to group:${NC} $group_name"
+  echo -e "${BLUE}Target nodes:${NC} ${group_nodes[*]}"
+  echo
+  
+  # Call the deploy command with the group nodes
+  deploy_command "$src_path" "$dest_path" "${group_nodes[@]}"
+  return $?
+}
+
 # Main entry point for deploy commands
 deploy_command() {
   local src_path="$1"
@@ -191,7 +234,36 @@ deploy_command() {
   fi
 }
 
+# Process deployment commands
+process_deploy_command() {
+  local cmd="$1"
+  shift
+  
+  case "$cmd" in
+    file)
+      if [[ $# -lt 2 ]]; then
+        echo -e "${RED}Usage: --fleet deploy file <source_file> <destination_path> [nodes...]${NC}"
+        return 1
+      fi
+      deploy_command "$@"
+      ;;
+    group)
+      if [[ $# -lt 3 ]]; then
+        echo -e "${RED}Usage: --fleet deploy group <source_path> <destination_path> <group_name>${NC}"
+        return 1
+      fi
+      deploy_to_group "$1" "$2" "$3"
+      ;;
+    *)
+      # Default behavior for backward compatibility
+      deploy_command "$cmd" "$@"
+      ;;
+  esac
+  
+  return $?
+}
+
 # If this script is run directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  deploy_command "$@"
+  process_deploy_command "$@"
 fi
