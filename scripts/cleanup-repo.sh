@@ -3,43 +3,120 @@
 # Ensure we're in the correct directory
 cd "$(dirname "$0")/.." || exit 1
 
-# Remove operational directories
-rm -rf logs data cache backups monitoring/data download_cache
+# Remove outdated files
+echo "Removing outdated files..."
 
-# Remove operational files
-rm -f config.json node_info.json .pop.env
+# Remove old script versions
+rm -f fixed_pop_script.sh new_pop_script.sh
+
+# Remove old monitoring scripts
+rm -f dashboard.sh port_check.sh double_nat_test.sh external_port_test.sh
+rm -f fix_node_registration.sh manual_test.sh manual_test_fixed.sh
+rm -f enable_ports.sh privileged_port_fix.sh
+
+# Remove old service files
 rm -f new-pipe-pop.service pipe-pop.service updated-pipe-pop.service
 
-# Remove runtime files
-rm -f *.pid *.sock *.log .cache/* sample-metrics.json sample-metrics.json.prev
+# Remove old node registration scripts
+rm -f register_node.sh new_node_registration.sh
 
-# Clean up Python environment
-rm -rf venv .venv env .env
+# Remove old root service script
+rm -f root_service.sh
 
-# Clean up build files
-rm -rf build dist *.deb *.rpm *.tar.gz *.zip
+# Remove old version file
+rm -f VERSION
 
-# Clean up temporary files
-rm -f *~ *.swp *.swo
+# Remove old changelog and release files
+rm -f CHANGELOG.md RELEASE_CHECKLIST.md RELEASE_NOTES.md
 
-# Clean up Node.js files
-rm -f package-lock.json yarn.lock
+# Remove old community enhancements file
+rm -f COMMUNITY_ENHANCEMENTS.md
 
-# Clean up Python cache
+# Remove old feature mapping file
+rm -f FEATURE_MAPPING.md
+
+# Remove old installation file
+rm -f INSTALL
+
+# Remove old start guide
+rm -f START_HERE.md
+
+# Remove old node info
+rm -f node_info.json
+
+# Remove old configuration
+rm -f config_fixed.json
+
+# Remove old monitoring directory if empty
+rmdir monitoring 2>/dev/null
+
+# Remove old bin directory contents (except pipe-pop)
+echo "Cleaning bin directory..."
+cd bin || exit 1
+rm -f README.md pop version.txt
+rm -f pipe-pop 2>/dev/null
+
+# Remove old backup files
+echo "Cleaning backup files..."
+find . -name "*.bak" -delete
+find . -name "*.old" -delete
+find . -name "*.orig" -delete
+
+# Remove temporary files
+echo "Cleaning temporary files..."
+find . -name "*.tmp" -delete
+find . -name "*.swp" -delete
+find . -name "*.swo" -delete
+
+# Remove swap files
+echo "Cleaning swap files..."
+find . -name "*.swp" -delete
+find . -name "*.swo" -delete
+
+# Remove backup directories
+echo "Cleaning backup directories..."
+rm -rf backups/
+
+# Remove cache directories
+echo "Cleaning cache directories..."
+rm -rf cache/
+
+# Remove data directories
+echo "Cleaning data directories..."
+rm -rf data/
+
+# Remove log directories
+echo "Cleaning log directories..."
+rm -rf logs/
+
+# Remove temporary directories
+echo "Cleaning temporary directories..."
+rm -rf tmp/
+
+# Remove build artifacts
+echo "Cleaning build artifacts..."
+rm -rf build/
+
+# Remove Python cache
+echo "Cleaning Python cache..."
 find . -name "__pycache__" -type d -exec rm -rf {} +
-find . -name "*.py[cod]" -type f -delete
-find . -name "*.so" -type f -delete
+find . -name "*.py[cod]" -delete
 
-# Clean up Node.js cache
-rm -rf node_modules
+# Remove Node.js cache
+echo "Cleaning Node.js cache..."
+rm -rf node_modules/
 
-# Clean up test files
-find . -name "*.test" -type f -delete
-find . -name "*.spec" -type f -delete
-find . -name "*.tmp" -type f -delete
+# Remove Python virtual environments
+echo "Cleaning Python virtual environments..."
+rm -rf venv/ .venv/ env/ .env/
 
-# Clean up git
-rm -rf .git
+# Remove Python build files
+echo "Cleaning Python build files..."
+rm -rf dist/ build/ *.egg-info/
+
+# Clean git
+echo "Cleaning git..."
+rm -rf .git/
 
 # Initialize new git repository
 git init
