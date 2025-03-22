@@ -128,4 +128,257 @@ The tools store data in the following locations:
 
 **Fallback Locations** (when primary locations aren't accessible):
 - Temporary metrics: `~/.cache/pipe-pop/metrics/`
-- Configuration cache: `~/.cache/pipe-pop/config/` 
+- Configuration cache: `~/.cache/pipe-pop/config/`
+
+# Troubleshooting Guide
+
+This guide covers common issues you might encounter with the Pipe Network PoP Node and how to resolve them.
+
+## System-Specific Issues
+
+### Ubuntu 24.04 LTS (Noble Numbat)
+
+This release has been primarily tested on Ubuntu 24.04 LTS. Here are some Ubuntu-specific troubleshooting tips:
+
+#### Permission Issues
+
+If you encounter permission errors when running commands:
+
+```bash
+# Check current permissions
+ls -la /opt/pipe-pop/
+
+# Fix permissions if needed
+sudo chmod +x /opt/pipe-pop/tools/pop
+sudo chmod +x /opt/pipe-pop/tools/pop-ui-python
+```
+
+#### Service Management
+
+If the service fails to start:
+
+```bash
+# Check service status
+systemctl status pipe-pop
+
+# View detailed logs
+journalctl -u pipe-pop
+
+# Restart service
+sudo systemctl restart pipe-pop
+```
+
+#### Package Dependencies
+
+Ubuntu 24.04 may require additional packages:
+
+```bash
+# Install required packages
+sudo apt-get update
+sudo apt-get install -y curl jq net-tools
+```
+
+## Common Issues
+
+### Installation Problems
+
+#### Error: Command not found after installation
+
+**Symptom**: The `pop` command is not recognized after installation.
+
+**Solution**:
+1. Ensure the installation completed successfully
+2. Check if the command is in your PATH:
+   ```bash
+   echo $PATH | grep pipe-pop
+   ```
+3. Run the installer again:
+   ```bash
+   /opt/pipe-pop/tools/installer
+   ```
+
+#### Error: Installation script fails
+
+**Symptom**: Installation script exits with error.
+
+**Solution**:
+1. Check for error messages in the output
+2. Verify that you have sufficient permissions:
+   ```bash
+   sudo ./installer
+   ```
+3. Check disk space:
+   ```bash
+   df -h
+   ```
+
+### Networking Issues
+
+#### Error: Port conflicts
+
+**Symptom**: Services fail to start due to port conflicts.
+
+**Solution**:
+1. Check if ports are already in use:
+   ```bash
+   sudo netstat -tulpn | grep <PORT>
+   ```
+2. Configure different ports in the configuration file:
+   ```bash
+   pop configure --port <NEW_PORT>
+   ```
+
+#### Error: Cannot connect to network
+
+**Symptom**: Node cannot connect to the network.
+
+**Solution**:
+1. Check your internet connection:
+   ```bash
+   ping -c 4 google.com
+   ```
+2. Verify firewall settings:
+   ```bash
+   sudo ufw status
+   ```
+3. Ensure required ports are open:
+   ```bash
+   sudo ufw allow <PORT>/tcp
+   ```
+
+### Configuration Issues
+
+#### Error: Configuration file not found
+
+**Symptom**: Error message indicating missing configuration file.
+
+**Solution**:
+1. Create a default configuration:
+   ```bash
+   pop configure --reset
+   ```
+2. Check file permissions:
+   ```bash
+   ls -la ~/.config/pipe-pop/
+   ```
+
+#### Error: Invalid configuration values
+
+**Symptom**: Service fails to start due to invalid configuration.
+
+**Solution**:
+1. Reset to default configuration:
+   ```bash
+   pop configure --reset
+   ```
+2. Edit configuration with valid values:
+   ```bash
+   pop configure
+   ```
+
+### Monitoring and Dashboard Issues
+
+#### Error: Dashboard displays no data
+
+**Symptom**: Dashboard shows no metrics or node information.
+
+**Solution**:
+1. Check if node is running:
+   ```bash
+   pop status
+   ```
+2. Reset metrics collection:
+   ```bash
+   pop metrics --reset
+   ```
+3. Restart the node:
+   ```bash
+   pop restart
+   ```
+
+#### Error: High resource usage
+
+**Symptom**: System resources (CPU, memory) usage is abnormally high.
+
+**Solution**:
+1. Check which processes are consuming resources:
+   ```bash
+   top
+   ```
+2. Analyze node performance:
+   ```bash
+   pop pulse
+   ```
+3. Adjust resource limits in configuration:
+   ```bash
+   pop configure --resource-limit
+   ```
+
+### Fleet Management Issues
+
+#### Error: Cannot connect to fleet nodes
+
+**Symptom**: Unable to establish connection with fleet nodes.
+
+**Solution**:
+1. Verify SSH key setup:
+   ```bash
+   pop --fleet verify-keys
+   ```
+2. Check if the node is properly registered:
+   ```bash
+   pop --fleet list
+   ```
+3. Test connectivity:
+   ```bash
+   pop --fleet test-connection <NODE>
+   ```
+
+#### Error: Fleet commands fail
+
+**Symptom**: Fleet commands return errors.
+
+**Solution**:
+1. Check node status:
+   ```bash
+   pop --fleet status
+   ```
+2. Verify permissions on remote nodes:
+   ```bash
+   pop --fleet check-permissions
+   ```
+3. Attempt to re-register the problem node:
+   ```bash
+   pop --fleet unregister <NODE>
+   pop --fleet register <NODE>
+   ```
+
+## Logging
+
+For more detailed troubleshooting, check the application logs:
+
+```bash
+# View application logs
+pop logs
+
+# View more detailed logs
+pop logs --verbose
+
+# Check system logs
+sudo journalctl -u pipe-pop
+```
+
+## Getting Help
+
+If you continue to experience issues after following these troubleshooting steps, please:
+
+1. Check the documentation for any updates
+2. Check for software updates:
+   ```bash
+   pop --check-update
+   ```
+3. Reach out to the community through the official channels
+
+---
+
+**Note**: For issues related to the Web UI, please defer to a future release where this feature will be fully implemented. 

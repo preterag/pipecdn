@@ -6,7 +6,7 @@
 # It is not part of the official Pipe Network project.
 # For official documentation, please refer to the official Pipe Network documentation.
 
-VERSION="community-v0.0.2"
+VERSION="community-v0.0.3"
 
 # Color codes for output
 GREEN='\033[0;32m'
@@ -50,6 +50,7 @@ print_header
 # Installation variables
 INSTALL_WEB_UI=false
 AUTO_LAUNCH_UI=false
+UI_TYPE="nodejs" # Default UI type (nodejs or python)
 
 # Process command line arguments
 while [[ $# -gt 0 ]]; do
@@ -61,6 +62,14 @@ while [[ $# -gt 0 ]]; do
         --auto-launch)
             AUTO_LAUNCH_UI=true
             INSTALL_WEB_UI=true
+            shift
+            ;;
+        --ui-type=*)
+            UI_TYPE="${1#*=}"
+            if [[ "$UI_TYPE" != "nodejs" && "$UI_TYPE" != "python" ]]; then
+                print_error "Invalid UI type. Must be 'nodejs' or 'python'."
+                exit 1
+            fi
             shift
             ;;
         *)
@@ -81,13 +90,19 @@ LOGS_DIR="${INSTALL_DIR}/logs"
 BACKUPS_DIR="${INSTALL_DIR}/backups"
 TOOLS_DIR="${INSTALL_DIR}/tools"
 UI_DIR="${SRC_DIR}/ui"
+PYTHON_UI_DIR="${SRC_DIR}/python_ui"
 INSTALLER_DIR="${SRC_DIR}/installer"
 
 # Create directories with proper permissions
 print_message "Creating installation directory structure..."
 mkdir -p "${INSTALL_DIR}" "${CONFIG_DIR}" "${SRC_DIR}/core" "${SRC_DIR}/utils" "${BIN_DIR}" "${CACHE_DIR}" "${METRICS_DIR}" "${LOGS_DIR}" "${BACKUPS_DIR}" "${TOOLS_DIR}"
 if [ "$INSTALL_WEB_UI" = true ]; then
-    mkdir -p "${UI_DIR}" "${INSTALLER_DIR}"
+    mkdir -p "${INSTALLER_DIR}"
+    if [ "$UI_TYPE" = "nodejs" ]; then
+        mkdir -p "${UI_DIR}"
+    elif [ "$UI_TYPE" = "python" ]; then
+        mkdir -p "${PYTHON_UI_DIR}"
+    fi
 fi
 chmod 755 "${INSTALL_DIR}" "${BIN_DIR}" "${SRC_DIR}" "${TOOLS_DIR}"
 chmod 700 "${CONFIG_DIR}" "${CACHE_DIR}" "${METRICS_DIR}" "${LOGS_DIR}" "${BACKUPS_DIR}"
@@ -97,21 +112,54 @@ print_message "Installing dependencies..."
 apt-get update
 apt-get install -y ufw curl jq netstat net-tools
 
-# If Web UI is requested, install Node.js dependencies
+# If Web UI is requested, install dependencies
 if [ "$INSTALL_WEB_UI" = true ]; then
-    print_message "Installing Web UI dependencies..."
-    
-    # Check if nodejs is installed
-    if ! command -v node &> /dev/null; then
-        print_message "Installing Node.js..."
-        curl -sL https://deb.nodesource.com/setup_14.x | bash -
-        apt-get install -y nodejs
-    fi
-    
-    # Check if npm is installed
-    if ! command -v npm &> /dev/null; then
-        print_message "Installing npm..."
-        apt-get install -y npm
+    if [ "$UI_TYPE" = "nodejs" ]; then
+        print_message "Installing Node.js Web UI dependencies..."
+        
+        # Check if nodejs is installed
+        if ! command -v node &> /dev/null; then
+            print_message "Installing Node.js..."
+            curl -sL https://deb.nodesource.com/setup_14.x | bash -
+            apt-get install -y nodejs
+        fi
+        
+        # Check if npm is installed
+        if ! command -v npm &> /dev/null; then
+            print_message "Installing npm..."
+            apt-get install -y npm
+        fi
+    elif [ "$UI_TYPE" = "python" ]; then
+        print_message "Installing Python Web UI dependencies..."
+        
+        # Check if python3 is installed
+        if ! command -v python3 &> /dev/null; then
+            print_message "Installing Python 3..."
+            apt-get install -y python3
+        fi
+        
+        # Make sure python3-venv is installed
+        if ! python3 -c "import venv" &> /dev/null; then
+            print_message "Installing Python virtual environment support..."
+            
+            # Get Python version for specific venv package
+            PYTHON_VERSION=$(python3 --version 2>&1 | sed 's/Python \([0-9]\+\.[0-9]\+\).*/\1/')
+            
+            # Try version-specific venv first if we have a version
+            if [ -n "$PYTHON_VERSION" ]; then
+                print_message "Installing python${PYTHON_VERSION}-venv..."
+                apt-get install -y python${PYTHON_VERSION}-venv
+            fi
+            
+            # If that didn't work, try the generic package
+            if ! python3 -c "import venv" &> /dev/null; then
+                print_message "Installing generic python3-venv..."
+                apt-get install -y python3-venv
+            fi
+        fi
+        
+        # No need to install Flask here - it will be installed in the virtual environment
+        # by the pop-ui-python script when needed
     fi
 fi
 
@@ -156,21 +204,37 @@ if [ "$INSTALL_WEB_UI" = true ]; then
     print_message "Installing Web UI components..."
     # Copy browser detection utilities
     cp -r "$(dirname "$0")/src/installer" "${SRC_DIR}/"
-    # Copy Web UI files
-    cp -r "$(dirname "$0")/src/ui" "${SRC_DIR}/"
-    # Copy the pop-ui command tool
-    cp "$(dirname "$0")/tools/pop-ui" "${TOOLS_DIR}/"
     
-    # Install Node.js dependencies
-    print_message "Installing Web UI server dependencies..."
-    cd "${SRC_DIR}/ui/server" && npm install --no-audit
+    if [ "$UI_TYPE" = "nodejs" ]; then
+        # Copy Node.js Web UI files
+        cp -r "$(dirname "$0")/src/ui" "${SRC_DIR}/"
+        # Copy the pop-ui command tool
+        cp "$(dirname "$0")/tools/pop-ui" "${TOOLS_DIR}/"
+        
+        # Install Node.js dependencies
+        print_message "Installing Node.js Web UI server dependencies..."
+        cd "${SRC_DIR}/ui/server" && npm install --no-audit
+        
+        # Create symbolic link for global pop-ui command
+        print_message "Creating global 'pop-ui' command..."
+        ln -sf "${TOOLS_DIR}/pop-ui" /usr/local/bin/pop-ui
+        
+        # Set correct permissions
+        chmod 755 "${TOOLS_DIR}/pop-ui"
+    elif [ "$UI_TYPE" = "python" ]; then
+        # Copy Python Web UI files
+        cp -r "$(dirname "$0")/src/python_ui" "${SRC_DIR}/"
+        # Copy the pop-ui-python command tool
+        cp "$(dirname "$0")/tools/pop-ui-python" "${TOOLS_DIR}/"
+        
+        # Create symbolic link for global pop-ui-python command
+        print_message "Creating global 'pop-ui-python' command..."
+        ln -sf "${TOOLS_DIR}/pop-ui-python" /usr/local/bin/pop-ui-python
+        
+        # Set correct permissions
+        chmod 755 "${TOOLS_DIR}/pop-ui-python"
+    fi
     
-    # Create symbolic link for global pop-ui command
-    print_message "Creating global 'pop-ui' command..."
-    ln -sf "${TOOLS_DIR}/pop-ui" /usr/local/bin/pop-ui
-    
-    # Set correct permissions
-    chmod 755 "${TOOLS_DIR}/pop-ui"
     chmod 755 "${SRC_DIR}/installer/browser_detect.sh"
     chmod 755 "${SRC_DIR}/installer/web_installer.sh"
 fi
@@ -218,8 +282,9 @@ EOF
 
 # Create Web UI systemd service if requested
 if [ "$INSTALL_WEB_UI" = true ]; then
-    print_message "Creating Web UI systemd service..."
-    cat > /etc/systemd/system/pipe-pop-ui.service << EOF
+    if [ "$UI_TYPE" = "nodejs" ]; then
+        print_message "Creating Node.js Web UI systemd service..."
+        cat > /etc/systemd/system/pipe-pop-ui.service << EOF
 [Unit]
 Description=Pipe Network PoP Web UI
 After=network.target
@@ -238,6 +303,27 @@ StandardError=append:${LOGS_DIR}/pipe-pop-ui-error.log
 [Install]
 WantedBy=multi-user.target
 EOF
+    elif [ "$UI_TYPE" = "python" ]; then
+        print_message "Creating Python Web UI systemd service..."
+        cat > /etc/systemd/system/pipe-pop-ui.service << EOF
+[Unit]
+Description=Pipe Network PoP Python Web UI
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=${SRC_DIR}/python_ui
+ExecStart=/usr/bin/python3 ${SRC_DIR}/python_ui/app.py
+Restart=always
+RestartSec=10
+StandardOutput=append:${LOGS_DIR}/pipe-pop-ui.log
+StandardError=append:${LOGS_DIR}/pipe-pop-ui-error.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    fi
 
     # Enable the Web UI service if requested
     systemctl daemon-reload
@@ -246,8 +332,12 @@ EOF
     # Auto-launch Web UI if requested
     if [ "$AUTO_LAUNCH_UI" = true ]; then
         print_message "Auto-launching Web UI..."
-        source "${SRC_DIR}/installer/web_installer.sh"
-        auto_launch_ui
+        if [ "$UI_TYPE" = "nodejs" ]; then
+            source "${SRC_DIR}/installer/web_installer.sh"
+            auto_launch_ui
+        elif [ "$UI_TYPE" = "python" ]; then
+            "${TOOLS_DIR}/pop-ui-python" start --launch
+        fi
     fi
 fi
 
@@ -271,15 +361,25 @@ echo -e "  ${YELLOW}pop monitoring pulse${NC}"
 
 if [ "$INSTALL_WEB_UI" = true ]; then
     print_message "To manage the Web UI:"
-    echo -e "  ${YELLOW}pop-ui start${NC}  - Start the Web UI server"
-    echo -e "  ${YELLOW}pop-ui stop${NC}   - Stop the Web UI server"
-    echo -e "  ${YELLOW}pop-ui status${NC} - Check Web UI server status"
+    if [ "$UI_TYPE" = "nodejs" ]; then
+        echo -e "  ${YELLOW}pop-ui start${NC}  - Start the Web UI server"
+        echo -e "  ${YELLOW}pop-ui stop${NC}   - Stop the Web UI server"
+        echo -e "  ${YELLOW}pop-ui status${NC} - Check Web UI server status"
+    elif [ "$UI_TYPE" = "python" ]; then
+        echo -e "  ${YELLOW}pop-ui-python start${NC}  - Start the Web UI server"
+        echo -e "  ${YELLOW}pop-ui-python stop${NC}   - Stop the Web UI server"
+        echo -e "  ${YELLOW}pop-ui-python status${NC} - Check Web UI server status"
+    fi
     
     # Show URL for accessing Web UI
     if [ "$AUTO_LAUNCH_UI" = true ]; then
         print_message "Web UI is now available at: ${YELLOW}http://localhost:8585${NC}"
     else
-        print_message "You can access the Web UI by running: ${YELLOW}pop-ui start --launch${NC}"
+        if [ "$UI_TYPE" = "nodejs" ]; then
+            print_message "You can access the Web UI by running: ${YELLOW}pop-ui start --launch${NC}"
+        elif [ "$UI_TYPE" = "python" ]; then
+            print_message "You can access the Web UI by running: ${YELLOW}pop-ui-python start --launch${NC}"
+        fi
     fi
 fi
 

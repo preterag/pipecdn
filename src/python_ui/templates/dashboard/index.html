@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Pipe Network PoP{% endblock %}
+
+{% block content %}
+<h1>Node Dashboard</h1>
+
+<!-- Node status and controls -->
+<div class="card">
+    <div class="card-header">
+        Node Status
+    </div>
+    <div class="card-content">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="status-indicator status-{{ node_status.status }}">
+                <div class="status-dot"></div>
+                <span style="font-size: 1.2rem; font-weight: 500;">{{ node_status.status|title }}</span>
+            </div>
+            <div>
+                <button id="startBtn" class="btn btn-success" {% if node_status.status == 'running' %}disabled{% endif %}>Start Node</button>
+                <button id="stopBtn" class="btn btn-danger" {% if node_status.status != 'running' %}disabled{% endif %}>Stop Node</button>
+                <button id="restartBtn" class="btn btn-warning" {% if node_status.status != 'running' %}disabled{% endif %}>Restart Node</button>
+            </div>
+        </div>
+        {% if node_status.raw_output %}
+        <div class="logs-container" style="margin-top: 15px; max-height: 100px;">
+            <pre>{{ node_status.raw_output }}</pre>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- System Metrics -->
+<h2>System Metrics</h2>
+<div class="dashboard-grid">
+    <!-- Uptime -->
+    <div class="card metric-card">
+        <div class="metric-icon">⏱️</div>
+        <div class="metric-details">
+            <div class="metric-title">Uptime</div>
+            <div class="metric-value">{{ metrics.uptime }}</div>
+            <div class="metric-description">Time since last restart</div>
+        </div>
+    </div>
+    
+    <!-- CPU Usage -->
+    <div class="card metric-card">
+        <div class="metric-icon">🔄</div>
+        <div class="metric-details">
+            <div class="metric-title">CPU Usage</div>
+            <div class="metric-value">{{ metrics.cpu|floatformat:1 }}%</div>
+            <div class="metric-description">Current CPU utilization</div>
+        </div>
+    </div>
+    
+    <!-- Memory Usage -->
+    <div class="card metric-card">
+        <div class="metric-icon">📊</div>
+        <div class="metric-details">
+            <div class="metric-title">Memory</div>
+            <div class="metric-value">{{ metrics.memory|floatformat:1 }}%</div>
+            <div class="metric-description">Current memory utilization</div>
+        </div>
+    </div>
+    
+    <!-- Disk Usage -->
+    <div class="card metric-card">
+        <div class="metric-icon">💾</div>
+        <div class="metric-details">
+            <div class="metric-title">Disk Usage</div>
+            <div class="metric-value">{{ metrics.disk|floatformat:1 }}%</div>
+            <div class="metric-description">Current disk utilization</div>
+        </div>
+    </div>
+    
+    <!-- Network Traffic -->
+    <div class="card metric-card">
+        <div class="metric-icon">📡</div>
+        <div class="metric-details">
+            <div class="metric-title">Network Traffic</div>
+            <div class="metric-value">
+                {% if metrics.network > 0 %}
+                    {{ metrics.network|floatformat:2 }} MB/s
+                {% else %}
+                    N/A
+                {% endif %}
+            </div>
+            <div class="metric-description">Current network throughput</div>
+        </div>
+    </div>
+    
+    <!-- Connected Peers -->
+    <div class="card metric-card">
+        <div class="metric-icon">👥</div>
+        <div class="metric-details">
+            <div class="metric-title">Connected Peers</div>
+            <div class="metric-value">{{ metrics.peers }}</div>
+            <div class="metric-description">Active peer connections</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Logs -->
+<h2>Recent Logs</h2>
+<div class="card">
+    <div class="card-header">
+        System Logs
+    </div>
+    <div class="card-content">
+        <div id="logsContainer" class="logs-container">
+            <div class="log-entry log-info">Loading logs...</div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="/logs" class="btn btn-primary">View All Logs</a>
+        <button id="refreshLogsBtn" class="btn btn-secondary">Refresh</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_scripts %}
+// Dashboard functionality
+let refreshTimeout;
+
+// Function to refresh dashboard data
+function refreshDashboard() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateNodeStatus(data.node_status);
+                updateMetrics(data.metrics);
+            }
+        })
+        .catch(error => console.error('Error fetching status:', error));
+    
+    // Schedule next refresh
+    refreshTimeout = setTimeout(refreshDashboard, 10000); // Refresh every 10 seconds
+}
+
+// Function to update node status display
+function updateNodeStatus(status) {
+    const statusIndicator = document.querySelector('.status-indicator');
+    if (statusIndicator) {
+        statusIndicator.className = `status-indicator status-${status.status}`;
+        statusIndicator.querySelector('span').textContent = status.status.charAt(0).toUpperCase() + status.status.slice(1);
+    }
+    
+    // Update buttons
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    
+    if (startBtn) startBtn.disabled = status.status === 'running';
+    if (stopBtn) stopBtn.disabled = status.status !== 'running';
+    if (restartBtn) restartBtn.disabled = status.status !== 'running';
+}
+
+// Function to update metrics display
+function updateMetrics(metrics) {
+    const metricElements = {
+        'uptime': document.querySelector('.metric-title:contains("Uptime") + .metric-value'),
+        'cpu': document.querySelector('.metric-title:contains("CPU") + .metric-value'),
+        'memory': document.querySelector('.metric-title:contains("Memory") + .metric-value'),
+        'disk': document.querySelector('.metric-title:contains("Disk") + .metric-value'),
+        'network': document.querySelector('.metric-title:contains("Network") + .metric-value'),
+        'peers': document.querySelector('.metric-title:contains("Peers") + .metric-value')
+    };
+    
+    for (const [key, element] of Object.entries(metricElements)) {
+        if (element && metrics[key] !== undefined) {
+            if (key === 'uptime') {
+                element.textContent = metrics[key];
+            } else if (key === 'network') {
+                element.textContent = metrics[key] > 0 ? `${metrics[key].toFixed(2)} MB/s` : 'N/A';
+            } else if (key === 'peers') {
+                element.textContent = metrics[key];
+            } else {
+                element.textContent = `${metrics[key].toFixed(1)}%`;
+            }
+        }
+    }
+}
+
+// Function to load logs
+function loadLogs() {
+    fetch('/api/logs?limit=20')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const logsContainer = document.getElementById('logsContainer');
+                if (logsContainer) {
+                    if (data.logs.length === 0) {
+                        logsContainer.innerHTML = '<div class="log-entry log-info">No logs available</div>';
+                    } else {
+                        let logsHtml = '';
+                        data.logs.forEach(log => {
+                            let logClass = 'log-info';
+                            if (log.includes('ERROR') || log.includes('error')) {
+                                logClass = 'log-error';
+                            } else if (log.includes('WARN') || log.includes('warn')) {
+                                logClass = 'log-warning';
+                            } else if (log.includes('DEBUG') || log.includes('debug')) {
+                                logClass = 'log-debug';
+                            }
+                            logsHtml += `<div class="log-entry ${logClass}">${log}</div>`;
+                        });
+                        logsContainer.innerHTML = logsHtml;
+                        logsContainer.scrollTop = logsContainer.scrollHeight;
+                    }
+                }
+            }
+        })
+        .catch(error => console.error('Error fetching logs:', error));
+}
+
+// Set up node control buttons
+function setupNodeControls() {
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            fetch('/api/node/start', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Node started successfully', 'success');
+                        setTimeout(refreshDashboard, 1000);
+                    } else {
+                        showNotification('Failed to start node', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error starting node:', error);
+                    showNotification('Error starting node', 'error');
+                });
+        });
+    }
+    
+    if (stopBtn) {
+        stopBtn.addEventListener('click', () => {
+            fetch('/api/node/stop', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Node stopped successfully', 'success');
+                        setTimeout(refreshDashboard, 1000);
+                    } else {
+                        showNotification('Failed to stop node', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error stopping node:', error);
+                    showNotification('Error stopping node', 'error');
+                });
+        });
+    }
+    
+    if (restartBtn) {
+        restartBtn.addEventListener('click', () => {
+            fetch('/api/node/restart', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Node restarted successfully', 'success');
+                        setTimeout(refreshDashboard, 1000);
+                    } else {
+                        showNotification('Failed to restart node', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error restarting node:', error);
+                    showNotification('Error restarting node', 'error');
+                });
+        });
+    }
+    
+    const refreshLogsBtn = document.getElementById('refreshLogsBtn');
+    if (refreshLogsBtn) {
+        refreshLogsBtn.addEventListener('click', loadLogs);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type}`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = 1000;
+    notification.style.maxWidth = '300px';
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = 0;
+        notification.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 500);
+    }, 3000);
+}
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    setupNodeControls();
+    loadLogs();
+    refreshDashboard();
+    
+    // Clean up when leaving the page
+    window.addEventListener('beforeunload', () => {
+        if (refreshTimeout) {
+            clearTimeout(refreshTimeout);
+        }
+    });
+});
+{% endblock %} 

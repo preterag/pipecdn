@@ -1,0 +1,514 @@
+#!/bin/bash
+# pop-ui-python - Python Web UI launcher for Pipe Network PoP
+
+# Get the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+PYTHON_UI_DIR="${ROOT_DIR}/src/python_ui"
+VENV_DIR="${HOME}/.local/share/pipe-pop/venv"
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_debug() { echo -e "${CYAN}[DEBUG]${NC} $1"; }
+
+# Default configuration
+DEFAULT_PORT=8585
+DEFAULT_HOST="127.0.0.1"
+PID_FILE="${HOME}/.local/share/pipe-pop/python-ui.pid"
+CONFIG_DIR="${HOME}/.local/share/pipe-pop"
+LOG_FILE="${CONFIG_DIR}/python-ui.log"
+
+# Ensure the config directory exists
+mkdir -p "${CONFIG_DIR}"
+
+# Functions
+check_python() {
+    # Try python3 first, then python as a fallback
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHON_CMD=python3
+    elif command -v python >/dev/null 2>&1; then
+        # Check if python is Python 3.x
+        PYTHON_VERSION=$(python --version 2>&1 | awk '{print $2}' | cut -d. -f1)
+        if [ "$PYTHON_VERSION" -eq 3 ]; then
+            PYTHON_CMD=python
+        else
+            log_error "Python 3.x is required but found Python $PYTHON_VERSION"
+            return 1
+        fi
+    else
+        log_error "Python 3.x is required but not found"
+        return 1
+    fi
+    
+    log_info "Found Python: $($PYTHON_CMD --version 2>&1)"
+    return 0
+}
+
+check_system_flask() {
+    # Check if Flask is installed system-wide
+    if $PYTHON_CMD -c "import flask" 2>/dev/null; then
+        FLASK_VERSION=$($PYTHON_CMD -c "import flask; print(flask.__version__)" 2>/dev/null)
+        log_info "Found Flask: $FLASK_VERSION (system-wide)"
+        USING_SYSTEM_FLASK=true
+        return 0
+    # Check if flask package is installed but not importable
+    elif dpkg -l python3-flask 2>/dev/null | grep -q "^ii"; then
+        log_info "Found system Python Flask package, but may need a restart to use"
+        USING_SYSTEM_FLASK=true
+        return 0
+    else
+        log_warn "Flask not found in system Python. Installation required."
+        return 1
+    fi
+}
+
+install_system_flask() {
+    log_info "Installing Flask system-wide..."
+    
+    # Try pip install first (user-level if not root)
+    if [ "$EUID" -ne 0 ]; then
+        $PYTHON_CMD -m pip install --user flask
+    else
+        $PYTHON_CMD -m pip install flask
+    fi
+    
+    # Check if Flask was installed
+    if ! check_system_flask; then
+        # Try system package manager if pip install failed
+        if command -v apt-get >/dev/null 2>&1; then
+            log_info "Trying apt-get to install Flask..."
+            sudo apt-get update
+            sudo apt-get install -y python3-flask
+            
+            # Check again
+            if check_system_flask; then
+                return 0
+            fi
+        fi
+        
+        log_error "Failed to install Flask system-wide"
+        return 1
+    fi
+    
+    log_info "Flask installed successfully system-wide"
+    return 0
+}
+
+is_ui_running() {
+    if [ -f "$PID_FILE" ]; then
+        local pid
+        pid=$(cat "$PID_FILE")
+        
+        if kill -0 "$pid" 2>/dev/null; then
+            return 0
+        else
+            log_warn "PID file exists but process is not running"
+            rm -f "$PID_FILE"
+        fi
+    fi
+    
+    return 1
+}
+
+# Direct start function that skips all checks
+direct_start_ui() {
+    local host="$1"
+    local port="$2"
+    local launch="$3"
+    local debug="$4"
+    
+    if [ -z "$host" ]; then
+        host="$DEFAULT_HOST"
+    fi
+    
+    if [ -z "$port" ]; then
+        port="$DEFAULT_PORT"
+    fi
+    
+    if is_ui_running; then
+        log_warn "UI server is already running"
+        
+        # Launch browser if requested
+        if [ "$launch" = true ]; then
+            launch_browser "http://$host:$port"
+        fi
+        
+        return 0
+    fi
+    
+    # Check Python exists
+    if ! command -v python3 >/dev/null 2>&1; then
+        log_error "Python 3 not found - cannot start UI"
+        return 1
+    fi
+    
+    PYTHON_CMD=python3
+    
+    log_info "Starting UI server on $host:$port (direct mode)..."
+    
+    # Debug flag
+    local debug_flag=""
+    if [ "$debug" = true ]; then
+        debug_flag="--debug"
+    fi
+    
+    # Start the server
+    cd "$PYTHON_UI_DIR" || {
+        log_error "Failed to change to Python UI directory"
+        return 1
+    }
+    
+    # Add the fallback flag to ensure we can start even without Flask
+    log_info "Starting with system Python in fallback mode if needed..."
+    nohup $PYTHON_CMD app.py --host "$host" --port "$port" $debug_flag --fallback > "$LOG_FILE" 2>&1 &
+    
+    local pid=$!
+    echo $pid > "$PID_FILE"
+    
+    # Wait a moment for the server to start
+    sleep 2
+    
+    # Check if it's still running
+    if kill -0 $pid 2>/dev/null; then
+        log_info "UI server started successfully (PID: $pid)"
+        
+        # Launch browser if requested
+        if [ "$launch" = true ]; then
+            # Wait a bit longer for the server to fully initialize
+            sleep 3
+            
+            # Simple browser launch
+            if command -v xdg-open >/dev/null 2>&1; then
+                xdg-open "http://$host:$port"
+            elif command -v open >/dev/null 2>&1; then
+                open "http://$host:$port"
+            else
+                log_warn "Could not find a browser to launch"
+            fi
+        fi
+        
+        return 0
+    else
+        log_error "Failed to start UI server. Check logs at $LOG_FILE"
+        cat "$LOG_FILE"
+        rm -f "$PID_FILE"
+        return 1
+    fi
+}
+
+start_ui() {
+    local host="$1"
+    local port="$2"
+    local launch="$3"
+    local debug="$4"
+    
+    if [ -z "$host" ]; then
+        host="$DEFAULT_HOST"
+    fi
+    
+    if [ -z "$port" ]; then
+        port="$DEFAULT_PORT"
+    fi
+    
+    if is_ui_running; then
+        log_warn "UI server is already running"
+        
+        # Launch browser if requested
+        if [ "$launch" = true ]; then
+            launch_browser "http://$host:$port"
+        fi
+        
+        return 0
+    fi
+    
+    # Check Python 
+    if ! check_python; then
+        return 1
+    fi
+    
+    # Try to check for Flask availability
+    check_system_flask || log_warn "Flask not found, but will try fallback mode if needed"
+    
+    log_info "Starting UI server on $host:$port..."
+    
+    # Debug flag
+    local debug_flag=""
+    if [ "$debug" = true ]; then
+        debug_flag="--debug"
+    fi
+    
+    # Start the server
+    cd "$PYTHON_UI_DIR" || {
+        log_error "Failed to change to Python UI directory"
+        return 1
+    }
+    
+    # Add the fallback flag to ensure we can start even without Flask
+    log_info "Starting with fallback mode if needed..."
+    nohup $PYTHON_CMD app.py --host "$host" --port "$port" $debug_flag --fallback > "$LOG_FILE" 2>&1 &
+    
+    local pid=$!
+    echo $pid > "$PID_FILE"
+    
+    # Wait a moment for the server to start
+    sleep 2
+    
+    # Check if it's still running
+    if kill -0 $pid 2>/dev/null; then
+        log_info "UI server started successfully (PID: $pid)"
+        
+        # Launch browser if requested
+        if [ "$launch" = true ]; then
+            # Wait a bit longer for the server to fully initialize
+            sleep 3
+            
+            # Simple browser launch
+            if command -v xdg-open >/dev/null 2>&1; then
+                xdg-open "http://$host:$port"
+            elif command -v open >/dev/null 2>&1; then
+                open "http://$host:$port"
+            else
+                log_warn "Could not find a browser to launch"
+            fi
+        fi
+        
+        return 0
+    else
+        log_error "Failed to start UI server. Check logs at $LOG_FILE"
+        cat "$LOG_FILE"
+        rm -f "$PID_FILE"
+        return 1
+    fi
+}
+
+stop_ui() {
+    if [ -f "$PID_FILE" ]; then
+        local pid
+        pid=$(cat "$PID_FILE")
+        
+        if kill -0 "$pid" 2>/dev/null; then
+            log_info "Stopping UI server (PID: $pid)..."
+            kill "$pid"
+            
+            # Wait for it to stop
+            for i in {1..10}; do
+                if ! kill -0 "$pid" 2>/dev/null; then
+                    break
+                fi
+                sleep 0.5
+            done
+            
+            # If it's still running, force kill
+            if kill -0 "$pid" 2>/dev/null; then
+                log_warn "Server did not stop gracefully, forcing..."
+                kill -9 "$pid"
+            fi
+            
+            rm -f "$PID_FILE"
+            log_info "UI server stopped"
+            return 0
+        else
+            log_warn "PID file exists but process is not running"
+            rm -f "$PID_FILE"
+            return 0
+        fi
+    else
+        log_info "UI server is not running"
+        return 0
+    fi
+}
+
+status_ui() {
+    if is_ui_running; then
+        local pid
+        pid=$(cat "$PID_FILE")
+        log_info "UI server is running (PID: $pid)"
+        return 0
+    else
+        log_info "UI server is not running"
+        return 1
+    fi
+}
+
+launch_browser() {
+    local url="$1"
+    log_info "Launching browser: $url"
+    
+    # Try to use the Python browser module
+    if [ -f "${PYTHON_UI_DIR}/utils/browser.py" ]; then
+        $PYTHON_CMD -c "import sys; sys.path.insert(0, '${PYTHON_UI_DIR}/utils'); import browser; browser.launch_browser('$url')"
+        return $?
+    fi
+    
+    # Fallback to platform-specific commands
+    case "$(uname -s)" in
+        Darwin*)
+            # macOS
+            open "$url"
+            ;;
+        Linux*)
+            # Linux
+            if command -v xdg-open >/dev/null 2>&1; then
+                xdg-open "$url"
+            elif command -v gnome-open >/dev/null 2>&1; then
+                gnome-open "$url"
+            elif command -v kde-open >/dev/null 2>&1; then
+                kde-open "$url"
+            else
+                log_error "No browser launcher found"
+                return 1
+            fi
+            ;;
+        CYGWIN*|MINGW*|MSYS*)
+            # Windows
+            start "$url"
+            ;;
+        *)
+            log_error "Unsupported platform for browser launch"
+            return 1
+            ;;
+    esac
+    
+    return 0
+}
+
+install_ui() {
+    log_info "Installing Python Web UI..."
+    
+    # Make sure Python is available
+    if ! check_python; then
+        log_error "Python 3.x is required for the UI"
+        return 1
+    fi
+    
+    # Check if Flask is available - try system
+    if ! check_system_flask; then
+        log_info "Installing Flask..."
+        if ! install_system_flask; then
+            log_error "Failed to install Flask"
+            return 1
+        fi
+    fi
+    
+    # Make sure the UI directory exists
+    if [ ! -d "$PYTHON_UI_DIR" ]; then
+        log_error "Python UI directory not found: $PYTHON_UI_DIR"
+        return 1
+    fi
+    
+    # Make sure the script is executable
+    chmod +x "$SCRIPT_DIR/pop-ui-python"
+    
+    log_info "Web UI installation complete"
+    return 0
+}
+
+show_help() {
+    echo "Pipe Network PoP Python Web UI"
+    echo ""
+    echo "Usage: $0 COMMAND [OPTIONS]"
+    echo ""
+    echo "Available commands:"
+    echo "  install          Install the Python Web UI components"
+    echo "  start            Start the UI server"
+    echo "  direct-start     Start the UI server directly (skip compatibility checks)"
+    echo "  stop             Stop the UI server"
+    echo "  status           Check the status of the UI server"
+    echo "  help             Show this help message"
+    echo ""
+    echo "Options:"
+    echo "  --host=HOST      Specify the host to use (default: 127.0.0.1)"
+    echo "  --port=PORT      Specify the port to use (default: 8585)"
+    echo "  --launch         Launch the browser after starting the server"
+    echo "  --debug          Run the server in debug mode"
+    echo ""
+    echo "Examples:"
+    echo "  $0 install                     Install the Web UI"
+    echo "  $0 start --launch              Start the UI and open in browser"
+    echo "  $0 direct-start --launch       Start directly, skipping Flask checks"
+    echo "  $0 start --port=8080 --debug   Start the UI on port 8080 in debug mode"
+    echo "  $0 status                      Check if the UI server is running"
+    echo "  $0 stop                        Stop the UI server"
+}
+
+# Initialize flags for installation type
+USING_SYSTEM_FLASK=false
+
+# Parse arguments
+COMMAND=""
+HOST=""
+PORT=""
+LAUNCH=false
+DEBUG=false
+
+for arg in "$@"; do
+    case $arg in
+        install|start|direct-start|stop|status|help)
+            COMMAND="$arg"
+            ;;
+        --host=*)
+            HOST="${arg#*=}"
+            ;;
+        --port=*)
+            PORT="${arg#*=}"
+            ;;
+        --launch)
+            LAUNCH=true
+            ;;
+        --debug)
+            DEBUG=true
+            ;;
+        *)
+            log_warn "Unknown argument: $arg"
+            ;;
+    esac
+done
+
+# Validate command
+if [ -z "$COMMAND" ]; then
+    log_error "No command specified"
+    show_help
+    exit 1
+fi
+
+# Execute command
+case $COMMAND in
+    help)
+        show_help
+        exit 0
+        ;;
+    install)
+        install_ui
+        exit $?
+        ;;
+    start)
+        start_ui "$HOST" "$PORT" "$LAUNCH" "$DEBUG"
+        exit $?
+        ;;
+    direct-start)
+        direct_start_ui "$HOST" "$PORT" "$LAUNCH" "$DEBUG"
+        exit $?
+        ;;
+    stop)
+        stop_ui
+        exit $?
+        ;;
+    status)
+        status_ui
+        exit $?
+        ;;
+    *)
+        log_error "Unknown command: $COMMAND"
+        show_help
+        exit 1
+        ;;
+esac 

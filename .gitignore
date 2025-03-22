@@ -1,96 +1,86 @@
-# Operational directories (never committed)
-/operational/
-/node_data/
-/user_configs/
-/PipeNetwork/
-/PipeNetwork_*/
-
-# Backup and temporary files
-backup_*/
-backups/
-!backups/README.md
-PipeNetwork_backup.tar.gz
-*.tmp
-*.temp
-.tmp/
-download_cache/
-temp/
-~/*
-
-# Logs
-logs/
-*.log
-!logs/README.md
-pipe-pop*.log*
-pipe-pop-setup.log
-
-# Cache
-cache/
-node_info.json
-!cache/README.md
-
-# Configuration files with sensitive data
-config/config.json
-!config/config.template.json
-!config/fleet.template.json
-!config/examples/*.json
-config_fixed.json
-config.json
-
-# Build artifacts
-dist/
+# Build and package files
 build/
-*.o
-*.so
-*.out
+dist/
+*.deb
+*.rpm
+*.tar.gz
+*.zip
 
-# Node modules
-node_modules/
+# Operational directories
+logs/
+data/
+cache/
+backups/
+monitoring/data/
+download_cache/
 
-# Environment variables
-.env
-*.env
-.env.local
-.env.development
-.env.test
-.env.production
+# User configuration
+config.json
+**/config/*.local.json
+.node_info
+.pop.env
 
-# Security and authentication files
-github_push.sh
-*_token*
-*_key*
-*_secret*
-*_password*
-*_credential*
-.git-credentials
-.netrc
-solana_id.json
-*.key
-keys/
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+.python-version
 
-# OS specific files
+# Runtime files
+*.pid
+*.sock
+*.log
+.cache/
+sample-metrics.json
+sample-metrics.json.prev
+
+# Editor and IDE files
+.vscode/
+.idea/
+.cursor/
+*~
+*.swp
+*.swo
+
+# System files
 .DS_Store
 Thumbs.db
 
-# Editor directories and files
-.idea/
-.vscode/
-*.swp
-*.swo 
-.cursor/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Solana
-.config/solana/
+# Node
+node_modules/
+package-lock.json
+yarn.lock
 
-# Running node specific files
-pipe-pop-metrics.json
-uptime.json
-*.dat
-*.db
-*.db-shm
-*.db-wal
-status_cache.json
-.running_instance
-.last_update_check
-sample-metrics.json
-sample-metrics.json.prev
+# Operational scripts that should be generated
+new-pipe-pop.service
+pipe-pop.service
+updated-pipe-pop.service
+
+# Test files
+*.test
+*.spec
+*.tmp

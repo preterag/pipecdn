@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block title %}Pipe Network PoP Node Setup Wizard{% endblock %}
+
+{% block content %}
+<div class="wizard-container">
+    <div class="wizard-header">
+        <h1>Pipe Network PoP Node Setup</h1>
+        <p class="subtitle">Complete the steps below to set up your Pipe Network Point of Presence Node</p>
+    </div>
+
+    <div class="wizard-steps">
+        <div class="step {% if current_step == 1 %}active{% endif %} {% if current_step > 1 %}completed{% endif %}" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-text">Welcome</div>
+        </div>
+        <div class="step {% if current_step == 2 %}active{% endif %} {% if current_step > 2 %}completed{% endif %}" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-text">System Check</div>
+        </div>
+        <div class="step {% if current_step == 3 %}active{% endif %} {% if current_step > 3 %}completed{% endif %}" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-text">Configuration</div>
+        </div>
+        <div class="step {% if current_step == 4 %}active{% endif %} {% if current_step > 4 %}completed{% endif %}" data-step="4">
+            <div class="step-number">4</div>
+            <div class="step-text">Installation</div>
+        </div>
+        <div class="step {% if current_step == 5 %}active{% endif %} {% if current_step > 5 %}completed{% endif %}" data-step="5">
+            <div class="step-number">5</div>
+            <div class="step-text">Network Setup</div>
+        </div>
+        <div class="step {% if current_step == 6 %}active{% endif %}" data-step="6">
+            <div class="step-number">6</div>
+            <div class="step-text">Complete</div>
+        </div>
+    </div>
+
+    <div class="wizard-content">
+        <!-- Step 1: Welcome -->
+        <div class="step-content {% if current_step == 1 %}active{% endif %}" id="step-1">
+            <h2>Welcome to Pipe Network PoP Setup</h2>
+            <p>This wizard will guide you through setting up your Pipe Network Point of Presence Node.</p>
+            
+            <div class="info-box">
+                <h3>What is a Pipe Network PoP Node?</h3>
+                <p>A Pipe Network Point of Presence (PoP) Node is a server that helps route traffic through the Pipe Network, improving connectivity and resilience for the network.</p>
+                <p>By running a PoP Node, you are contributing to the decentralized infrastructure of the Pipe Network.</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>A Linux-based system (Ubuntu 20.04+ recommended)</li>
+                    <li>At least 2GB RAM and 20GB storage</li>
+                    <li>A stable internet connection with public IP address</li>
+                    <li>Basic knowledge of networking concepts</li>
+                </ul>
+            </div>
+            
+            <p>Click "Next" to begin the setup process.</p>
+        </div>
+        
+        <!-- Step 2: System Check -->
+        <div class="step-content {% if current_step == 2 %}active{% endif %}" id="step-2">
+            <h2>System Compatibility Check</h2>
+            <p>We're checking your system to ensure it meets the minimum requirements for running a Pipe Network PoP Node.</p>
+            
+            <div class="system-checks">
+                <div class="check-item">
+                    <div class="check-icon {% if system_checks.os %}success{% else %}{% if system_checks.os is defined %}error{% else %}pending{% endif %}{% endif %}">
+                        <span class="check-status"></span>
+                    </div>
+                    <div class="check-details">
+                        <h3>Operating System</h3>
+                        <p>Checking for a compatible operating system...</p>
+                        {% if system_checks.os is defined %}
+                            <p class="check-result">{{ system_checks.os_message }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon {% if system_checks.memory %}success{% else %}{% if system_checks.memory is defined %}error{% else %}pending{% endif %}{% endif %}">
+                        <span class="check-status"></span>
+                    </div>
+                    <div class="check-details">
+                        <h3>Memory</h3>
+                        <p>Checking for minimum 2GB RAM...</p>
+                        {% if system_checks.memory is defined %}
+                            <p class="check-result">{{ system_checks.memory_message }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon {% if system_checks.disk %}success{% else %}{% if system_checks.disk is defined %}error{% else %}pending{% endif %}{% endif %}">
+                        <span class="check-status"></span>
+                    </div>
+                    <div class="check-details">
+                        <h3>Disk Space</h3>
+                        <p>Checking for minimum 20GB available storage...</p>
+                        {% if system_checks.disk is defined %}
+                            <p class="check-result">{{ system_checks.disk_message }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon {% if system_checks.network %}success{% else %}{% if system_checks.network is defined %}error{% else %}pending{% endif %}{% endif %}">
+                        <span class="check-status"></span>
+                    </div>
+                    <div class="check-details">
+                        <h3>Network Connectivity</h3>
+                        <p>Checking internet connectivity and firewall settings...</p>
+                        {% if system_checks.network is defined %}
+                            <p class="check-result">{{ system_checks.network_message }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon {% if system_checks.dependencies %}success{% else %}{% if system_checks.dependencies is defined %}error{% else %}pending{% endif %}{% endif %}">
+                        <span class="check-status"></span>
+                    </div>
+                    <div class="check-details">
+                        <h3>Required Dependencies</h3>
+                        <p>Checking for required software dependencies...</p>
+                        {% if system_checks.dependencies is defined %}
+                            <p class="check-result">{{ system_checks.dependencies_message }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if system_checks_error %}
+            <div class="alert alert-danger">
+                <p><strong>Warning:</strong> Your system does not meet all requirements. You can continue, but performance may be affected.</p>
+            </div>
+            {% endif %}
+            
+            {% if not system_checks_started %}
+            <button id="start-system-check" class="btn">Start System Check</button>
+            {% endif %}
+        </div>
+        
+        <!-- Step 3: Configuration -->
+        <div class="step-content {% if current_step == 3 %}active{% endif %}" id="step-3">
+            <h2>Node Configuration</h2>
+            <p>Configure your Pipe Network PoP Node settings.</p>
+            
+            <form id="config-form" method="post" action="{{ url_for('wizard_save_config') }}">
+                <div class="form-group">
+                    <label for="node_name">Node Name:</label>
+                    <input type="text" id="node_name" name="node_name" value="{{ config.node_name }}" required>
+                    <p class="help-text">A unique name for your node. This will be visible to other network participants.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="node_region">Region:</label>
+                    <select id="node_region" name="node_region" required>
+                        <option value="">-- Select Region --</option>
+                        {% for region in regions %}
+                        <option value="{{ region.code }}" {% if config.node_region == region.code %}selected{% endif %}>{{ region.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="help-text">The geographic region where this node is located.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="public_port">Public Port:</label>
+                    <input type="number" id="public_port" name="public_port" value="{{ config.public_port or 4500 }}" min="1024" max="65535" required>
+                    <p class="help-text">The port to use for public connections. Ensure this port is accessible from the internet.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="max_connections">Maximum Connections:</label>
+                    <input type="number" id="max_connections" name="max_connections" value="{{ config.max_connections or 100 }}" min="10" max="1000" required>
+                    <p class="help-text">Maximum number of simultaneous connections this node can handle.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data_directory">Data Directory:</label>
+                    <input type="text" id="data_directory" name="data_directory" value="{{ config.data_directory or '/var/lib/pipe-pop' }}" required>
+                    <p class="help-text">Directory where node data will be stored. Ensure sufficient disk space is available.</p>
+                </div>
+                
+                <div class="form-group check-group">
+                    <input type="checkbox" id="enable_upnp" name="enable_upnp" {% if config.enable_upnp %}checked{% endif %}>
+                    <label for="enable_upnp">Enable UPnP</label>
+                    <p class="help-text">Automatically configure port forwarding if your router supports UPnP.</p>
+                </div>
+                
+                <div class="form-group check-group">
+                    <input type="checkbox" id="auto_start" name="auto_start" {% if config.auto_start %}checked{% endif %}>
+                    <label for="auto_start">Start Node on System Boot</label>
+                    <p class="help-text">Automatically start the node when your system boots up.</p>
+                </div>
+                
+                <h3>Advanced Settings</h3>
+                <div class="advanced-settings">
+                    <div class="form-group">
+                        <label for="log_level">Log Level:</label>
+                        <select id="log_level" name="log_level">
+                            <option value="error" {% if config.log_level == 'error' %}selected{% endif %}>Error</option>
+                            <option value="warn" {% if config.log_level == 'warn' %}selected{% endif %}>Warning</option>
+                            <option value="info" {% if config.log_level == 'info' or not config.log_level %}selected{% endif %}>Info</option>
+                            <option value="debug" {% if config.log_level == 'debug' %}selected{% endif %}>Debug</option>
+                        </select>
+                        <p class="help-text">Determines how verbose the logging will be.</p>
+                    </div>
+                    
+                    <div class="form-group check-group">
+                        <input type="checkbox" id="enable_metrics" name="enable_metrics" {% if config.enable_metrics %}checked{% endif %}>
+                        <label for="enable_metrics">Enable Metrics Collection</label>
+                        <p class="help-text">Collect and report anonymous usage metrics to help improve the network.</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Step 4: Installation -->
+        <div class="step-content {% if current_step == 4 %}active{% endif %}" id="step-4">
+            <h2>Installing Pipe Network PoP Node</h2>
+            <p>We are now installing and configuring your Pipe Network PoP Node.</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="installation-progress" style="width: {{ installation_progress or 0 }}%"></div>
+                <div class="progress-text">{{ installation_progress or 0 }}% Complete</div>
+            </div>
+            
+            <div class="installation-log">
+                <h3>Installation Log</h3>
+                <div id="log-content" class="log-content">
+                    {% for log in installation_logs %}
+                    <div class="log-entry {% if log.level == 'error' %}error{% elif log.level == 'warning' %}warning{% else %}info{% endif %}">
+                        [{{ log.time }}] {{ log.message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div id="installation-error" class="alert alert-danger" style="{% if not installation_error %}display: none;{% endif %}">
+                <h3>Installation Error</h3>
+                <p>{{ installation_error }}</p>
+                <p>Please check the logs above for details. You can try to resolve the issue and then retry the installation.</p>
+                <button id="retry-installation" class="btn">Retry Installation</button>
+            </div>
+        </div>
+        
+        <!-- Step 5: Network Setup -->
+        <div class="step-content {% if current_step == 5 %}active{% endif %}" id="step-5">
+            <h2>Network Configuration</h2>
+            <p>Configure your network settings to ensure your node is accessible from the internet.</p>
+            
+            <div class="network-status">
+                <h3>Network Connectivity</h3>
+                
+                <div class="status-item">
+                    <div class="status-icon {% if network_status.port_open %}success{% else %}error{% endif %}">
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="status-details">
+                        <h4>Port Accessibility</h4>
+                        <p>Port {{ network_status.port }} is {% if network_status.port_open %}accessible{% else %}not accessible{% endif %} from the internet.</p>
+                        {% if not network_status.port_open %}
+                        <div class="alert alert-warning">
+                            <p>Your port is not accessible from the internet. Please configure port forwarding on your router.</p>
+                            <a href="#" class="btn btn-small toggle-instructions">Show Instructions</a>
+                            <div class="port-forwarding-instructions" style="display: none;">
+                                <ol>
+                                    <li>Access your router's admin interface (usually at 192.168.1.1 or 192.168.0.1)</li>
+                                    <li>Find the port forwarding section (may be under Advanced Settings, NAT, or Virtual Server)</li>
+                                    <li>Add a new port forwarding rule:</li>
+                                    <ul>
+                                        <li>Internal IP: {{ network_status.local_ip }}</li>
+                                        <li>Internal Port: {{ network_status.port }}</li>
+                                        <li>External Port: {{ network_status.port }}</li>
+                                        <li>Protocol: TCP and UDP</li>
+                                    </ul>
+                                    <li>Save the settings and click "Test Again" below</li>
+                                </ol>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon {% if network_status.public_ip %}success{% else %}warning{% endif %}">
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="status-details">
+                        <h4>Public IP Address</h4>
+                        <p>Your public IP address: {% if network_status.public_ip %}{{ network_status.public_ip }}{% else %}Unable to determine{% endif %}</p>
+                    </div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon {% if network_status.upnp_available %}success{% elif network_status.upnp_available is defined %}error{% else %}pending{% endif %}">
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="status-details">
+                        <h4>UPnP Status</h4>
+                        <p>{% if network_status.upnp_available %}UPnP is available and has configured port forwarding automatically.{% elif network_status.upnp_available is defined %}UPnP is not available on your router.{% else %}Checking UPnP availability...{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="network-actions">
+                <button id="test-connectivity" class="btn">Test Again</button>
+                {% if not network_status.port_open %}
+                <p class="help-text">If you've configured port forwarding, click "Test Again" to verify accessibility.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Step 6: Complete -->
+        <div class="step-content {% if current_step == 6 %}active{% endif %}" id="step-6">
+            <h2>Installation Complete!</h2>
+            <div class="success-icon">✓</div>
+            <p>Your Pipe Network PoP Node has been successfully installed and configured.</p>
+            
+            <div class="node-details">
+                <h3>Node Information</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Node Name:</span>
+                    <span class="detail-value">{{ config.node_name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Node ID:</span>
+                    <span class="detail-value">{{ node_id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Region:</span>
+                    <span class="detail-value">{{ node_region_name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Public IP:</span>
+                    <span class="detail-value">{{ network_status.public_ip }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Public Port:</span>
+                    <span class="detail-value">{{ config.public_port }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value status-active">Active</span>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>Next Steps</h3>
+                <ul>
+                    <li>Your node is now joining the Pipe Network. It may take a few minutes to establish connections.</li>
+                    <li>You can monitor your node's performance through the dashboard.</li>
+                    <li>Consider setting up monitoring to ensure your node stays operational.</li>
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                <a href="https://docs.pipenetwork.org/pop/getting-started" target="_blank" class="btn">View Documentation</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="wizard-nav">
+        <button id="prev-step" class="btn btn-secondary" {% if current_step == 1 %}disabled{% endif %}>Previous</button>
+        <button id="next-step" class="btn btn-primary" {% if current_step == 6 %}disabled{% endif %}>
+            {% if current_step == 5 %}Complete Setup{% else %}Next{% endif %}
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentStep = {{ current_step or 1 }};
+        let isNextEnabled = true;
+        
+        // Elements
+        const prevButton = document.getElementById('prev-step');
+        const nextButton = document.getElementById('next-step');
+        const stepElements = document.querySelectorAll('.wizard-steps .step');
+        const stepContents = document.querySelectorAll('.step-content');
+        
+        // Handle navigation buttons
+        prevButton.addEventListener('click', function() {
+            if (currentStep > 1) {
+                navigateToStep(currentStep - 1);
+            }
+        });
+        
+        nextButton.addEventListener('click', function() {
+            if (isNextEnabled && currentStep < 6) {
+                // For configuration step, submit the form
+                if (currentStep === 3) {
+                    const configForm = document.getElementById('config-form');
+                    if (configForm && configForm.checkValidity()) {
+                        configForm.submit();
+                        return;
+                    } else if (configForm) {
+                        configForm.reportValidity();
+                        return;
+                    }
+                }
+                
+                navigateToStep(currentStep + 1);
+            }
+        });
+        
+        // Step navigation
+        function navigateToStep(step) {
+            window.location.href = "{{ url_for('wizard') }}?step=" + step;
+        }
+        
+        // System check
+        const startSystemCheckButton = document.getElementById('start-system-check');
+        if (startSystemCheckButton) {
+            startSystemCheckButton.addEventListener('click', function() {
+                startSystemCheck();
+                this.disabled = true;
+                this.textContent = "Checking...";
+            });
+        }
+        
+        function startSystemCheck() {
+            fetch("{{ url_for('wizard_system_check') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Refresh the page to show results
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to perform system check. Please try again.');
+                if (startSystemCheckButton) {
+                    startSystemCheckButton.disabled = false;
+                    startSystemCheckButton.textContent = "Start System Check";
+                }
+            });
+        }
+        
+        // Installation progress update
+        {% if current_step == 4 and not installation_complete %}
+        let progressCheckInterval;
+        
+        function updateInstallationProgress() {
+            fetch("{{ url_for('wizard_installation_status') }}")
+            .then(response => response.json())
+            .then(data => {
+                const progressBar = document.getElementById('installation-progress');
+                const progressText = document.querySelector('.progress-text');
+                const logContent = document.getElementById('log-content');
+                
+                if (progressBar && progressText) {
+                    progressBar.style.width = data.progress + '%';
+                    progressText.textContent = data.progress + '% Complete';
+                }
+                
+                if (logContent && data.logs) {
+                    // Add any new logs
+                    data.logs.forEach(log => {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry ' + (log.level || 'info');
+                        logEntry.textContent = '[' + log.time + '] ' + log.message;
+                        logContent.appendChild(logEntry);
+                    });
+                    
+                    // Scroll to bottom
+                    logContent.scrollTop = logContent.scrollHeight;
+                }
+                
+                // Check if installation is complete
+                if (data.complete) {
+                    clearInterval(progressCheckInterval);
+                    
+                    if (data.error) {
+                        const errorDiv = document.getElementById('installation-error');
+                        if (errorDiv) {
+                            errorDiv.style.display = 'block';
+                            errorDiv.querySelector('p').textContent = data.error;
+                        }
+                    } else {
+                        // Move to next step if successful
+                        setTimeout(() => navigateToStep(currentStep + 1), 1000);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating progress:', error);
+            });
+        }
+        
+        // Start progress updates
+        progressCheckInterval = setInterval(updateInstallationProgress, 2000);
+        updateInstallationProgress(); // Initial update
+        {% endif %}
+        
+        // Network connectivity test
+        const testConnectivityButton = document.getElementById('test-connectivity');
+        if (testConnectivityButton) {
+            testConnectivityButton.addEventListener('click', function() {
+                this.disabled = true;
+                this.textContent = "Testing...";
+                
+                fetch("{{ url_for('wizard_test_connectivity') }}", {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Refresh the page to show results
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to test connectivity. Please try again.');
+                    this.disabled = false;
+                    this.textContent = "Test Again";
+                });
+            });
+        }
+        
+        // Toggle port forwarding instructions
+        const toggleInstructionsButton = document.querySelector('.toggle-instructions');
+        if (toggleInstructionsButton) {
+            toggleInstructionsButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const instructions = document.querySelector('.port-forwarding-instructions');
+                if (instructions) {
+                    const isHidden = instructions.style.display === 'none';
+                    instructions.style.display = isHidden ? 'block' : 'none';
+                    this.textContent = isHidden ? 'Hide Instructions' : 'Show Instructions';
+                }
+            });
+        }
+        
+        // Retry installation
+        const retryInstallationButton = document.getElementById('retry-installation');
+        if (retryInstallationButton) {
+            retryInstallationButton.addEventListener('click', function() {
+                fetch("{{ url_for('wizard_start_installation') }}", {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to restart installation. Please try again.');
+                });
+            });
+        }
+    });
+</script>
+{% endblock %} 

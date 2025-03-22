@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Pipe Network PoP</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50b5a5;
+            --accent-color: #f7c244;
+            --background-color: #f9f9f9;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --text-light: #777777;
+            --border-color: #e0e0e0;
+            --success-color: #5cb85c;
+            --warning-color: #f0ad4e;
+            --danger-color: #d9534f;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .login-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            cursor: pointer;
+            padding: 12px 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+            color: white;
+            background-color: var(--primary-color);
+        }
+
+        .btn:hover {
+            background-color: #3a80d2;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+
+        .help-text {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .help-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <h1>Pipe Network PoP</h1>
+            <p>Node Management Interface</p>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="login-form">
+            <div class="form-group">
+                <label for="token" class="form-label">Authentication Token</label>
+                <input type="password" id="token" name="token" class="form-control" placeholder="Enter your authentication token" required>
+            </div>
+            
+            <button type="submit" class="btn">Login</button>
+        </form>
+        
+        <div class="help-text">
+            <p>The authentication token can be found in your config file or by running <code>pop-ui config --show-token</code></p>
+            <p>If you need help, please refer to the <a href="https://github.com/pipe-network/pipe-pop/wiki" target="_blank">documentation</a>.</p>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,43 +1,102 @@
-# Release Notes - Pipe Network PoP Node Management Tools
+# Release Notes: Pipe Network PoP Node v0.0.2
 
-## v0.0.1 (Development Version) - March 21, 2024
+## Overview
 
-This is the initial development version of the Pipe Network PoP Node Management Tools.
+This release (v0.0.2) focuses on enhancing the Pipe Network PoP Node Management Tools with fleet management capabilities, improved monitoring, and a more robust core experience. It represents a significant step forward in functionality while maintaining stability and reliability.
 
-### Features Implemented
+## Key Features
 
-#### Core Functionality
-- Repository structure and documentation system
-- Command-line interface with comprehensive help system
-- Service management (start, stop, restart, logs)
-- Global installation support for running `pop` from any directory
-- Configuration management system with JSON-based storage
+### Fleet Management
 
-#### Monitoring System
-- Real-time node status display with `pop status`
-- Interactive dashboard with multiple view modes via `pop dashboard`
-- Historical data collection and visualization with `pop history`
-- Trend analysis for node performance metrics
-- Alert system with configurable thresholds via `pop alerts`
-- Multiple notification channels (terminal, email, log)
-- System resource monitoring (CPU, memory, disk)
+The major new feature in v0.0.2 is the addition of fleet management capabilities:
 
-### Known Issues
-- Email notifications require local mail transport agent or SMTP configuration
-- Historical data requires regular collection via `pop pulse` to be useful
+- **Node Registration**: Add multiple nodes to a centralized fleet
+- **Remote Command Execution**: Execute commands across fleet nodes
+- **Metrics Collection**: Gather and analyze metrics from all nodes
+- **File Deployment**: Push configuration and files to all nodes
+- **Node Grouping**: Organize nodes into logical groups
 
-### Coming Soon
-- Fleet management for multiple nodes
-- Automatic updates
-- Backup and restore functionality
-- Advanced security features
+### Community & Analytics
 
-**Note:** This is a pre-release development version. Features may change before the first stable release.
+- **Referral System**: Generate and track referral codes
+- **Point System**: Reward system for contributions
+- **Network Analytics**: Visualization of network-wide statistics
+- **Node Analytics**: Detailed performance tracking
 
-## Future Releases
+### Core Improvements
 
-Future releases will focus on:
-1. Fleet management for controlling multiple nodes
-2. Advanced security features
-3. Community integration tools
-4. Performance optimizations 
+- **Backup & Recovery**: Enhanced data protection with backup and restore functionality
+- **Security Enhancements**: Improved authentication and permissions
+- **Performance Optimization**: Better resource utilization
+- **Error Handling**: More robust error detection and recovery
+
+## System Requirements
+
+- **Operating System**: Ubuntu 24.04 LTS (Noble Numbat)
+- **Storage**: Minimum 20GB available disk space
+- **Memory**: Minimum 2GB RAM
+- **Dependencies**: bash, curl, jq
+
+## Installation
+
+### New Installation
+
+```bash
+# Download the installer
+curl -O https://example.com/pipe-pop_0.0.2.deb
+
+# Verify checksum
+sha256sum -c pipe-pop_0.0.2.deb.sha256
+
+# Install the package
+sudo dpkg -i pipe-pop_0.0.2.deb
+sudo apt-get install -f
+
+# Start using the tool
+pop --help
+```
+
+### Upgrading from v0.0.1
+
+```bash
+# Check current version
+pop --version
+
+# Update to latest version
+sudo dpkg -i pipe-pop_0.0.2.deb
+sudo apt-get install -f
+
+# Verify update
+pop --version
+```
+
+## Known Issues
+
+- The Web UI implementation has been deferred to a future release
+- Some commands (`pop leaderboard`, `pop --refresh`) are deferred
+- Testing has been primarily done on Ubuntu 24.04 LTS; other distributions may require adjustments
+
+## Documentation
+
+Comprehensive documentation is available:
+
+- **Online Documentation**: https://example.com/pipe-pop/docs
+- **Local Documentation**: `/usr/share/doc/pipe-pop/`
+- **Command-line Help**: `pop --help`
+
+## Reporting Issues
+
+Please report any issues through the official community channels.
+
+## Upcoming Features
+
+The following features are planned for future releases:
+
+- Web-based User Interface
+- Multi-platform support (Debian, CentOS/RHEL)
+- Advanced analytics and visualization
+- Additional community features
+
+---
+
+*Released: March 25, 2025* 
